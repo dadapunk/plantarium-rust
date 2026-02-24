@@ -29,6 +29,8 @@
 
 - [x] **UI: Lista de áreas** - crear/editar/eliminar áreas de jardín
 - [x] **UI: Lista de parcelas** - crear/editar/eliminar parcelas por área
+- [x] **Resize parcelas** - возможность изменять размер después de crear
+- [x] **Duplicar parcelas** - duplicar una parcela existente
 - [x] **Rutas:**
   - `/` - Dashboard con lista de áreas
   - `/area/:id` - Detalle de área con parcelas
@@ -47,6 +49,7 @@
 - [x] **Navegación** - mes anterior/siguiente
 - [x] **Eventos** - mostrar eventos en cada día
 - [x] **Añadir evento** - crear evento desde día del calendario
+- [x] **Filtro por planta** - filtrar eventos por planta específica
 
 ### Fase 6: Tareas (1 día) - COMPLETO
 
@@ -106,13 +109,24 @@ interface Task {
 
 ---
 
+## Decisiones de Implementación (vs SPEC.md)
+
+- **Storage**: localStorage (no SQLite) - Temporal para MVP sin backend
+- **Editor**: Click-to-place (no drag-and-drop completo)
+- **Features fuera del MVP**: Notificaciones, Companion Planting, Crop Rotation, Weather API, Permapeople API
+
+---
+
 ## Entregable
 
 - App de escritorio funcional (Windows/macOS/Linux)
 - Crear/editar/eliminar áreas de jardín
 - Crear/editar/eliminar parcelas
-- Editor visual drag-and-drop de plantas
+- **Resize de parcelas** - ajustar tamaño después de crear
+- **Duplicar parcelas** - clonar parcelas existentes
+- Editor visual de plantas (click-to-place)
 - Calendario con eventos
+- **Filtro por planta** en calendario
 - Tareas con estados
 - Todo persistido en localStorage
 - Sin backend, sin APIs externas

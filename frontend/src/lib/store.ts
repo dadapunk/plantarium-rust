@@ -1,5 +1,5 @@
 import { writable } from 'svelte/store';
-import type { GardenArea, Plot, Plant, Task, CalendarEvent } from '../types';
+import type { GardenArea, Plot, Plant, Task, CalendarEvent, JournalEntry } from '../types';
 
 const STORAGE_KEY = 'plantarium_data';
 
@@ -33,6 +33,7 @@ function createAppStore() {
   const plants = writable<Plant[]>(stored?.plants || defaultPlants);
   const tasks = writable<Task[]>(stored?.tasks || []);
   const events = writable<CalendarEvent[]>(stored?.events || []);
+  const journal = writable<JournalEntry[]>(stored?.journal || []);
 
   const save = () => {
     let areasVal: GardenArea[] = [];
@@ -40,12 +41,14 @@ function createAppStore() {
     let plantsVal: Plant[] = [];
     let tasksVal: Task[] = [];
     let eventsVal: CalendarEvent[] = [];
+    let journalVal: JournalEntry[] = [];
 
     areas.subscribe(v => areasVal = v)();
     plots.subscribe(v => plotsVal = v)();
     plants.subscribe(v => plantsVal = v)();
     tasks.subscribe(v => tasksVal = v)();
     events.subscribe(v => eventsVal = v)();
+    journal.subscribe(v => journalVal = v)();
 
     localStorage.setItem(STORAGE_KEY, JSON.stringify({
       areas: areasVal,
@@ -53,6 +56,7 @@ function createAppStore() {
       plants: plantsVal,
       tasks: tasksVal,
       events: eventsVal,
+      journal: journalVal,
     }));
   };
 
@@ -61,6 +65,7 @@ function createAppStore() {
   plants.subscribe(save);
   tasks.subscribe(save);
   events.subscribe(save);
+  journal.subscribe(save);
 
   return {
     areas,
@@ -68,6 +73,7 @@ function createAppStore() {
     plants,
     tasks,
     events,
+    journal,
   };
 }
 

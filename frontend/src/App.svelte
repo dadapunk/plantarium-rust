@@ -4,6 +4,7 @@
   import AreaDetail from './pages/AreaDetail.svelte';
   import Calendar from './pages/Calendar.svelte';
   import Tasks from './pages/Tasks.svelte';
+  import Journal from './pages/Journal.svelte';
   import LayoutEditor from './pages/LayoutEditor.svelte';
 
   let currentPath = $state('/');
@@ -21,6 +22,7 @@
   <div class="nav-links">
     <a href="#/">Áreas</a>
     <a href="#/calendar">Calendario</a>
+    <a href="#/journal">Diario</a>
     <a href="#/tasks">Tareas</a>
   </div>
 </nav>
@@ -34,6 +36,8 @@
     <LayoutEditor plotId={currentPath.split('/')[2]} />
   {:else if currentPath === '/calendar'}
     <Calendar />
+  {:else if currentPath === '/journal'}
+    <Journal />
   {:else if currentPath === '/tasks'}
     <Tasks />
   {:else}

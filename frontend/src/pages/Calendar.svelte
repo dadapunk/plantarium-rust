@@ -1,17 +1,43 @@
 <script lang="ts">
   import { store } from '../lib/store';
-  import type { CalendarEvent, TaskType } from '../types';
+  import { navigate } from '../lib/router';
+  import type { CalendarEvent, TaskType, Plant, JournalEntry } from '../types';
 
   let currentDate = $state(new Date());
   let events = $state<CalendarEvent[]>([]);
+  let journal = $state<JournalEntry[]>([]);
+  let plants = $state<Plant[]>([]);
   let showAddEvent = $state(false);
   let newEventTitle = $state('');
   let newEventType = $state<TaskType>('custom');
   let newEventDate = $state('');
+  let newEventPlantId = $state<string>('');
+  let plantFilter = $state<string>('all');
 
   $effect(() => {
-    const unsub = store.events.subscribe(e => events = e);
-    return unsub;
+    const unsubEvents = store.events.subscribe(e => events = e);
+    const unsubJournal = store.journal.subscribe(j => journal = j);
+    const unsubPlants = store.plots.subscribe(() => {
+      store.plots.subscribe(p => {
+        const allPlants: Plant[] = [];
+        store.plants.subscribe(plt => {
+          p.forEach(plot => {
+            plot.plants.forEach(placed => {
+              const plant = plt.find(x => x.id === placed.plantId);
+              if (plant && !allPlants.find(x => x.id === plant.id)) {
+                allPlants.push(plant);
+              }
+            });
+          });
+          plants = allPlants;
+        })();
+      });
+    });
+    return () => {
+      unsubEvents();
+      unsubJournal();
+      unsubPlants();
+    };
   });
 
   function getDaysInMonth(date: Date): Date[] {
@@ -22,18 +48,15 @@
     
     const days: Date[] = [];
     
-    // Add days from previous month to fill the week
     const startDayOfWeek = firstDay.getDay();
     for (let i = startDayOfWeek - 1; i >= 0; i--) {
       days.push(new Date(year, month, -i));
     }
     
-    // Add days of current month
     for (let i = 1; i <= lastDay.getDate(); i++) {
       days.push(new Date(year, month, i));
     }
     
-    // Add days from next month to fill the week
     const endDayOfWeek = lastDay.getDay();
     for (let i = 1; i < 7 - endDayOfWeek; i++) {
       days.push(new Date(year, month + 1, i));
@@ -42,9 +65,19 @@
     return days;
   }
 
+  function getFilteredEvents(): CalendarEvent[] {
+    if (plantFilter === 'all') return events;
+    return events.filter(e => e.plantId === plantFilter);
+  }
+
   function getEventsForDay(date: Date): CalendarEvent[] {
     const dateStr = date.toISOString().split('T')[0];
-    return events.filter(e => e.date === dateStr);
+    return getFilteredEvents().filter(e => e.date === dateStr);
+  }
+
+  function getJournalForDay(date: Date): JournalEntry[] {
+    const dateStr = date.toISOString().split('T')[0];
+    return journal.filter(e => e.date === dateStr);
   }
 
   function prevMonth() {
@@ -63,16 +96,24 @@
       title: newEventTitle.trim(),
       date: newEventDate,
       type: newEventType,
+      plantId: newEventPlantId || undefined,
     };
     
     store.events.update(e => [...e, event]);
     newEventTitle = '';
     newEventDate = '';
+    newEventPlantId = '';
     showAddEvent = false;
   }
 
   function deleteEvent(id: string) {
     store.events.update(e => e.filter(ev => ev.id !== id));
+  }
+
+  function getPlantName(plantId: string | undefined): string {
+    if (!plantId) return '';
+    const plant = plants.find(p => p.id === plantId);
+    return plant ? `${plant.icon} ${plant.name}` : '';
   }
 
   function isToday(date: Date): boolean {
@@ -94,9 +135,24 @@
 <div class="calendar-page">
   <div class="header">
     <h1>Calendario</h1>
-    <button class="add-btn" onclick={() => showAddEvent = !showAddEvent}>
-      {showAddEvent ? 'Cancelar' : '+ Añadir Evento'}
-    </button>
+    <div class="header-actions">
+      <button class="journal-btn" onclick={() => navigate('/journal')}>📖 Diario</button>
+      <button class="add-btn" onclick={() => showAddEvent = !showAddEvent}>
+        {showAddEvent ? 'Cancelar' : '+ Añadir Evento'}
+      </button>
+    </div>
+  </div>
+
+  <div class="filters">
+    <label>
+      Filtrar por planta:
+      <select bind:value={plantFilter}>
+        <option value="all">Todas</option>
+        {#each plants as plant}
+          <option value={plant.id}>{plant.icon} {plant.name}</option>
+        {/each}
+      </select>
+    </label>
   </div>
 
   {#if showAddEvent}
@@ -108,6 +164,12 @@
         <option value="harvest">Cosecha</option>
         <option value="fertilizing">Fertilizar</option>
         <option value="custom">Personalizado</option>
+      </select>
+      <select bind:value={newEventPlantId}>
+        <option value="">Sin planta</option>
+        {#each plants as plant}
+          <option value={plant.id}>{plant.icon} {plant.name}</option>
+        {/each}
       </select>
       <input type="date" bind:value={newEventDate} />
       <button onclick={addEvent}>Guardar</button>
@@ -136,6 +198,15 @@
         >
           <span class="day-number">{day.getDate()}</span>
           <div class="day-events">
+            {#each getJournalForDay(day) as entry}
+              <div 
+                class="journal-indicator" 
+                onclick={() => navigate('/journal')}
+                title="Ver en el diario"
+              >
+                📖 Nota
+              </div>
+            {/each}
             {#each getEventsForDay(day) as event}
               <div class="event" class:event-sowing={event.type === 'sowing'}
                    class:event-watering={event.type === 'watering'}
@@ -143,8 +214,12 @@
                    class:event-fertilizing={event.type === 'fertilizing'}
                    class:event-custom={event.type === 'custom'}
                    onclick={() => deleteEvent(event.id)}
+                   title={getPlantName(event.plantId)}
               >
                 {event.title}
+                {#if event.plantId}
+                  <span class="event-plant">{getPlantName(event.plantId)}</span>
+                {/if}
               </div>
             {/each}
           </div>
@@ -164,7 +239,21 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
+  }
+
+  .header-actions {
+    display: flex;
+    gap: 1rem;
+  }
+
+  .journal-btn {
+    padding: 0.75rem 1.5rem;
+    background: #8e44ad;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
   }
 
   .add-btn {
@@ -176,6 +265,28 @@
     cursor: pointer;
   }
 
+  .filters {
+    margin-bottom: 1rem;
+    padding: 1rem;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  }
+
+  .filters label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #2d5a27;
+    font-weight: 500;
+  }
+
+  .filters select {
+    padding: 0.5rem;
+    border: 2px solid #ddd;
+    border-radius: 6px;
+  }
+
   .add-form {
     display: flex;
     gap: 1rem;
@@ -184,6 +295,7 @@
     background: white;
     border-radius: 12px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    flex-wrap: wrap;
   }
 
   .add-form input, .add-form select {
@@ -275,12 +387,33 @@
     margin-top: 0.25rem;
   }
 
+  .journal-indicator {
+    font-size: 0.65rem;
+    padding: 0.25rem 0.5rem;
+    background: #f3e5f5;
+    color: #7b1fa2;
+    border-radius: 4px;
+    margin-bottom: 0.25rem;
+    cursor: pointer;
+    text-align: center;
+  }
+
+  .journal-indicator:hover {
+    background: #e1bee7;
+  }
+
   .event {
     font-size: 0.7rem;
     padding: 0.25rem 0.5rem;
     border-radius: 4px;
     margin-bottom: 0.25rem;
     cursor: pointer;
+  }
+
+  .event-plant {
+    display: block;
+    font-size: 0.65rem;
+    opacity: 0.8;
   }
 
   .event-sowing { background: #e8f5e9; color: #2e7d32; }

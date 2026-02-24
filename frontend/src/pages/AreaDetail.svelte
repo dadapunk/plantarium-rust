@@ -14,6 +14,9 @@
   let newPlotName = $state('');
   let newPlotWidth = $state(200);
   let newPlotHeight = $state(100);
+  let editingPlotId = $state<string | null>(null);
+  let editWidth = $state(200);
+  let editHeight = $state(100);
 
   $effect(() => {
     const unsubAreas = store.areas.subscribe(a => {
@@ -46,6 +49,41 @@
 
   function deletePlot(id: string) {
     store.plots.update(p => p.filter(plot => plot.id !== id));
+  }
+
+  function duplicatePlot(plot: Plot) {
+    const newPlot: Plot = {
+      id: crypto.randomUUID(),
+      areaId,
+      name: `${plot.name} (copia)`,
+      width: plot.width,
+      height: plot.height,
+      plants: plot.plants.map(plant => ({
+        ...plant,
+        id: crypto.randomUUID(),
+      })),
+    };
+    store.plots.update(p => [...p, newPlot]);
+  }
+
+  function startEditSize(plot: Plot) {
+    editingPlotId = plot.id;
+    editWidth = plot.width;
+    editHeight = plot.height;
+  }
+
+  function saveEditSize() {
+    if (!editingPlotId) return;
+    store.plots.update(p => p.map(plot => 
+      plot.id === editingPlotId 
+        ? { ...plot, width: editWidth, height: editHeight }
+        : plot
+    ));
+    editingPlotId = null;
+  }
+
+  function cancelEditSize() {
+    editingPlotId = null;
   }
 </script>
 
@@ -93,21 +131,53 @@
     <div class="plots-grid">
       {#each plots as plot}
         <div class="plot-card">
-          <div class="plot-preview" style="width: {plot.width}px; height: {plot.height}px;">
-            {#each plot.plants as plant}
-              <div 
-                class="plant-marker" 
-                style="left: {plant.x}px; top: {plant.y}px;"
-                title={plant.plantId}
-              ></div>
-            {/each}
-          </div>
+          {#if editingPlotId === plot.id}
+            <div class="plot-preview" style="width: {editWidth}px; height: {editHeight}px;">
+              {#each plot.plants as plant}
+                <div 
+                  class="plant-marker" 
+                  style="left: {plant.x}px; top: {plant.y}px;"
+                ></div>
+              {/each}
+            </div>
+            <div class="size-edit">
+              <input 
+                type="number" 
+                bind:value={editWidth}
+                min="50"
+                max="1000"
+              /> x
+              <input 
+                type="number" 
+                bind:value={editHeight}
+                min="50"
+                max="1000"
+              />
+              <button onclick={saveEditSize}>✓</button>
+              <button onclick={cancelEditSize}>✕</button>
+            </div>
+          {:else}
+            <div class="plot-preview" style="width: {plot.width}px; height: {plot.height}px;">
+              {#each plot.plants as plant}
+                <div 
+                  class="plant-marker" 
+                  style="left: {plant.x}px; top: {plant.y}px;"
+                ></div>
+              {/each}
+            </div>
+          {/if}
+          
           <h3>{plot.name}</h3>
           <p>{plot.width} x {plot.height} cm | {plot.plants.length} plantas</p>
-          <div class="actions">
-            <button onclick={() => navigate(`/plot/${plot.id}`)}>Editar Layout</button>
-            <button class="delete" onclick={() => deletePlot(plot.id)}>Eliminar</button>
-          </div>
+          
+          {#if editingPlotId !== plot.id}
+            <div class="actions">
+              <button onclick={() => navigate(`/plot/${plot.id}`)}>Editar</button>
+              <button onclick={() => startEditSize(plot)}>Resize</button>
+              <button onclick={() => duplicatePlot(plot)}>Duplicar</button>
+              <button class="delete" onclick={() => deletePlot(plot.id)}>Eliminar</button>
+            </div>
+          {/if}
         </div>
       {/each}
     </div>
@@ -198,6 +268,29 @@
     transform: translate(-50%, -50%);
   }
 
+  .size-edit {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .size-edit input {
+    width: 70px;
+    padding: 0.5rem;
+    border: 2px solid #ddd;
+    border-radius: 6px;
+  }
+
+  .size-edit button {
+    padding: 0.5rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    background: #4a7c44;
+    color: white;
+  }
+
   .plot-card h3 {
     margin: 0 0 0.5rem 0;
     color: #2d5a27;
@@ -211,16 +304,17 @@
   .actions {
     display: flex;
     gap: 0.5rem;
+    flex-wrap: wrap;
   }
 
   .actions button {
-    flex: 1;
     padding: 0.5rem;
     border: none;
     border-radius: 6px;
     cursor: pointer;
     background: #4a7c44;
     color: white;
+    font-size: 0.85rem;
   }
 
   .actions button.delete {

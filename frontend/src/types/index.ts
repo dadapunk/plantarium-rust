@@ -42,6 +42,15 @@ export interface CalendarEvent {
   title: string;
   date: string;
   type: TaskType;
+  plantId?: string;
+}
+
+export interface JournalEntry {
+  id: string;
+  date: string;
+  content: string;
+  createdAt: number;
+  updatedAt: number;
 }
 
 export interface AppState {
@@ -50,4 +59,5 @@ export interface AppState {
   plants: Plant[];
   tasks: Task[];
   events: CalendarEvent[];
+  journal: JournalEntry[];
 }
