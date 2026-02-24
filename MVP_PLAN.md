@@ -8,52 +8,52 @@
 
 ## Fases de Implementación
 
-### Fase 1: Proyecto Base (0.5 días)
+### Fase 1: Proyecto Base (0.5 días) - COMPLETO
 
-- [ ] Inicializar proyecto Tauri 2.0 + Svelte
-- [ ] Configurar estructura de componentes
+- [x] Proyecto Tauri 2.0 + Svelte
+- [x] Configuración inicial del frontend
 
-### Fase 2: Datos Locales (0.5 días)
+### Fase 2: Datos Locales (0.5 días) - COMPLETO
 
-- [ ] Definir interfaces TypeScript:
+- [x] Definir interfaces TypeScript:
   - `GardenArea` (id, name)
   - `Plot` (id, areaId, name, width, height, plants[])
   - `Plant` (id, name, x, y, color)
   - `Task` (id, title, date, type, completed)
   - `CalendarEvent` (id, title, date, type)
-- [ ] Crear store Svelte con localStorage
+- [x] Crear store Svelte con localStorage
   - `load()` - cargar desde localStorage
   - `save()` - guardar en localStorage
 
-### Fase 3: Gestión de Parcelas (1 día)
+### Fase 3: Gestión de Parcelas (1 día) - COMPLETO
 
-- [ ] **UI: Lista de áreas** - crear/editar/eliminar áreas de jardín
-- [ ] **UI: Lista de parcelas** - crear/editar/eliminar parcelas por área
-- [ ] **Rutas:**
+- [x] **UI: Lista de áreas** - crear/editar/eliminar áreas de jardín
+- [x] **UI: Lista de parcelas** - crear/editar/eliminar parcelas por área
+- [x] **Rutas:**
   - `/` - Dashboard con lista de áreas
   - `/area/:id` - Detalle de área con parcelas
 
-### Fase 4: Editor Visual (2 días)
+### Fase 4: Editor Visual (2 días) - COMPLETO
 
-- [ ] **Canvas interactivo** - área de diseño con coordenadas
-- [ ] **Plantas predefinidas** - biblioteca de plantas (mock data)
-- [ ] **Drag-and-drop** - arrastrar plantas desde biblioteca a parcelas
-- [ ] **Posicionar** - mover plantas dentro de la parcela
-- [ ] **Persistir** - guardar posiciones en localStorage
+- [x] **Canvas interactivo** - área de diseño con coordenadas
+- [x] **Plantas predefinidas** - biblioteca de plantas (mock data)
+- [x] **Drag-and-drop** - arrastrar plantas desde biblioteca a parcelas
+- [x] **Posicionar** - mover plantas dentro de la parcela
+- [x] **Persistir** - guardar posiciones en localStorage
 
-### Fase 5: Calendario (1 día)
+### Fase 5: Calendario (1 día) - COMPLETO
 
-- [ ] **Vista mensual** - grid de días del mes
-- [ ] **Navegación** - mes anterior/siguiente
-- [ ] **Eventos** - mostrar eventos en cada día
-- [ ] **Añadir evento** - crear evento desde día del calendario
+- [x] **Vista mensual** - grid de días del mes
+- [x] **Navegación** - mes anterior/siguiente
+- [x] **Eventos** - mostrar eventos en cada día
+- [x] **Añadir evento** - crear evento desde día del calendario
 
-### Fase 6: Tareas (1 día)
+### Fase 6: Tareas (1 día) - COMPLETO
 
-- [ ] **Lista de tareas** - vista de tareas pendientes
-- [ ] **Tipos:** siembra, riego, cosecha, fertilizar, personalizado
-- [ ] **Completar** - marcar tarea como hecha
-- [ ] **Filtrar** - por tipo o estado
+- [x] **Lista de tareas** - vista de tareas pendientes
+- [x] **Tipos:** siembra, riego, cosecha, fertilizar, personalizado
+- [x] **Completar** - marcar tarea como hecha
+- [x] **Filtrar** - por tipo o estado
 
 ---
 
