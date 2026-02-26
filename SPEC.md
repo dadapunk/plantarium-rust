@@ -29,7 +29,11 @@ Users seeking a digital alternative or supplement to paper-based garden planning
 - Users can drag and drop specific plants (from the database or custom entries) onto the beds in the layout view.
 - The layout should visually represent the plants, potentially showing approximate spacing or icons.
 - Ability to save, load, and potentially duplicate garden layouts.
-- (Adding non-plant elements like paths is not planned for the initial version).
+- **(Adding non-plant elements like paths is not planned for the initial version).
+- **Plot/Parcela Detail View**: When viewing a plot (parcela), the UI must display a visual representation showing:
+  - The graphical layout with sub-sections (bancales/hbeds) within the plot.
+  - Visual placement of plants within each sub-section with their icons.
+  - Ability to edit the layout directly from this view.
 
 ### 3.2 Plant Database Integration & Management:
 - Seamless integration with the Permapeople API for searching and retrieving detailed plant information (e.g., planting times, spacing needs, light/water requirements, companion planting data, family).
@@ -45,9 +49,24 @@ Users seeking a digital alternative or supplement to paper-based garden planning
   - Specific plant requirements (from Permapeople API or custom entry).
 - (Optional Enhancement) Fine-tuning based on short-term OpenWeather API forecasts (e.g., delaying planting if frost is imminent).
 - Provides an integrated calendar view displaying scheduled tasks: planting, fertilizing, watering reminders, projected harvest windows, user-added custom tasks.
+- **Calendar Views**: The calendar must support multiple view modes:
+  - **Day View**: Shows detailed schedule for a specific day with hourly breakdown.
+  - **Week View**: Displays a weekly overview with tasks per day.
+  - **Month View**: Traditional monthly calendar with task/event indicators.
+  - **Year View**: Annual overview showing task density and patterns across months.
 - Ability to filter the calendar by task type or plant.
 
-### 3.4 Notifications & Alerts System:
+### 3.4 Journal (Diary):
+- Users can create, edit, and delete journal entries with date and markdown content.
+- Entries support links to plots (parcelas) and plants using @parcela:name and @planta:name syntax.
+- **Journal Views**: The journal must support filtering by time period:
+  - **Day View**: Shows entries for a specific date.
+  - **Week View**: Displays entries from the selected week.
+  - **Month View**: Shows all entries from the selected month.
+  - **Year View**: Overview of entries grouped by month for the selected year.
+- Entries are sorted by date (newest first by default).
+
+### 3.5 Notifications & Alerts System:
 - Task Reminders: Timely alerts for planting, transplanting, fertilizing, and potentially user-defined tasks based on the schedule.
 - Crop Rotation Warnings: If a user attempts to place a plant in a bed, the system checks the planting history (see 3.6) and warns if it violates rotation principles (e.g., planting brassicas where legumes were last season, if that's undesirable based on rules).
 - Companion Planting Feedback: (Optional) Subtle alerts or indicators if incompatible plants are placed adjacent in the layout.
@@ -117,6 +136,16 @@ Users seeking a digital alternative or supplement to paper-based garden planning
 - **Interaction**: Intuitive drag-and-drop for layout. Clear forms for data entry. Consistent navigation patterns.
 - **Feedback**: Provide visual feedback for actions (saving, loading, API calls). Use loading indicators.
 - **Accessibility**: Adhere to basic accessibility guidelines (sufficient color contrast, keyboard navigability, screen reader support where appropriate).
+
+### 6.1 Dashboard (Home)
+
+The home page serves as a central hub displaying a summary of all application sections:
+
+- **Resumen de Áreas**: Card showing total areas and quick access to them.
+- **Última Nota del Diario**: Display the most recent journal entry with title and date.
+- **Próximas Tareas**: List of pending tasks sorted by date (next 5-7 days).
+- **Calendario**: Mini calendar view showing the current month with markers for tasks/events.
+- **Acceso Rápido**: Navigation to all main sections (Áreas, Diario, Tareas, Calendario).
 
 ## 7. Future Considerations (Potential Roadmap)
 

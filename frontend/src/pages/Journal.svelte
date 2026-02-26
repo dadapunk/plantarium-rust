@@ -2,6 +2,8 @@
   import { store } from '../lib/store';
   import { navigate } from '../lib/router';
   import type { JournalEntry, Plot, Plant, GardenArea } from '../types';
+  import { marked } from 'marked';
+  import DOMPurify from 'dompurify';
 
   let journal = $state<JournalEntry[]>([]);
   let plots = $state<Plot[]>([]);
@@ -78,13 +80,6 @@
   function parseMarkdown(text: string): string {
     let result = text;
     
-    result = result.replace(/^### (.+)$/gm, '<h3>$1</h3>');
-    result = result.replace(/^## (.+)$/gm, '<h2>$1</h2>');
-    result = result.replace(/^# (.+)$/gm, '<h1>$1</h1>');
-    result = result.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
-    result = result.replace(/\*(.+?)\*/g, '<em>$1</em>');
-    result = result.replace(/\n/g, '<br>');
-    
     result = result.replace(/@parcela:(.+?)(\s|$)/g, (_match, name, delimiter) => {
       const plot = plots.find(p => p.name.toLowerCase() === name.toLowerCase());
       if (plot) {
@@ -101,7 +96,8 @@
       return `<span class="link-planta">🌱 ${name}</span>${delimiter}`;
     });
     
-    return result;
+    const html = marked.parse(result, { async: false }) as string;
+    return DOMPurify.sanitize(html);
   }
 
   function getPlotName(plotId: string): string {

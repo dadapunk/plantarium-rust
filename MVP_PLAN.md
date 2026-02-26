@@ -117,6 +117,26 @@ interface Task {
 
 ---
 
+## Issues Identificados Post-MVP
+
+Hallazgos del análisis del stack que deben resolverse antes de continuar con features nuevas:
+
+### Crítico
+- **XSS en el Diario**: `Journal.svelte` usa `{@html parseMarkdown()}` sin sanitizar el contenido del usuario. Cualquier `<script>` en una nota se ejecuta. Requiere `marked` + `DOMPurify`.
+
+### Alto
+- **localStorage → SQLite**: El store actual serializa todo el estado en un único JSON. No escala con volumen de datos, no tiene integridad referencial y no es lo que exige la SPEC. Migrar a `tauri-plugin-sql`.
+- **Backend Rust vacío**: `src-tauri/src/lib.rs` solo tiene el `greet` de plantilla. Las features de la SPEC (notificaciones, APIs externas, DB) requieren Tauri commands reales.
+
+### Medio
+- **Sin librería de fechas**: Los cálculos de calendario, schedules de siembra y rotación plurianual necesitan `date-fns` o `dayjs`. Hacerlo con `new Date()` nativo es frágil.
+- **Router custom limitado**: El hash router actual no soporta rutas anidadas con tipado. Evaluar `svelte-routing` o migrar a SvelteKit para la versión completa.
+
+### Referencia
+Ver `ARCHITECTURE.md` para el detalle completo, el schema SQLite target y los Tauri plugins requeridos.
+
+---
+
 ## Entregable
 
 - App de escritorio funcional (Windows/macOS/Linux)

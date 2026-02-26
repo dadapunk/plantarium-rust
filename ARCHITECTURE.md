@@ -2,219 +2,348 @@
 
 ## Overview
 
-This document describes the technical architecture for the Plantarium application migrated to Rust.
+This document describes the technical architecture for the Plantarium application built with Rust + Tauri 2.0 + Svelte 5.
 
 ## Technology Stack
 
-| Component | Technology | Version |
-|-----------|------------|---------|
-| Backend Framework | Axum | 0.8.x |
-| ORM | SeaORM | 0.13.x |
-| Database | SQLite | 3.x |
-| Frontend Framework | Tauri | 2.0 |
-| HTTP Client | reqwest | 0.12.x |
-| Async Runtime | Tokio | 1.x |
-| API Documentation | utoipa | 4.x |
+### Current (MVP)
 
-## Architecture Layers
+| Component | Technology | Version | Notes |
+|-----------|------------|---------|-------|
+| Desktop/Mobile Framework | Tauri | 2.0 | ✅ Activo |
+| Frontend Framework | Svelte | 5.0 | ✅ Activo — usa Runes API |
+| Language (frontend) | TypeScript | 5.8 | ✅ Activo |
+| Build Tool | Vite | 6.0 | ✅ Activo |
+| Persistence | localStorage | — | ⚠️ Temporal, solo MVP |
+| Backend Rust | — | — | ❌ Solo `greet` de plantilla |
+
+### Planned (Post-MVP)
+
+| Component | Technology | Version | Notes |
+|-----------|------------|---------|-------|
+| Persistence | SQLite via tauri-plugin-sql | — | Reemplaza localStorage |
+| Notificaciones | tauri-plugin-notification | — | Para alertas y recordatorios |
+| HTTP externo | fetch nativo / tauri-plugin-http | — | APIs Permapeople y OpenWeather |
+| Markdown | marked + DOMPurify | — | Reemplaza parser casero (ver seguridad) |
+| Fechas | date-fns o dayjs | — | Para cálculos de calendario y schedules |
+
+> **Nota sobre Axum:** Para la app local (Tauri), la comunicación frontend-backend usa
+> **Tauri commands** (`#[tauri::command]`), no un servidor HTTP interno.
+> Sin embargo, Axum sí tiene su lugar en este proyecto: es el backend del **servicio cloud**
+> (sincronización entre dispositivos, modelo de monetización). El servidor Axum vive
+> separado de la app Tauri, desplegado en infraestructura propia.
+
+## Architecture
+
+### Actual (MVP)
 
 ```
-┌─────────────────────────────────────────────┐
-│              Frontend (Tauri 2.0)            │
-│         React / Vue / Svelte / Dioxus       │
-├─────────────────────────────────────────────┤
-│              API Layer (Axum)                │
-│         REST Endpoints + WebSocket           │
-├─────────────────────────────────────────────┤
-│           Service Layer                      │
-│      Business Logic + Validation             │
-├─────────────────────────────────────────────┤
-│           Repository Layer (SeaORM)          │
-│         Database Operations                  │
-├─────────────────────────────────────────────┤
-│           Database (SQLite)                 │
-│              plantarium.db                   │
-└─────────────────────────────────────────────┘
+┌──────────────────────────────────────────┐
+│           Frontend (Svelte 5)            │
+│   App.svelte + pages/ + store.ts         │
+├──────────────────────────────────────────┤
+│           localStorage                   │
+│   JSON serializado bajo 'plantarium_data'│
+└──────────────────────────────────────────┘
+     ↕ Tauri WebView (sin comandos activos)
+┌──────────────────────────────────────────┐
+│        Tauri Runtime (Rust)              │
+│   src-tauri/src/lib.rs — solo `greet`   │
+└──────────────────────────────────────────┘
 ```
+
+### Target (Post-MVP — local)
+
+```
+┌──────────────────────────────────────────┐
+│           Frontend (Svelte 5)            │
+│   Llama a Tauri commands via invoke()    │
+├──────────────────────────────────────────┤
+│        Tauri Commands (Rust)             │
+│   #[tauri::command] en src-tauri/src/   │
+│   Lógica de negocio + validación        │
+├──────────────────────────────────────────┤
+│        tauri-plugin-sql (SQLite)         │
+│         plantarium.db                    │
+└──────────────────────────────────────────┘
+```
+
+### Visión long-term (cloud sync)
+
+```
+┌─────────────────┐     ┌─────────────────┐
+│  App Desktop    │     │   App Móvil     │
+│  Tauri + Svelte │     │  Tauri + Svelte │
+│  SQLite local   │     │  SQLite local   │
+└────────┬────────┘     └────────┬────────┘
+         │    sync (Axum API)    │
+         └──────────┬────────────┘
+              ┌─────▼──────┐
+              │ Cloud Axum │  ← servicio de pago
+              │ + SQLite / │
+              │ PostgreSQL  │
+              └────────────┘
+```
+
+La app funciona 100% offline. La sincronización es opcional y de pago.
+Los datos locales siempre son la fuente de verdad — el cloud es una réplica.
 
 ## Project Structure
 
 ```
-plantarium/
-├── Cargo.toml              # Workspace root
-├── rust-toolchain.toml     # Rust version
-├── .env.example            # Environment template
+plantarium-rust/
+├── SPEC.md                 # Especificación de producto
+├── ARCHITECTURE.md         # Este archivo
+├── MVP_PLAN.md             # Plan del MVP (completado)
 │
-├── backend/               # Axum API server
-│   ├── Cargo.toml
-│   ├── src/
-│   │         # Entry point   ├── main.rs
-│   │   ├── lib.rs          # Library root
-│   │   ├── config.rs       # Configuration
-│   │   ├── error.rs        # Error handling
-│   │   ├── db.rs           # Database setup
-│   │   ├── entities/       # SeaORM entities
-│   │   │   ├── plant.rs
-│   │   │   ├── plot.rs
-│   │   │   └── garden_note.rs
-│   │   ├── dto/            # Data transfer objects
-│   │   ├── handlers/       # HTTP handlers
-│   │   ├── services/       # Business logic
-│   │   └── router.rs       # Route definitions
-│   └── migrations/         # Database migrations
-│
-├── frontend/              # Tauri application
-│   ├── src/               # Frontend source
-│   ├── src-tauri/         # Rust backend
-│   │   ├── Cargo.toml
-│   │   ├── src/
-│   │   │   └── main.rs
-│   │   ├── tauri.conf.json
-│   │   ├── icons/
-│   │   └── capabilities/
-│   ├── index.html
-│   └── package.json
-│
-└── documentation/         # Project docs
+└── frontend/               # Aplicación Tauri
+    ├── package.json
+    ├── vite.config.ts
+    ├── svelte.config.js
+    ├── index.html
+    │
+    ├── src/                # Frontend Svelte
+    │   ├── main.ts
+    │   ├── App.svelte      # Router hash-based + navbar
+    │   ├── lib/
+    │   │   ├── router.ts   # Router custom (hash)
+    │   │   └── store.ts    # Stores Svelte + auto-save localStorage
+    │   ├── pages/
+    │   │   ├── Dashboard.svelte      # Lista de áreas
+    │   │   ├── AreaDetail.svelte     # Parcelas de un área
+    │   │   ├── LayoutEditor.svelte   # Editor click-to-place
+    │   │   ├── Calendar.svelte       # Vista mensual
+    │   │   ├── Journal.svelte        # Diario con markdown
+    │   │   └── Tasks.svelte          # Lista de tareas
+    │   └── types/
+    │       └── index.ts    # Interfaces TypeScript
+    │
+    └── src-tauri/          # Backend Rust (Tauri)
+        ├── Cargo.toml
+        ├── tauri.conf.json
+        └── src/
+            ├── main.rs     # Entry point
+            └── lib.rs      # Tauri commands (solo `greet` por ahora)
 ```
 
-## Database Schema
+## Data Model
 
-### Plants Table
+### Tipos actuales (TypeScript — `types/index.ts`)
 
-```sql
-CREATE TABLE plants (
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    species VARCHAR(255),
-    family VARCHAR(255),
-    leaf_shape VARCHAR(100),
-    planting_date DATE,
-    plot_id INTEGER REFERENCES plots(id),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-```
+> ⚠️ **Problema de sincronización:** Para que el cloud sync funcione correctamente,
+> todas las entidades necesitan `updatedAt` y `deletedAt`. Actualmente solo
+> `JournalEntry` tiene `updatedAt`. Hay que añadirlos **antes** de migrar a SQLite.
 
-### Plots Table
+```typescript
+// Estado actual — incompleto para sync
+interface GardenArea { id, name, createdAt }                         // ❌ falta updatedAt, deletedAt
+interface Plot       { id, areaId, name, width, height, plants[] }   // ❌ falta updatedAt, deletedAt
+interface PlacedPlant{ id, plantId, x, y }                           // ❌ falta updatedAt, deletedAt
+interface Plant      { id, name, color, icon }                        // ❌ falta updatedAt, deletedAt
+interface Task       { id, title, date, type, completed }             // ❌ falta updatedAt, deletedAt
+interface CalendarEvent { id, title, date, type, plantId? }          // ❌ falta updatedAt, deletedAt
+interface JournalEntry  { id, date, content, createdAt, updatedAt }  // ❌ falta deletedAt
 
-```sql
-CREATE TABLE plots (
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    length DECIMAL(10, 2),
-    width DECIMAL(10, 2),
-    location VARCHAR(255),
-    area DECIMAL(10, 2),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-```
-
-### Garden Notes Table
-
-```sql
-CREATE TABLE garden_notes (
-    id SERIAL PRIMARY KEY,
-    title VARCHAR(255) NOT NULL,
-    note TEXT,
-    date DATE,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-```
-
-## API Endpoints
-
-### Plants
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | /api/plants | List all plants |
-| GET | /api/plants/:id | Get plant by ID |
-| POST | /api/plants | Create new plant |
-| PUT | /api/plants/:id | Update plant |
-| DELETE | /api/plants/:id | Delete plant |
-| GET | /api/plants/external | Fetch from Permapeople API |
-
-### Plots
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | /api/plots | List all plots |
-| GET | /api/plots/:id | Get plot by ID |
-| POST | /api/plots | Create new plot |
-| PUT | /api/plots/:id | Update plot |
-| DELETE | /api/plots/:id | Delete plot |
-
-### Garden Notes
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | /api/notes | List all notes |
-| GET | /api/notes/:id | Get note by ID |
-| POST | /api/notes | Create new note |
-| PUT | /api/notes/:id | Update note |
-| DELETE | /api/notes/:id | Delete note |
-
-## Configuration
-
-Environment variables:
-
-```env
-DATABASE_URL=sqlite://plantarium.db
-SERVER_HOST=0.0.0.0
-SERVER_PORT=3002
-PERMAPEOPLE_API_KEY=your_api_key
-PERMAPEOPLE_KEY=your_key
-RUST_LOG=info
-```
-
-## Error Handling
-
-Custom error types using `thiserror`:
-
-```rust
-pub enum AppError {
-    #[error("Database error: {0}")]
-    Database(#[from] DbErr),
-    
-    #[error("Not found: {0}")]
-    NotFound(String),
-    
-    #[error("Validation error: {0}")]
-    Validation(String),
-    
-    #[error("External API error: {0}")]
-    ExternalApi(String),
+// Target — listo para sync
+interface SyncableEntity {
+  id: string;          // UUID v4 — globalmente único entre dispositivos
+  createdAt: number;   // timestamp ms UTC
+  updatedAt: number;   // timestamp ms UTC — actualizar en cada mutación
+  deletedAt: number | null; // null = activo, timestamp = borrado (soft delete)
 }
+
+interface GardenArea extends SyncableEntity { name }
+interface Plot       extends SyncableEntity { areaId, name, width, height }
+interface PlacedPlant extends SyncableEntity { plotId, plantId, x, y }
+interface Plant      extends SyncableEntity { name, color, icon, family?, species? }
+interface Task       extends SyncableEntity { title, date, type, completed }
+interface CalendarEvent extends SyncableEntity { title, date, type, plantId? }
+interface JournalEntry  extends SyncableEntity { date, content }
 ```
 
-## Logging
+**Por qué soft deletes:** Si un usuario borra algo en móvil estando offline y luego
+sincroniza, el servidor necesita saber que fue un borrado intencional — no que
+el registro simplemente "no llegó". Sin `deletedAt`, el sync restauraría
+los registros borrados en el próximo ciclo.
 
-Using `tracing` for structured logging:
+### Database Schema (Target — SQLite)
+
+Todas las tablas incluyen `updated_at` y `deleted_at` para soportar sincronización.
+Las queries de lectura deben filtrar siempre por `deleted_at IS NULL`.
+
+```sql
+CREATE TABLE garden_areas (
+    id          TEXT PRIMARY KEY,
+    name        TEXT NOT NULL,
+    created_at  INTEGER NOT NULL,
+    updated_at  INTEGER NOT NULL,
+    deleted_at  INTEGER             -- NULL = activo
+);
+
+CREATE TABLE plots (
+    id          TEXT PRIMARY KEY,
+    area_id     TEXT NOT NULL REFERENCES garden_areas(id),
+    name        TEXT NOT NULL,
+    width       REAL NOT NULL,
+    height      REAL NOT NULL,
+    created_at  INTEGER NOT NULL,
+    updated_at  INTEGER NOT NULL,
+    deleted_at  INTEGER
+);
+
+CREATE TABLE placed_plants (
+    id          TEXT PRIMARY KEY,
+    plot_id     TEXT NOT NULL REFERENCES plots(id),
+    plant_id    TEXT NOT NULL,
+    x           REAL NOT NULL,
+    y           REAL NOT NULL,
+    created_at  INTEGER NOT NULL,
+    updated_at  INTEGER NOT NULL,
+    deleted_at  INTEGER
+);
+
+CREATE TABLE plants (
+    id          TEXT PRIMARY KEY,
+    name        TEXT NOT NULL,
+    color       TEXT NOT NULL,
+    icon        TEXT NOT NULL,
+    family      TEXT,
+    species     TEXT,
+    notes       TEXT,
+    created_at  INTEGER NOT NULL,
+    updated_at  INTEGER NOT NULL,
+    deleted_at  INTEGER
+);
+
+CREATE TABLE tasks (
+    id          TEXT PRIMARY KEY,
+    title       TEXT NOT NULL,
+    date        TEXT NOT NULL,
+    type        TEXT NOT NULL,
+    completed   INTEGER NOT NULL DEFAULT 0,
+    created_at  INTEGER NOT NULL,
+    updated_at  INTEGER NOT NULL,
+    deleted_at  INTEGER
+);
+
+CREATE TABLE calendar_events (
+    id          TEXT PRIMARY KEY,
+    title       TEXT NOT NULL,
+    date        TEXT NOT NULL,
+    type        TEXT NOT NULL,
+    plant_id    TEXT,
+    created_at  INTEGER NOT NULL,
+    updated_at  INTEGER NOT NULL,
+    deleted_at  INTEGER
+);
+
+CREATE TABLE journal_entries (
+    id          TEXT PRIMARY KEY,
+    date        TEXT NOT NULL,
+    content     TEXT NOT NULL,
+    created_at  INTEGER NOT NULL,
+    updated_at  INTEGER NOT NULL,
+    deleted_at  INTEGER
+);
+
+-- Índices para sync eficiente: buscar registros modificados desde última sync
+CREATE INDEX idx_areas_updated      ON garden_areas(updated_at);
+CREATE INDEX idx_plots_updated      ON plots(updated_at);
+CREATE INDEX idx_plants_updated     ON plants(updated_at);
+CREATE INDEX idx_tasks_updated      ON tasks(updated_at);
+CREATE INDEX idx_events_updated     ON calendar_events(updated_at);
+CREATE INDEX idx_journal_updated    ON journal_entries(updated_at);
+```
+
+> **ON DELETE CASCADE eliminado intencionalmente.** Con soft deletes, las filas
+> nunca se borran físicamente. Un `plot` borrado mantiene sus `placed_plants`
+> con `deleted_at` propio para que el sync pueda reconstruir el historial en otros
+> dispositivos.
+
+## Tauri Commands (Target)
+
+En lugar de endpoints HTTP, la comunicación frontend-backend usa Tauri commands:
 
 ```rust
-tracing::info!("Starting server on {}", addr);
-tracing::error!("Database connection failed: {}", err);
+// src-tauri/src/lib.rs
+#[tauri::command]
+async fn get_areas(db: State<'_, DbPool>) -> Result<Vec<GardenArea>, String> { ... }
+
+#[tauri::command]
+async fn create_area(db: State<'_, DbPool>, name: String) -> Result<GardenArea, String> { ... }
+
+#[tauri::command]
+async fn get_plots(db: State<'_, DbPool>, area_id: String) -> Result<Vec<Plot>, String> { ... }
+
+#[tauri::command]
+async fn fetch_plant_external(query: String) -> Result<Vec<PlantData>, String> { ... }
 ```
 
-## Testing
+Llamados desde el frontend:
+```typescript
+import { invoke } from '@tauri-apps/api/core';
+const areas = await invoke<GardenArea[]>('get_areas');
+```
 
-- Unit tests: Test individual functions and modules
-- Integration tests: Test API endpoints
-- Use `cargo test` to run all tests
+## Tauri Plugins Requeridos
+
+| Plugin | Propósito | Prioridad |
+|--------|-----------|-----------|
+| `tauri-plugin-sql` | SQLite local | Alta — reemplaza localStorage |
+| `tauri-plugin-notification` | Recordatorios y alertas | Alta — requerido por SPEC |
+| `tauri-plugin-http` | Llamadas a Permapeople y OpenWeather | Media |
+| `tauri-plugin-store` | Settings persistentes del usuario | Baja |
 
 ## Security
 
-- Input validation using validator crates
-- CORS configuration for API
-- Rate limiting (optional)
-- SQL injection prevention via SeaORM parameterization
+### XSS en el Diario (CRÍTICO)
+
+`Journal.svelte` usa `{@html parseMarkdown(content)}` con un parser de regex casero
+sobre contenido de usuario sin sanitizar. Esto permite XSS arbitrario.
+
+**Solución:**
+```bash
+npm install marked dompurify
+npm install -D @types/dompurify
+```
+
+```typescript
+import { marked } from 'marked';
+import DOMPurify from 'dompurify';
+
+function parseMarkdown(text: string): string {
+  return DOMPurify.sanitize(marked.parse(text) as string);
+}
+```
+
+### API Keys
+
+No embeber las keys de Permapeople y OpenWeather en el código frontend.
+Almacenarlas en el proceso Tauri (Rust) y exponerlas solo via commands.
+
+### SQLite
+
+Usar `tauri-plugin-sql` con sentencias parametrizadas para prevenir SQL injection.
+
+## Known Gaps vs SPEC
+
+| Requisito SPEC | Estado | Tarea pendiente |
+|----------------|--------|-----------------|
+| SQLite persistencia | ❌ | Migrar de localStorage a tauri-plugin-sql |
+| Notificaciones nativas | ❌ | Integrar tauri-plugin-notification |
+| API Permapeople | ❌ | Tauri command que llama la API externa |
+| API OpenWeather | ❌ | Tauri command con ubicación del usuario |
+| Calendario Day/Week/Year views | ❌ | Implementar en Calendar.svelte |
+| Diario vistas por período | ❌ | Implementar en Journal.svelte |
+| Companion planting UI | ❌ | Requiere datos de Permapeople |
+| Crop rotation tracking | ❌ | Requiere historial en DB |
+| Dashboard (hub central) | ❌ | Dashboard actual solo muestra áreas |
+| Markdown seguro | ⚠️ XSS | Reemplazar parser casero con marked + DOMPurify |
 
 ## Performance Considerations
 
-- Async/await throughout the application
-- Connection pooling for database
-- Lazy loading for relationships
-- Pagination for list endpoints
+- Svelte 5 compila a JS vanilla — sin virtual DOM, bundle pequeño
+- Tauri usa el WebView nativo del OS — no bundlea Chromium
+- SQLite con WAL mode para escrituras concurrentes
+- Cachear respuestas de Permapeople API localmente en SQLite
+- Operaciones de DB en Tauri commands (hilo async Tokio), nunca bloqueando el UI thread
