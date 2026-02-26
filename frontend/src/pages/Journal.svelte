@@ -85,20 +85,20 @@
     result = result.replace(/\*(.+?)\*/g, '<em>$1</em>');
     result = result.replace(/\n/g, '<br>');
     
-    result = result.replace(/\[\[parcela:(.+?)\]\]/g, (_match, name) => {
+    result = result.replace(/@parcela:(.+?)(\s|$)/g, (_match, name, delimiter) => {
       const plot = plots.find(p => p.name.toLowerCase() === name.toLowerCase());
       if (plot) {
-        return `<a href="#/area/${plot.areaId}" class="link-parcela">🏡 ${name}</a>`;
+        return `<a href="#/area/${plot.areaId}" class="link-parcela">🏡 ${name}</a>${delimiter}`;
       }
-      return `<span class="link-parcela">🏡 ${name}</span>`;
+      return `<span class="link-parcela">🏡 ${name}</span>${delimiter}`;
     });
     
-    result = result.replace(/\[\[planta:(.+?)\]\]/g, (_match, name) => {
+    result = result.replace(/@planta:(.+?)(\s|$)/g, (_match, name, delimiter) => {
       const plant = plants.find(p => p.name.toLowerCase() === name.toLowerCase());
       if (plant) {
-        return `<span class="link-planta">${plant.icon} ${name}</span>`;
+        return `<span class="link-planta">${plant.icon} ${name}</span>${delimiter}`;
       }
-      return `<span class="link-planta">🌱 ${name}</span>`;
+      return `<span class="link-planta">🌱 ${name}</span>${delimiter}`;
     });
     
     return result;
@@ -128,12 +128,12 @@
       <div class="editor-header">
         <input type="date" bind:value={newDate} />
         <div class="help-text">
-          Usa [[parcela:nombre]] o [[planta:nombre]] para crear enlaces
+          Usa @parcela:nombre o @planta:nombre para crear enlaces
         </div>
       </div>
       <textarea 
         bind:value={newContent} 
-        placeholder="# Título&#10;&#10;Escribe tu nota en markdown...&#10;&#10;Ejemplo:&#10;Hoy observé los tomates en [[parcela:norte]]&#10;Las plantas de [[planta:tomate]] están creciendo bien."
+        placeholder="# Título&#10;&#10;Escribe tu nota en markdown...&#10;&#10;Ejemplo:&#10;Hoy observé los tomates en @parcela:norte&#10;Las plantas de @planta:tomate están creciendo bien."
         rows="10"
       ></textarea>
       <div class="editor-actions">
