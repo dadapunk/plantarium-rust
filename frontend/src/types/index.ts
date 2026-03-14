@@ -1,18 +1,22 @@
-export interface GardenArea {
+export interface SyncableEntity {
   id: string;
-  name: string;
   createdAt: number;
+  updatedAt: number;
+  deletedAt: number | null;
 }
 
-export interface PlacedPlant {
-  id: string;
+export interface GardenArea extends SyncableEntity {
+  name: string;
+}
+
+export interface PlacedPlant extends SyncableEntity {
   plantId: string;
   x: number;
   y: number;
+  harvestedAt?: number;  // Timestamp de primera cosecha (para lógica no destructiva)
 }
 
-export interface Plot {
-  id: string;
+export interface Plot extends SyncableEntity {
   areaId: string;
   name: string;
   width: number;
@@ -20,37 +24,43 @@ export interface Plot {
   plants: PlacedPlant[];
 }
 
-export interface Plant {
-  id: string;
+export interface Plant extends SyncableEntity {
   name: string;
   color: string;
   icon: string;
+  family?: string;
+  species?: string;
+}
+
+export type PlotActionType = 'planted' | 'sowed' | 'harvested' | 'removed';
+
+export interface PlotAction extends SyncableEntity {
+  plotId: string;
+  plantId: string;
+  action: PlotActionType;
+  quantity: number;
+  date: string;  // Fecha de la acción (no timestamp)
 }
 
 export type TaskType = 'sowing' | 'watering' | 'harvest' | 'fertilizing' | 'custom';
 
-export interface Task {
-  id: string;
+export interface Task extends SyncableEntity {
   title: string;
   date: string;
   type: TaskType;
   completed: boolean;
 }
 
-export interface CalendarEvent {
-  id: string;
+export interface CalendarEvent extends SyncableEntity {
   title: string;
   date: string;
   type: TaskType;
   plantId?: string;
 }
 
-export interface JournalEntry {
-  id: string;
+export interface JournalEntry extends SyncableEntity {
   date: string;
   content: string;
-  createdAt: number;
-  updatedAt: number;
 }
 
 export interface AppState {
@@ -60,4 +70,5 @@ export interface AppState {
   tasks: Task[];
   events: CalendarEvent[];
   journal: JournalEntry[];
+  plotActions: PlotAction[];
 }

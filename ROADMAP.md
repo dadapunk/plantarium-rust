@@ -9,56 +9,107 @@ El MVP (Fases 1-6 del `MVP_PLAN.md`) está completo.
 
 Estos issues afectan seguridad o correctitud del código existente.
 
-### 0.1 Corregir XSS en el Diario
+### 0.1 Corregir XSS en el Diario ✅
 
 **Archivo:** `frontend/src/pages/Journal.svelte:167`
-**Problema:** `{@html parseMarkdown(content)}` renderiza HTML sin sanitizar sobre input del usuario.
-
-```bash
-npm install marked dompurify
-npm install -D @types/dompurify
-```
-
-Reemplazar `parseMarkdown()` para usar `marked` + `DOMPurify.sanitize()`.
+**Estado:** Completado - `marked` + `DOMPurify.sanitize()` implementados.
 
 ### 0.2 Corregir tauri.conf.json ✅
 
 **Archivo:** `frontend/src-tauri/tauri.conf.json`
 Completado: `productName`, `identifier` y `title` actualizados a "Plantarium" / "com.plantarium.app".
 
-### 0.3 Preparar modelo de datos para sincronización
+### 0.3 Preparar modelo de datos para sincronización ✅
 
-**Archivos:** `frontend/src/types/index.ts`
-**Problema:** Solo `JournalEntry` tiene `updatedAt`. Ninguna entidad tiene `deletedAt`.
-Sin estos campos, el cloud sync no puede resolver conflictos ni detectar borrados offline.
+**Archivos:** `frontend/src/types/index.ts`, `frontend/src/lib/store.ts`
+**Estado:** Completado - Todas las entidades ahora extienden `SyncableEntity` con `updatedAt` y `deletedAt`. Store migrado automáticamente.
 
-Añadir a **todas** las interfaces la base común:
+---
 
+## Fase 1 — Features del NotebookLM (Mejoras del MVP)
+
+Basado en la documentación del notebook, estas son las funcionalidades prioritarias para mejorar la experiencia de usuario.
+
+### 1.1 Sistema de Ingreso de Cultivos
+
+**Descripción:** Interfaz para que el usuario pueda seleccionar una planta, definir la cantidad y asociarla a un bancal específico con fecha.
+
+**Implementación actual:** LayoutEditor tiene click-to-place básico.
+**Mejora necesaria:** Formulario dedicado con:
+- Selector de planta (desde la biblioteca)
+- Input de cantidad
+- Selector de bancal/parcela
+- Selector de fecha (hoy por defecto, o fecha personalizada)
+- Acción: plantar/sembrar/cosechar
+
+**Archivo probable:** Nuevo componente `AddCropModal.svelte` o mejorar `LayoutEditor.svelte`
+
+### 1.2 Histórico Cronológico por Bancal
+
+**Descripción:** Registro histórico que guarda qué se ha plantado, sembrado o cosechado en cada bancal por fecha. Permite consultar estados pasados.
+
+**Implementación:**
+- Crear tabla/log de acciones por parcela
+- Cada acción guardada: { plotId, plantId, actionType, date, quantity }
+- Tipos de acción: 'planted', 'sowed', 'harvested'
+- Vista de historial por parcela en `AreaDetail.svelte` o página dedicada
+
+**Tipos de dato a agregar:**
 ```typescript
-interface SyncableEntity {
+interface PlotAction {
   id: string;
+  plotId: string;
+  plantId: string;
+  action: 'planted' | 'sowed' | 'harvested';
+  quantity: number;
+  date: string;
   createdAt: number;
   updatedAt: number;
   deletedAt: number | null;
 }
 ```
 
-Y extender: `GardenArea`, `Plot`, `PlacedPlant`, `Plant`, `Task`, `CalendarEvent`, `JournalEntry`.
+### 1.3 Lógica de Cosecha No Destructiva
 
-Actualizar `store.ts` para que cada `update()` y `create()` setee `updatedAt: Date.now()`
-y los borrados usen `deletedAt: Date.now()` en lugar de filtrar el array.
+**Descripción:** Para plantas de producción escalonada (tomates, pimientos, etc.), al marcar una "cosecha" NO se elimina la planta. Los frutos verdes siguen madurando.
 
-> Hacerlo ahora, mientras los datos viven en localStorage y no hay usuarios con datos reales.
-> Migrar el schema después con usuarios es costoso.
+**Implementación:**
+- Al cosechar, NO hacer soft-delete de la planta colocada
+- Crear registro en `PlotAction` con action='harvested'
+- La planta permanece en el canvas pero con estado "cosechada" (visual diferente)
+- Campo `harvestedAt` en `PlacedPlant` para marcar fecha de primera cosecha
+
+**Cambios en UI:**
+- Añadir botón "Cosechar" en plantas colocdas
+- Diferenciar visualmente plantas cosechadas (ej: opacidad, color muted)
+
+### 1.4 Selector de Fechas
+
+**Descripción:** El usuario puede guardar acciones (plantar, sembrar, cosechar) con fecha personalizada, no solo "hoy".
+
+**Implementación:**
+- En todos los formularios de ingreso, añadir campo de fecha
+- Por defecto = fecha actual
+- Permitir fecha pasada o futura
+- Necesario para registrar siembras que se hicieron antes de usar la app
+
+### 1.5 Disparadores Manuales (User-driven Actions)
+
+**Descripción:** Ninguna acción es automática. Todas las transiciones de estado del huerto deben ser explícitas:
+- El usuario decide cuándo plantar
+- El usuario decide cuándo cosechar (no auto-remove)
+- El usuario decide cuándo eliminar una planta
+
+**Implementación:** Revisar que el flujo actual sea 100% manual. Añadir confirmaciones antes de acciones destructivas.
 
 ---
 
-## Fase 1 — Backend Rust y persistencia real
+## Fase 2 — Backend Rust y persistencia real
 
 Reemplazar `localStorage` por SQLite via Tauri commands. Sin esto no hay
 integridad de datos, relaciones entre entidades, ni posibilidad de expandir features.
 
-### 1.1 Configurar tauri-plugin-sql
+### 2.1 Configurar tauri-plugin-sql
 
 ```toml
 # frontend/src-tauri/Cargo.toml
@@ -69,12 +120,12 @@ tauri-plugin-sql = { version = "2", features = ["sqlite"] }
 npm install @tauri-apps/plugin-sql
 ```
 
-### 1.2 Crear migraciones SQLite
+### 2.2 Crear migraciones SQLite
 
 Crear `frontend/src-tauri/migrations/` con el schema definido en `ARCHITECTURE.md`.
 Tablas: `garden_areas`, `plots`, `placed_plants`, `plants`, `tasks`, `calendar_events`, `journal_entries`.
 
-### 1.3 Implementar Tauri commands
+### 2.3 Implementar Tauri commands
 
 En `frontend/src-tauri/src/lib.rs`, implementar commands para cada entidad:
 
@@ -86,17 +137,17 @@ get_tasks / create_task / update_task / delete_task
 get_events / create_event / delete_event
 ```
 
-### 1.4 Migrar stores de localStorage a invoke()
+### 2.4 Migrar stores de localStorage a invoke()
 
 Reemplazar las llamadas a `localStorage` en `store.ts` por `invoke('command_name', args)`.
 
 ---
 
-## Fase 2 — Features pendientes de la SPEC (sin APIs externas)
+## Fase 3 — Features pendientes de la SPEC (sin APIs externas)
 
 Features que la SPEC define y que se pueden implementar sin Permapeople ni OpenWeather.
 
-### 2.1 Dashboard completo
+### 3.1 Dashboard completo
 
 **Archivo:** `frontend/src/pages/Dashboard.svelte`
 El dashboard actual solo muestra áreas. La SPEC (sección 6.1) define:
@@ -107,7 +158,7 @@ El dashboard actual solo muestra áreas. La SPEC (sección 6.1) define:
 - Mini calendario del mes actual con marcadores de eventos
 - Acceso rápido a todas las secciones
 
-### 2.2 Vistas del Calendario
+### 3.2 Vistas del Calendario
 
 **Archivo:** `frontend/src/pages/Calendar.svelte`
 Actualmente solo existe vista mensual. Agregar:
@@ -117,7 +168,7 @@ Actualmente solo existe vista mensual. Agregar:
 - **Year view:** 12 meses en miniatura con indicadores de densidad de eventos
 - Selector de vista (Day / Week / Month / Year)
 
-### 2.3 Vistas del Diario
+### 3.3 Vistas del Diario
 
 **Archivo:** `frontend/src/pages/Journal.svelte`
 Actualmente es una lista plana. Agregar:
@@ -128,7 +179,7 @@ Actualmente es una lista plana. Agregar:
 - **Year view:** entradas agrupadas por mes
 - Selector de período con navegación anterior/siguiente
 
-### 2.4 Crop Rotation Tracking (sin API)
+### 3.4 Crop Rotation Tracking (sin API)
 
 - Guardar historial de qué planta estuvo en qué parcela por año
 - Al colocar una planta en el editor, verificar si su familia ya estuvo en esa parcela los últimos N años
@@ -137,9 +188,9 @@ Actualmente es una lista plana. Agregar:
 
 ---
 
-## Fase 3 — Integración de APIs externas
+## Fase 4 — Integración de APIs externas
 
-### 3.1 Permapeople API (base de datos de plantas)
+### 4.1 Permapeople API (base de datos de plantas)
 
 Implementar como Tauri command en Rust para no exponer la API key al frontend.
 
@@ -152,7 +203,7 @@ Funcionalidades:
 Referencia: consultar la documentación oficial de Permapeople para los endpoints exactos
 y el formato de autenticación antes de implementar.
 
-### 3.2 OpenWeather API
+### 4.2 OpenWeather API
 
 Implementar como Tauri command en Rust.
 
@@ -164,7 +215,7 @@ Funcionalidades:
 
 Endpoints a usar: `api.openweathermap.org/data/2.5/forecast` con `units=metric`.
 
-### 3.3 Schedules de siembra basados en clima
+### 4.3 Schedules de siembra basados en clima
 
 - Calcular ventanas de siembra (interior, trasplante, siembra directa)
 - Combinar datos de Permapeople (requisitos de la planta) con OpenWeather (clima local)
@@ -172,7 +223,7 @@ Endpoints a usar: `api.openweathermap.org/data/2.5/forecast` con `units=metric`.
 
 ---
 
-## Fase 4 — Notificaciones y alertas
+## Fase 5 — Notificaciones y alertas
 
 Requiere `tauri-plugin-notification`.
 
@@ -181,24 +232,24 @@ Requiere `tauri-plugin-notification`.
 tauri-plugin-notification = "2"
 ```
 
-### 4.1 Recordatorios de tareas
+### 5.1 Recordatorios de tareas
 
 - Notificación nativa del OS para tareas del día
 - Configurable: horario de notificación, días de anticipación
 
-### 4.2 Alertas de helada
+### 5.2 Alertas de helada
 
 - Notificación cuando OpenWeather detecta riesgo de helada en la ubicación del usuario
 
-### 4.3 Alertas de rotación
+### 5.3 Alertas de rotación
 
 - Notificación al abrir la app si hay plantas en parcelas con conflicto de rotación
 
 ---
 
-## Fase 5 — Companion Planting
+## Fase 6 — Companion Planting
 
-Depende de Fase 3.1 (Permapeople).
+Depende de Fase 4.1 (Permapeople).
 
 - Al seleccionar una planta en el editor, mostrar sidebar con compañeras beneficiosas y perjudiciales
 - Resaltar visualmente en el canvas las plantas incompatibles ya colocadas
@@ -206,11 +257,11 @@ Depende de Fase 3.1 (Permapeople).
 
 ---
 
-## Fase 6 — Distribución open source
+## Fase 7 — Distribución open source
 
 El objetivo es publicar la app para que la comunidad la use y contribuya.
 
-### 6.1 Licencia
+### 7.1 Licencia
 
 Decidir la licencia antes de hacer el repo público:
 
@@ -219,14 +270,14 @@ Decidir la licencia antes de hacer el repo público:
 
 Recomendación: **MIT para la app** (Tauri + Svelte), **AGPLv3o propietario para el servidor cloud** (Axum).
 
-### 6.2 Build y distribución
+### 7.2 Build y distribución
 
 - Configurar GitHub Actions para builds automáticos en cada release (Windows, macOS, Linux)
 - Publicar binarios en GitHub Releases
 - Documentar el proceso de instalación por plataforma
 - Instrucciones para que usuarios instalen en macOS sin Apple Developer certificate (clic derecho → Abrir)
 
-### 6.3 Contribución de la comunidad
+### 7.3 Contribución de la comunidad
 
 - `CONTRIBUTING.md` actualizado con guía de frontend (Svelte) y backend (Rust)
 - Issues etiquetados con `good first issue` para onboarding
@@ -234,12 +285,12 @@ Recomendación: **MIT para la app** (Tauri + Svelte), **AGPLv3o propietario para
 
 ---
 
-## Fase 7 — Cloud sync (monetización)
+## Fase 8 — Cloud sync (monetización)
 
-Requiere Fases 1-6 completas. Es el modelo de negocio: la app es gratuita y open source,
+Requiere Fases 1-7 completas. Es el modelo de negocio: la app es gratuita y open source,
 la sincronización entre dispositivos es de pago.
 
-### 7.1 Backend Axum (servidor cloud)
+### 8.1 Backend Axum (servidor cloud)
 
 Servidor independiente de la app Tauri, desplegado en infraestructura propia:
 
@@ -248,7 +299,7 @@ Servidor independiente de la app Tauri, desplegado en infraestructura propia:
 - Resolución de conflictos: last-write-wins por `updated_at` como estrategia inicial
 - PostgreSQL como base de datos del servidor (SQLite solo en el cliente)
 
-### 7.2 Protocolo de sincronización
+### 8.2 Protocolo de sincronización
 
 Flujo básico offline-first:
 
@@ -260,11 +311,11 @@ Flujo básico offline-first:
 5. Los registros con deleted_at != null se propagan como borrados
 ```
 
-### 7.3 Modelo freemium
+### 8.3 Modelo freemium
 
 - **Gratis:** app completa, datos solo locales, sin sync
 - **De pago:** sync entre desktop y móvil, backup en cloud, historial ilimitado
-- **Self-hosted:** la comunidad puede montar su propio servidor (código open source o no, según licencia elegida en Fase 6.1)
+- **Self-hosted:** la comunidad puede montar su propio servidor (código open source o no, según licencia elegida en Fase 7.1)
 
 ---
 
@@ -273,13 +324,14 @@ Flujo básico offline-first:
 | Fase | Descripción | Dependencias |
 |------|-------------|--------------|
 | **0** | XSS fix + tauri.conf ✅ + modelo sync-ready | Ninguna — hacerlo ya |
-| **1** | SQLite + Tauri commands | Fase 0 |
-| **2** | Dashboard, Calendar views, Journal views, Crop rotation | Fase 1 |
-| **3** | Permapeople API, OpenWeather API, Schedules | Fase 1 |
-| **4** | Notificaciones | Fase 1, Fase 3 |
-| **5** | Companion planting | Fase 3.1 |
-| **6** | Open source: licencia, builds, distribución | Fase 2-5 estables |
-| **7** | Cloud sync + monetización | Fase 6 |
+| **1** | Features del Notebook (Ingreso cultivos, Histórico, Cosecha no destructiva, Selector fechas) | Fase 0 |
+| **2** | SQLite + Tauri commands | Fase 0, Fase 1 |
+| **3** | Dashboard, Calendar views, Journal views, Crop rotation | Fase 2 |
+| **4** | Permapeople API, OpenWeather API, Schedules | Fase 2 |
+| **5** | Notificaciones | Fase 2, Fase 4 |
+| **6** | Companion planting | Fase 4 |
+| **7** | Open source: licencia, builds, distribución | Fase 3-6 estables |
+| **8** | Cloud sync + monetización | Fase 7 |
 
 ---
 

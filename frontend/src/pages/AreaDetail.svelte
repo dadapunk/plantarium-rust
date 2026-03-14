@@ -1,7 +1,7 @@
 <script lang="ts">
   import { store } from '../lib/store';
   import { navigate } from '../lib/router';
-  import type { Plot, GardenArea } from '../types';
+  import type { Plot, GardenArea, PlotAction, Plant } from '../types';
 
   interface Props {
     areaId: string;
@@ -17,6 +17,9 @@
   let editingPlotId = $state<string | null>(null);
   let editWidth = $state(200);
   let editHeight = $state(100);
+  let showHistory = $state<string | null>(null);
+  let plotHistory = $state<PlotAction[]>([]);
+  let plotPlantsMap = $state<Record<string, Plant>>({});
 
   $effect(() => {
     const unsubAreas = store.areas.subscribe(a => {
@@ -84,6 +87,42 @@
 
   function cancelEditSize() {
     editingPlotId = null;
+  }
+
+  function openHistory(plotId: string) {
+    plotHistory = store.getPlotActionsByPlot(plotId);
+    let plantsList: Plant[] = [];
+    store.plants.subscribe(p => plantsList = p)();
+    plotPlantsMap = {};
+    plantsList.forEach(p => {
+      plotPlantsMap[p.id] = p;
+    });
+    showHistory = plotId;
+  }
+
+  function closeHistory() {
+    showHistory = null;
+    plotHistory = [];
+  }
+
+  function getActionIcon(action: string): string {
+    switch (action) {
+      case 'planted': return '🌱';
+      case 'sowed': return '🌿';
+      case 'harvested': return '🧺';
+      case 'removed': return '🗑️';
+      default: return '📋';
+    }
+  }
+
+  function getActionLabel(action: string): string {
+    switch (action) {
+      case 'planted': return 'Plantado';
+      case 'sowed': return 'Sembrado';
+      case 'harvested': return 'Cosechado';
+      case 'removed': return 'Eliminado';
+      default: return action;
+    }
   }
 </script>
 
@@ -175,11 +214,41 @@
               <button onclick={() => navigate(`/plot/${plot.id}`)}>Editar</button>
               <button onclick={() => startEditSize(plot)}>Resize</button>
               <button onclick={() => duplicatePlot(plot)}>Duplicar</button>
+              <button onclick={() => openHistory(plot.id)}>Histórico</button>
               <button class="delete" onclick={() => deletePlot(plot.id)}>Eliminar</button>
             </div>
           {/if}
         </div>
       {/each}
+    </div>
+  {/if}
+
+  {#if showHistory}
+    <div class="modal-overlay" onclick={closeHistory}>
+      <div class="modal" onclick={(e) => e.stopPropagation()}>
+        <div class="modal-header">
+          <h2>Histórico de la Parcela</h2>
+          <button class="close-btn" onclick={closeHistory}>&times;</button>
+        </div>
+        <div class="modal-body">
+          {#if plotHistory.length === 0}
+            <p class="empty-history">No hay acciones registradas en el histórico.</p>
+          {:else}
+            <ul class="history-list">
+              {#each plotHistory as action}
+                <li class="history-item">
+                  <span class="action-icon">{getActionIcon(action.action)}</span>
+                  <div class="action-details">
+                    <span class="action-type">{getActionLabel(action.action)}</span>
+                    <span class="plant-name">{plotPlantsMap[action.plantId]?.name || 'Planta desconocida'}</span>
+                    <span class="action-date">{new Date(action.date).toLocaleDateString('es-ES')}</span>
+                  </div>
+                </li>
+              {/each}
+            </ul>
+          {/if}
+        </div>
+      </div>
     </div>
   {/if}
 </div>
@@ -319,5 +388,90 @@
 
   .actions button.delete {
     background: #c0392b;
+  }
+
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+
+  .modal {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    max-width: 500px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+  }
+
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+
+  .modal-header h2 {
+    margin: 0;
+    color: #2d5a27;
+  }
+
+  .close-btn {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #666;
+  }
+
+  .empty-history {
+    text-align: center;
+    color: #666;
+    padding: 2rem;
+  }
+
+  .history-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .history-item {
+    display: flex;
+    gap: 1rem;
+    padding: 0.75rem;
+    border-bottom: 1px solid #eee;
+  }
+
+  .action-icon {
+    font-size: 1.5rem;
+  }
+
+  .action-details {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .action-type {
+    font-weight: bold;
+    color: #2d5a27;
+  }
+
+  .plant-name {
+    color: #666;
+  }
+
+  .action-date {
+    font-size: 0.85rem;
+    color: #999;
   }
 </style>

@@ -14,6 +14,8 @@
   let selectedPlantId = $state<string | null>(null);
   let dragging = $state(false);
   let canvasEl: HTMLDivElement;
+  let actionDate = $state(new Date().toISOString().split('T')[0]);
+  let showDatePicker = $state(false);
 
   $effect(() => {
     const unsubPlots = store.plots.subscribe(p => {
@@ -48,10 +50,22 @@
     };
 
     store.plots.update(p => p.map(pl => pl.id === plotId ? updatedPlot : pl));
+    
+    store.addPlotAction(plotId, selectedPlantId, 'planted', 1, actionDate);
+  }
+
+  function harvestPlant(placedPlantId: string) {
+    store.harvestPlant(plotId, placedPlantId, actionDate);
   }
 
   function removePlant(plantId: string) {
     if (!plot) return;
+    
+    const placedPlant = plot.plants.find(p => p.id === plantId);
+    if (placedPlant) {
+      store.addPlotAction(plotId, placedPlant.plantId, 'removed', 1, actionDate);
+    }
+    
     const updatedPlot = {
       ...plot,
       plants: plot.plants.filter(p => p.id !== plantId),
@@ -62,12 +76,26 @@
   function getPlantInfo(plantId: string): Plant | undefined {
     return plants.find(p => p.id === plantId);
   }
+
+  function isHarvested(placedPlant: PlacedPlant): boolean {
+    return !!placedPlant.harvestedAt;
+  }
 </script>
 
 <div class="layout-editor">
   <div class="header">
     <button class="back" onclick={() => navigate(`/area/${plot?.areaId}`)}>&larr; Volver</button>
     <h1>{plot?.name || 'Parcela'}</h1>
+  </div>
+
+  <div class="date-selector">
+    <label for="action-date">Fecha de la acción:</label>
+    <input 
+      type="date" 
+      id="action-date"
+      bind:value={actionDate}
+    />
+    <span class="hint">Usa esta fecha al plantar, cosechar o eliminar plantas</span>
   </div>
 
   <div class="editor-container">
@@ -101,11 +129,19 @@
             {#if plantInfo}
               <div 
                 class="placed-plant"
+                class:harvested={isHarvested(placedPlant)}
                 style="left: {placedPlant.x}px; top: {placedPlant.y}px; background: {plantInfo.color};"
                 title={plantInfo.name}
-                onclick={(e) => { e.stopPropagation(); removePlant(placedPlant.id); }}
               >
-                {plantInfo.icon}
+                <span class="plant-icon">{plantInfo.icon}</span>
+                <div class="plant-actions">
+                  {#if isHarvested(placedPlant)}
+                    <span class="harvested-badge">🧺</span>
+                  {:else}
+                    <button class="harvest-btn" onclick={(e) => { e.stopPropagation(); harvestPlant(placedPlant.id); }} title="Cosechar">🧺</button>
+                  {/if}
+                  <button class="remove-btn" onclick={(e) => { e.stopPropagation(); removePlant(placedPlant.id); }} title="Eliminar">✕</button>
+                </div>
               </div>
             {/if}
           {/each}
@@ -135,6 +171,33 @@
   h1 {
     color: #2d5a27;
     margin: 0;
+  }
+
+  .date-selector {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    padding: 0.75rem;
+    background: #e8f5e9;
+    border-radius: 8px;
+  }
+
+  .date-selector label {
+    font-weight: bold;
+    color: #2d5a27;
+  }
+
+  .date-selector input {
+    padding: 0.5rem;
+    border: 2px solid #ddd;
+    border-radius: 6px;
+    font-size: 1rem;
+  }
+
+  .date-selector .hint {
+    font-size: 0.8rem;
+    color: #666;
   }
 
   .editor-container {
@@ -231,5 +294,55 @@
 
   .placed-plant:hover {
     transform: translate(-50%, -50%) scale(1.2);
+  }
+
+  .placed-plant.harvested {
+    opacity: 0.6;
+    border: 2px solid #f39c12;
+  }
+
+  .plant-icon {
+    font-size: 1.2rem;
+  }
+
+  .plant-actions {
+    position: absolute;
+    top: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: none;
+    gap: 2px;
+  }
+
+  .placed-plant:hover .plant-actions {
+    display: flex;
+  }
+
+  .harvest-btn, .remove-btn {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    font-size: 0.7rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .harvest-btn {
+    background: #f39c12;
+  }
+
+  .remove-btn {
+    background: #c0392b;
+    color: white;
+  }
+
+  .harvested-badge {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    font-size: 0.8rem;
   }
 </style>
