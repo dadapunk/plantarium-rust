@@ -1,14 +1,14 @@
 <script lang="ts">
   import { store } from '../lib/store';
   import { navigate } from '../lib/router';
-  import type { JournalEntry, Plot, Plant, GardenArea } from '../types';
+  import type { JournalEntry, Bed, Plant, Garden } from '../types';
   import { marked } from 'marked';
   import DOMPurify from 'dompurify';
 
   let journal = $state<JournalEntry[]>([]);
-  let plots = $state<Plot[]>([]);
+  let plots = $state<Bed[]>([]);
   let plants = $state<Plant[]>([]);
-  let areas = $state<GardenArea[]>([]);
+  let areas = $state<Garden[]>([]);
   
   let showAddEntry = $state(false);
   let editingEntryId = $state<string | null>(null);
@@ -17,14 +17,14 @@
 
   $effect(() => {
     const unsubJournal = store.journal.subscribe(j => journal = j);
-    const unsubPlots = store.plots.subscribe(p => plots = p);
+    const unsubBeds = store.beds.subscribe(p => plots = p);
     const unsubPlants = store.plants.subscribe(p => plants = p);
-    const unsubAreas = store.areas.subscribe(a => areas = a);
+    const unsubGardens = store.gardens.subscribe(a => areas = a);
     return () => {
       unsubJournal();
-      unsubPlots();
+      unsubBeds();
       unsubPlants();
-      unsubAreas();
+      unsubGardens();
     };
   });
 
@@ -41,6 +41,7 @@
       content: newContent.trim(),
       createdAt: Date.now(),
       updatedAt: Date.now(),
+      deletedAt: null,
     };
     
     store.journal.update(j => [...j, entry]);
@@ -83,7 +84,7 @@
     result = result.replace(/@parcela:(.+?)(\s|$)/g, (_match, name, delimiter) => {
       const plot = plots.find(p => p.name.toLowerCase() === name.toLowerCase());
       if (plot) {
-        return `<a href="#/area/${plot.areaId}" class="link-parcela">🏡 ${name}</a>${delimiter}`;
+        return `<a href="#/area/${plot.gardenId}" class="link-parcela">🏡 ${name}</a>${delimiter}`;
       }
       return `<span class="link-parcela">🏡 ${name}</span>${delimiter}`;
     });
@@ -134,7 +135,7 @@
       ></textarea>
       <div class="editor-actions">
         {#if editingEntryId}
-          <button onclick={() => updateEntry(editingEntryId)}>Guardar Cambios</button>
+          <button onclick={() => editingEntryId && updateEntry(editingEntryId)}>Guardar Cambios</button>
           <button class="cancel" onclick={cancelEdit}>Cancelar</button>
         {:else}
           <button onclick={addEntry}>Guardar Nota</button>

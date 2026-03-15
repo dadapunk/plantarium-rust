@@ -1,71 +1,129 @@
 <script lang="ts">
   import { store } from '../lib/store';
-  import { navigate } from '../lib/router';
-  import type { GardenArea } from '../types';
+  import type { Garden } from '../types';
+  import GardenPreview from '../components/GardenPreview.svelte';
+  import ExpandedGardenSection from '../components/ExpandedGardenSection.svelte';
 
-  let newAreaName = $state('');
-  let areas = $state<GardenArea[]>([]);
+  let newGardenName = $state('');
+  let gardens = $state<Garden[]>([]);
+  let viewMode = $state<'compact' | 'expanded'>('expanded');
+  let containerWidth = $state(800);
 
   $effect(() => {
-    const unsub = store.areas.subscribe(v => areas = v);
+    const unsub = store.gardens.subscribe(v => gardens = v);
     return unsub;
   });
 
-  function addArea() {
-    if (!newAreaName.trim()) return;
+  function addGarden() {
+    if (!newGardenName.trim()) return;
     
-    const area: GardenArea = {
+    const garden: Garden = {
       id: crypto.randomUUID(),
-      name: newAreaName.trim(),
+      name: newGardenName.trim(),
       createdAt: Date.now(),
+      updatedAt: Date.now(),
+      deletedAt: null,
     };
     
-    store.areas.update(a => [...a, area]);
-    newAreaName = '';
-  }
-
-  function deleteArea(id: string) {
-    store.areas.update(a => a.filter(area => area.id !== id));
-    store.plots.update(p => p.filter(plot => plot.areaId !== id));
+    store.gardens.update(g => [...g, garden]);
+    newGardenName = '';
   }
 </script>
 
 <div class="dashboard">
-  <h1>Mis Áreas de Jardín</h1>
+  <header class="dashboard-header">
+    <h1>Jardines</h1>
+    <div class="view-toggle">
+      <button 
+        class:active={viewMode === 'compact'}
+        onclick={() => viewMode = 'compact'}
+      >
+        Vista Compacta
+      </button>
+      <button 
+        class:active={viewMode === 'expanded'}
+        onclick={() => viewMode = 'expanded'}
+      >
+        Vista Expandida
+      </button>
+    </div>
+  </header>
   
   <div class="add-form">
     <input 
       type="text" 
-      placeholder="Nombre del área..." 
-      bind:value={newAreaName}
+      placeholder="Nombre del jardín..." 
+      bind:value={newGardenName}
+      onkeydown={(e: KeyboardEvent) => e.key === 'Enter' && addGarden()}
     />
-    <button onclick={addArea}>+ Añadir Área</button>
+    <button onclick={addGarden}>+ Añadir Jardín</button>
   </div>
 
-  {#if areas.length === 0}
+  {#if gardens.length === 0}
     <div class="empty">
-      <p>No hay áreas todavía. ¡Crea tu primera área de jardín!</p>
+      <p>No hay jardines todavía</p>
+      <p>¡Crea tu primer jardín!</p>
+    </div>
+  {:else if viewMode === 'expanded'}
+    <div class="expanded-view" bind:clientWidth={containerWidth}>
+      {#each gardens as garden}
+        <ExpandedGardenSection gardenId={garden.id} {containerWidth} />
+      {/each}
     </div>
   {:else}
-    <div class="areas-grid">
-      {#each areas as area}
-        <div class="area-card">
-          <h3>{area.name}</h3>
-          <p>Creada: {new Date(area.createdAt).toLocaleDateString()}</p>
-          <div class="actions">
-            <button onclick={() => navigate(`/area/${area.id}`)}>Ver Parcelas</button>
-            <button class="delete" onclick={() => deleteArea(area.id)}>Eliminar</button>
-          </div>
-        </div>
+    <div class="gardens-grid">
+      {#each gardens as garden}
+        <GardenPreview {garden} />
       {/each}
     </div>
   {/if}
 </div>
 
 <style>
-  .dashboard h1 {
+  .dashboard {
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+
+  .dashboard-header h1 {
     color: #2d5a27;
-    margin-bottom: 2rem;
+    margin: 0;
+  }
+
+  .view-toggle {
+    display: flex;
+    gap: 0.5rem;
+    background: #f0f0f0;
+    padding: 4px;
+    border-radius: 8px;
+  }
+
+  .view-toggle button {
+    padding: 0.5rem 1rem;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    color: #666;
+    transition: all 0.2s;
+  }
+
+  .view-toggle button:hover {
+    color: #2d5a27;
+  }
+
+  .view-toggle button.active {
+    background: white;
+    color: #2d5a27;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
   }
 
   .add-form {
@@ -98,45 +156,15 @@
     color: #666;
   }
 
-  .areas-grid {
+  .gardens-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 1.5rem;
   }
 
-  .area-card {
-    background: white;
-    padding: 1.5rem;
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  }
-
-  .area-card h3 {
-    margin: 0 0 0.5rem 0;
-    color: #2d5a27;
-  }
-
-  .area-card p {
-    color: #666;
-    margin-bottom: 1rem;
-  }
-
-  .actions {
+  .expanded-view {
     display: flex;
-    gap: 0.5rem;
-  }
-
-  .actions button {
-    flex: 1;
-    padding: 0.5rem;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    background: #4a7c44;
-    color: white;
-  }
-
-  .actions button.delete {
-    background: #c0392b;
+    flex-direction: column;
+    gap: 1rem;
   }
 </style>

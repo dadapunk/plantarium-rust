@@ -1,39 +1,48 @@
 <script lang="ts">
   import { location } from './lib/router';
+  import { locale, toggleLocale } from './lib/i18n';
   import Dashboard from './pages/Dashboard.svelte';
-  import AreaDetail from './pages/AreaDetail.svelte';
+  import GardenDetail from './pages/GardenDetail.svelte';
+  import BedEditor from './pages/BedEditor.svelte';
   import Calendar from './pages/Calendar.svelte';
   import Tasks from './pages/Tasks.svelte';
   import Journal from './pages/Journal.svelte';
-  import LayoutEditor from './pages/LayoutEditor.svelte';
 
   let currentPath = $state('/');
+  let currentLang = $state('ES');
 
   $effect(() => {
-    const unsub = location.subscribe(v => {
+    const unsubLocation = location.subscribe(v => {
       currentPath = v;
     });
-    return unsub;
+    const unsubLocale = locale.subscribe(v => {
+      currentLang = v.toUpperCase();
+    });
+    return () => {
+      unsubLocation();
+      unsubLocale();
+    };
   });
 </script>
 
 <nav class="navbar">
   <a href="#/">🌱 Plantarium</a>
   <div class="nav-links">
-    <a href="#/">Áreas</a>
+    <a href="#/">Jardines</a>
     <a href="#/calendar">Calendario</a>
     <a href="#/journal">Diario</a>
     <a href="#/tasks">Tareas</a>
+    <button class="lang-toggle" onclick={() => toggleLocale()}>{currentLang}</button>
   </div>
 </nav>
 
 <main>
   {#if currentPath === '/'}
     <Dashboard />
-  {:else if currentPath.startsWith('/area/')}
-    <AreaDetail areaId={currentPath.split('/')[2]} />
-  {:else if currentPath.startsWith('/plot/')}
-    <LayoutEditor plotId={currentPath.split('/')[2]} />
+  {:else if currentPath.startsWith('/garden/')}
+    <GardenDetail gardenId={currentPath.split('/')[2]} />
+  {:else if currentPath.startsWith('/bed/')}
+    <BedEditor bedId={currentPath.split('/')[2]} />
   {:else if currentPath === '/calendar'}
     <Calendar />
   {:else if currentPath === '/journal'}
@@ -75,6 +84,22 @@
 
   .nav-links {
     display: flex;
+    align-items: center;
+  }
+
+  .lang-toggle {
+    background: rgba(255,255,255,0.2);
+    border: none;
+    color: white;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-left: 1.5rem;
+    font-size: 0.8rem;
+  }
+
+  .lang-toggle:hover {
+    background: rgba(255,255,255,0.3);
   }
 
   main {

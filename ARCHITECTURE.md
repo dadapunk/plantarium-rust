@@ -130,35 +130,25 @@ plantarium-rust/
 
 ### Tipos actuales (TypeScript — `types/index.ts`)
 
-> ⚠️ **Problema de sincronización:** Para que el cloud sync funcione correctamente,
-> todas las entidades necesitan `updatedAt` y `deletedAt`. Actualmente solo
-> `JournalEntry` tiene `updatedAt`. Hay que añadirlos **antes** de migrar a SQLite.
+> ✅ **Actualizado:** Todas las entidades extienden `SyncableEntity` con `updatedAt` y `deletedAt`.
 
 ```typescript
-// Estado actual — incompleto para sync
-interface GardenArea { id, name, createdAt }                         // ❌ falta updatedAt, deletedAt
-interface Plot       { id, areaId, name, width, height, plants[] }   // ❌ falta updatedAt, deletedAt
-interface PlacedPlant{ id, plantId, x, y }                           // ❌ falta updatedAt, deletedAt
-interface Plant      { id, name, color, icon }                        // ❌ falta updatedAt, deletedAt
-interface Task       { id, title, date, type, completed }             // ❌ falta updatedAt, deletedAt
-interface CalendarEvent { id, title, date, type, plantId? }          // ❌ falta updatedAt, deletedAt
-interface JournalEntry  { id, date, content, createdAt, updatedAt }  // ❌ falta deletedAt
-
-// Target — listo para sync
+// Estado actual — listo para sync
 interface SyncableEntity {
-  id: string;          // UUID v4 — globalmente único entre dispositivos
-  createdAt: number;   // timestamp ms UTC
-  updatedAt: number;   // timestamp ms UTC — actualizar en cada mutación
-  deletedAt: number | null; // null = activo, timestamp = borrado (soft delete)
+  id: string;
+  createdAt: number;
+  updatedAt: number;
+  deletedAt: number | null;
 }
 
-interface GardenArea extends SyncableEntity { name }
-interface Plot       extends SyncableEntity { areaId, name, width, height }
-interface PlacedPlant extends SyncableEntity { plotId, plantId, x, y }
+interface Garden extends SyncableEntity { name }
+interface Bed       extends SyncableEntity { gardenId, name, width, height }
+interface PlacedPlant extends SyncableEntity { plantId, x, y, harvestedAt? }
 interface Plant      extends SyncableEntity { name, color, icon, family?, species? }
 interface Task       extends SyncableEntity { title, date, type, completed }
 interface CalendarEvent extends SyncableEntity { title, date, type, plantId? }
 interface JournalEntry  extends SyncableEntity { date, content }
+interface PlotAction extends SyncableEntity { bedId, plantId, action, quantity, date }
 ```
 
 **Por qué soft deletes:** Si un usuario borra algo en móvil estando offline y luego
@@ -172,7 +162,7 @@ Todas las tablas incluyen `updated_at` y `deleted_at` para soportar sincronizaci
 Las queries de lectura deben filtrar siempre por `deleted_at IS NULL`.
 
 ```sql
-CREATE TABLE garden_areas (
+CREATE TABLE gardens (
     id          TEXT PRIMARY KEY,
     name        TEXT NOT NULL,
     created_at  INTEGER NOT NULL,
@@ -180,9 +170,9 @@ CREATE TABLE garden_areas (
     deleted_at  INTEGER             -- NULL = activo
 );
 
-CREATE TABLE plots (
+CREATE TABLE beds (
     id          TEXT PRIMARY KEY,
-    area_id     TEXT NOT NULL REFERENCES garden_areas(id),
+    garden_id   TEXT NOT NULL REFERENCES gardens(id),
     name        TEXT NOT NULL,
     width       REAL NOT NULL,
     height      REAL NOT NULL,
@@ -193,7 +183,7 @@ CREATE TABLE plots (
 
 CREATE TABLE placed_plants (
     id          TEXT PRIMARY KEY,
-    plot_id     TEXT NOT NULL REFERENCES plots(id),
+    bed_id      TEXT NOT NULL REFERENCES beds(id),
     plant_id    TEXT NOT NULL,
     x           REAL NOT NULL,
     y           REAL NOT NULL,

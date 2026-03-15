@@ -1,37 +1,35 @@
 <script lang="ts">
   import { store } from '../lib/store';
   import { navigate } from '../lib/router';
-  import type { Plot, Plant, PlacedPlant } from '../types';
+  import type { Bed, Plant, PlacedPlant } from '../types';
 
   interface Props {
-    plotId: string;
+    bedId: string;
   }
 
-  let { plotId }: Props = $props();
+  let { bedId }: Props = $props();
 
-  let plot = $state<Plot | null>(null);
+  let bed = $state<Bed | null>(null);
   let plants = $state<Plant[]>([]);
   let selectedPlantId = $state<string | null>(null);
-  let dragging = $state(false);
   let canvasEl: HTMLDivElement;
   let actionDate = $state(new Date().toISOString().split('T')[0]);
-  let showDatePicker = $state(false);
 
   $effect(() => {
-    const unsubPlots = store.plots.subscribe(p => {
-      plot = p.find(x => x.id === plotId) || null;
+    const unsubBeds = store.beds.subscribe(b => {
+      bed = b.find(x => x.id === bedId) || null;
     });
     const unsubPlants = store.plants.subscribe(p => {
       plants = p;
     });
     return () => {
-      unsubPlots();
+      unsubBeds();
       unsubPlants();
     };
   });
 
   function handleCanvasClick(e: MouseEvent) {
-    if (!selectedPlantId || !canvasEl || !plot) return;
+    if (!selectedPlantId || !canvasEl || !bed) return;
     
     const rect = canvasEl.getBoundingClientRect();
     const x = e.clientX - rect.left;
@@ -42,35 +40,40 @@
       plantId: selectedPlantId,
       x,
       y,
+      createdAt: Date.now(),
+      updatedAt: Date.now(),
+      deletedAt: null,
     };
 
-    const updatedPlot = {
-      ...plot,
-      plants: [...plot.plants, placedPlant],
+    const updatedBed = {
+      ...bed,
+      plants: [...bed.plants, placedPlant],
+      updatedAt: Date.now(),
     };
 
-    store.plots.update(p => p.map(pl => pl.id === plotId ? updatedPlot : pl));
+    store.beds.update(b => b.map(bl => bl.id === bedId ? updatedBed : bl));
     
-    store.addPlotAction(plotId, selectedPlantId, 'planted', 1, actionDate);
+    store.addPlotAction(bedId, selectedPlantId, 'planted', 1, actionDate);
   }
 
   function harvestPlant(placedPlantId: string) {
-    store.harvestPlant(plotId, placedPlantId, actionDate);
+    store.harvestPlant(bedId, placedPlantId, actionDate);
   }
 
   function removePlant(plantId: string) {
-    if (!plot) return;
+    if (!bed) return;
     
-    const placedPlant = plot.plants.find(p => p.id === plantId);
+    const placedPlant = bed.plants.find(p => p.id === plantId);
     if (placedPlant) {
-      store.addPlotAction(plotId, placedPlant.plantId, 'removed', 1, actionDate);
+      store.addPlotAction(bedId, placedPlant.plantId, 'removed', 1, actionDate);
     }
     
-    const updatedPlot = {
-      ...plot,
-      plants: plot.plants.filter(p => p.id !== plantId),
+    const updatedBed = {
+      ...bed,
+      plants: bed.plants.filter(p => p.id !== plantId),
+      updatedAt: Date.now(),
     };
-    store.plots.update(p => p.map(pl => pl.id === plotId ? updatedPlot : pl));
+    store.beds.update(b => b.map(bl => bl.id === bedId ? updatedBed : bl));
   }
 
   function getPlantInfo(plantId: string): Plant | undefined {
@@ -82,10 +85,10 @@
   }
 </script>
 
-<div class="layout-editor">
+<div class="bed-editor">
   <div class="header">
-    <button class="back" onclick={() => navigate(`/area/${plot?.areaId}`)}>&larr; Volver</button>
-    <h1>{plot?.name || 'Parcela'}</h1>
+    <button class="back" onclick={() => navigate(`/garden/${bed?.gardenId}`)}>&larr; Inicio</button>
+    <h1>{bed?.name || 'Bancal'}</h1>
   </div>
 
   <div class="date-selector">
@@ -95,7 +98,7 @@
       id="action-date"
       bind:value={actionDate}
     />
-    <span class="hint">Usa esta fecha al plantar, cosechar o eliminar plantas</span>
+    <span class="hint">Haz clic en el bancal para colocar la planta</span>
   </div>
 
   <div class="editor-container">
@@ -113,7 +116,7 @@
           </button>
         {/each}
       </div>
-      <p class="hint">Selecciona una planta y haz click en la parcela para colocarla</p>
+      <p class="hint">Selecciona una planta y haz clic en el bancal</p>
     </div>
 
     <div class="canvas-container">
@@ -121,10 +124,13 @@
         class="canvas"
         bind:this={canvasEl}
         onclick={handleCanvasClick}
-        style="width: {plot?.width || 200}px; height: {plot?.height || 100}px;"
+        role="button"
+        tabindex="0"
+        onkeydown={(e) => e.key === 'Enter' && handleCanvasClick}
+        style="width: {bed?.width || 200}px; height: {bed?.height || 100}px;"
       >
-        {#if plot}
-          {#each plot.plants as placedPlant}
+        {#if bed}
+          {#each bed.plants as placedPlant}
             {@const plantInfo = getPlantInfo(placedPlant.plantId)}
             {#if plantInfo}
               <div 

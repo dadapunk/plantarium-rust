@@ -24,14 +24,14 @@ Users seeking a digital alternative or supplement to paper-based garden planning
 ## 3. Functional Requirements (Elaborated Features)
 
 ### 3.1 Garden Layout & Visualization:
-- Users can define one or more distinct garden areas (e.g., "Backyard", "Front Patch").
-- Within each area, users can create, name, resize, and position garden beds using a visual editor (using Tauri/WebView canvas capabilities). Support for basic shapes (rectangles, squares) is essential; polygons are a potential enhancement.
+- Users can define one or more distinct **Garden** areas (e.g., "Backyard", "Front Patch").
+- Within each Garden, users can create, name, resize, and position **Beds** using a visual editor (using Tauri/WebView canvas capabilities). Support for basic shapes (rectangles, squares) is essential; polygons are a potential enhancement.
 - Users can drag and drop specific plants (from the database or custom entries) onto the beds in the layout view.
 - The layout should visually represent the plants, potentially showing approximate spacing or icons.
 - Ability to save, load, and potentially duplicate garden layouts.
 - **(Adding non-plant elements like paths is not planned for the initial version).
-- **Plot/Parcela Detail View**: When viewing a plot (parcela), the UI must display a visual representation showing:
-  - The graphical layout with sub-sections (bancales/hbeds) within the plot.
+- **Bed Detail View**: When viewing a bed, the UI must display a visual representation showing:
+  - The graphical layout with sub-sections within the bed.
   - Visual placement of plants within each sub-section with their icons.
   - Ability to edit the layout directly from this view.
 

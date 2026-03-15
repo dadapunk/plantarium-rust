@@ -123,15 +123,15 @@ npm install @tauri-apps/plugin-sql
 ### 2.2 Crear migraciones SQLite
 
 Crear `frontend/src-tauri/migrations/` con el schema definido en `ARCHITECTURE.md`.
-Tablas: `garden_areas`, `plots`, `placed_plants`, `plants`, `tasks`, `calendar_events`, `journal_entries`.
+Tablas: `gardens`, `beds`, `placed_plants`, `plants`, `tasks`, `calendar_events`, `journal_entries`.
 
 ### 2.3 Implementar Tauri commands
 
 En `frontend/src-tauri/src/lib.rs`, implementar commands para cada entidad:
 
 ```
-get_areas / create_area / update_area / delete_area
-get_plots / create_plot / update_plot / delete_plot
+get_gardens / create_garden / update_garden / delete_garden
+get_beds / create_bed / update_bed / delete_bed
 get_journal / create_entry / update_entry / delete_entry
 get_tasks / create_task / update_task / delete_task
 get_events / create_event / delete_event

@@ -17,26 +17,26 @@
   $effect(() => {
     const unsubEvents = store.events.subscribe(e => events = e);
     const unsubJournal = store.journal.subscribe(j => journal = j);
-    const unsubPlants = store.plots.subscribe(() => {
-      store.plots.subscribe(p => {
-        const allPlants: Plant[] = [];
-        store.plants.subscribe(plt => {
-          p.forEach(plot => {
-            plot.plants.forEach(placed => {
-              const plant = plt.find(x => x.id === placed.plantId);
-              if (plant && !allPlants.find(x => x.id === plant.id)) {
-                allPlants.push(plant);
-              }
-            });
+    
+    const unsubBeds = store.beds.subscribe(beds => {
+      store.plants.subscribe(allPlants => {
+        const usedPlants: Plant[] = [];
+        beds.forEach(bed => {
+          bed.plants.forEach(placed => {
+            const plant = allPlants.find(p => p.id === placed.plantId);
+            if (plant && !usedPlants.find(x => x.id === plant.id)) {
+              usedPlants.push(plant);
+            }
           });
-          plants = allPlants;
-        })();
-      });
+        });
+        plants = usedPlants;
+      })();
     });
+    
     return () => {
       unsubEvents();
       unsubJournal();
-      unsubPlants();
+      unsubBeds();
     };
   });
 
@@ -97,6 +97,9 @@
       date: newEventDate,
       type: newEventType,
       plantId: newEventPlantId || undefined,
+      createdAt: Date.now(),
+      updatedAt: Date.now(),
+      deletedAt: null,
     };
     
     store.events.update(e => [...e, event]);
@@ -198,7 +201,7 @@
         >
           <span class="day-number">{day.getDate()}</span>
           <div class="day-events">
-            {#each getJournalForDay(day) as entry}
+            {#each getJournalForDay(day) as _}
               <div 
                 class="journal-indicator" 
                 onclick={() => navigate('/journal')}
@@ -208,13 +211,19 @@
               </div>
             {/each}
             {#each getEventsForDay(day) as event}
-              <div class="event" class:event-sowing={event.type === 'sowing'}
-                   class:event-watering={event.type === 'watering'}
-                   class:event-harvest={event.type === 'harvest'}
-                   class:event-fertilizing={event.type === 'fertilizing'}
-                   class:event-custom={event.type === 'custom'}
-                   onclick={() => deleteEvent(event.id)}
-                   title={getPlantName(event.plantId)}
+              <div 
+                class="event" 
+                class:event-sowing={event.type === 'sowing'}
+                class:event-watering={event.type === 'watering'}
+                class:event-harvest={event.type === 'harvest'}
+                class:event-fertilizing={event.type === 'fertilizing'}
+                class:event-custom={event.type === 'custom'}
+                role="button"
+                tabindex="0"
+                aria-label="Eliminar evento {event.title}"
+                onclick={() => deleteEvent(event.id)}
+                onkeydown={(e: KeyboardEvent) => e.key === 'Enter' && deleteEvent(event.id)}
+                title={getPlantName(event.plantId)}
               >
                 {event.title}
                 {#if event.plantId}

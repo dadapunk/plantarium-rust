@@ -5,22 +5,26 @@ export interface SyncableEntity {
   deletedAt: number | null;
 }
 
-export interface GardenArea extends SyncableEntity {
+export interface Garden extends SyncableEntity {
   name: string;
+  minBedDistance?: number;
+  bedSpacing?: number;
 }
 
 export interface PlacedPlant extends SyncableEntity {
   plantId: string;
   x: number;
   y: number;
-  harvestedAt?: number;  // Timestamp de primera cosecha (para lógica no destructiva)
+  harvestedAt?: number;
 }
 
-export interface Plot extends SyncableEntity {
-  areaId: string;
+export interface Bed extends SyncableEntity {
+  gardenId: string;
   name: string;
   width: number;
   height: number;
+  x?: number;
+  y?: number;
   plants: PlacedPlant[];
 }
 
@@ -35,11 +39,11 @@ export interface Plant extends SyncableEntity {
 export type PlotActionType = 'planted' | 'sowed' | 'harvested' | 'removed';
 
 export interface PlotAction extends SyncableEntity {
-  plotId: string;
+  bedId: string;
   plantId: string;
   action: PlotActionType;
   quantity: number;
-  date: string;  // Fecha de la acción (no timestamp)
+  date: string;
 }
 
 export type TaskType = 'sowing' | 'watering' | 'harvest' | 'fertilizing' | 'custom';
@@ -64,8 +68,8 @@ export interface JournalEntry extends SyncableEntity {
 }
 
 export interface AppState {
-  areas: GardenArea[];
-  plots: Plot[];
+  gardens: Garden[];
+  beds: Bed[];
   plants: Plant[];
   tasks: Task[];
   events: CalendarEvent[];

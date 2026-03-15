@@ -95,16 +95,16 @@
 
   <div class="filters">
     <div class="filter-group">
-      <label>Estado:</label>
-      <select bind:value={filter}>
+      <label for="task-filter-status">Estado:</label>
+      <select id="task-filter-status" bind:value={filter}>
         <option value="all">Todos</option>
         <option value="pending">Pendientes</option>
         <option value="completed">Completadas</option>
       </select>
     </div>
     <div class="filter-group">
-      <label>Tipo:</label>
-      <select bind:value={typeFilter}>
+      <label for="task-filter-type">Tipo:</label>
+      <select id="task-filter-type" bind:value={typeFilter}>
         <option value="all">Todos</option>
         <option value="sowing">Siembra</option>
         <option value="watering">Riego</option>
