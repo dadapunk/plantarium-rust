@@ -78,23 +78,34 @@
     newDate = new Date().toISOString().split('T')[0];
   }
 
+  function escapeHtml(str: string): string {
+    return str
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
   function parseMarkdown(text: string): string {
     let result = text;
     
     result = result.replace(/@parcela:(.+?)(\s|$)/g, (_match, name, delimiter) => {
+      const safeName = escapeHtml(name);
       const plot = plots.find(p => p.name.toLowerCase() === name.toLowerCase());
       if (plot) {
-        return `<a href="#/area/${plot.gardenId}" class="link-parcela">🏡 ${name}</a>${delimiter}`;
+        return `<a href="#/area/${escapeHtml(plot.gardenId)}" class="link-parcela">🏡 ${safeName}</a>${delimiter}`;
       }
-      return `<span class="link-parcela">🏡 ${name}</span>${delimiter}`;
+      return `<span class="link-parcela">🏡 ${safeName}</span>${delimiter}`;
     });
     
     result = result.replace(/@planta:(.+?)(\s|$)/g, (_match, name, delimiter) => {
+      const safeName = escapeHtml(name);
       const plant = plants.find(p => p.name.toLowerCase() === name.toLowerCase());
       if (plant) {
-        return `<span class="link-planta">${plant.icon} ${name}</span>${delimiter}`;
+        return `<span class="link-planta">${escapeHtml(plant.icon)} ${safeName}</span>${delimiter}`;
       }
-      return `<span class="link-planta">🌱 ${name}</span>${delimiter}`;
+      return `<span class="link-planta">🌱 ${safeName}</span>${delimiter}`;
     });
     
     const html = marked.parse(result, { async: false }) as string;
