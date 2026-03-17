@@ -1,92 +1,44 @@
-# Plantarium 🌱
+# 🌱 Plantarium
 
-**A cross-platform desktop & mobile application for garden planning and management**
+Gestión de huerto personal - Construido con Dioxus 0.7
 
-## About
+## Características
 
-Plantarium is a desktop and mobile application designed to help home gardeners and small-scale growers:
+- **Jardines** - Crea y organiza múltiples jardines
+- **Bancales** - Diseña bancales con dimensiones personalizadas
+- **Editor Visual** - Arrastra y coloca plantas en el bancal
+- **Calendario** - Registra eventos de siembra, riego, cosecha
+- **Tareas** - Gestiona tareas pendientes con filtros
+- **Diario** - Notas y seguimiento del huerto
 
-- Plan garden layouts visually
-- Get personalized planting schedules
-- Receive timely gardening reminders
-- Implement companion planting and crop rotation strategies
+## Tech Stack
 
-Built with **Rust + Tauri 2.0**, Plantarium runs on Windows, macOS, Linux, iOS, and Android.
+- **Dioxus 0.7** - Framework UI en Rust puro
+- **LocalStorage** - Persistencia de datos
+- **Desktop + Web** - Compatible con ambas plataformas
 
-## Features
+## Ejecutar
 
-### 🌿 Garden Planning
-- Drag-and-drop garden layout designer
-- Visual representation of plants and spacing
-- Multiple garden areas and beds management
-
-### 📅 Smart Scheduling
-- Location-based planting calendar
-- Automatic task reminders (planting, fertilizing, harvesting)
-- Weather-integrated suggestions (frost alerts)
-
-### 🌱 Plant Management
-- Integrated plant database (Permapeople API)
-- Custom plant entries
-- Companion planting guidance
-- Crop rotation tracking
-
-### 🔔 Notifications
-- Desktop/Mobile alerts for gardening tasks
-- Rotation warnings
-- Weather alerts
-
-## Technology Stack
-
-| Component | Technology |
-|-----------|------------|
-| **Backend** | Rust + Axum |
-| **ORM** | SeaORM |
-| **Database** | SQLite |
-| **Frontend** | Tauri 2.0 + React/Vue/Svelte |
-| **APIs** | Permapeople, OpenWeather |
-
-## Quick Start
-
-### Prerequisites
-
-- Rust 1.75+
-- Node.js 18+
-- Git
-
-### Installation
-
+### Desktop
 ```bash
-# 1. Clone repository
-git clone https://github.com/yourusername/plantarium.git
-cd plantarium
-
-# 2. Install Rust
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-
-# 3. Install frontend dependencies
-cd frontend && npm install
-
-# 4. Run development
-npm run tauri dev
+dx serve --desktop
 ```
 
-### Environment Variables
-
-Create `.env` file:
-
-```env
-PERMAPEOPLE_API_KEY=your_key
-OPENWEATHER_API_KEY=your_key
-DATABASE_URL=sqlite://plantarium.db
+### Web
+```bash
+dx serve --web
 ```
 
-## Documentation
+### Build Production
+```bash
+cargo build --features desktop --release
+cargo build --features web --release
+```
 
-- [SPEC.md](SPEC.md) - Full specification
-- [ARCHITECTURE.md](ARCHITECTURE.md) - Technical architecture
-- [SETUP.md](SETUP.md) - Setup guide
+## Datos
 
-## License
+Los datos se almacenan en `localStorage` con la key `plantarium_data_v2`.
 
-MIT
+## Plantas Predefinidas
+
+10 plantas disponibles: Tomate 🥬, Lechuga, Zanahoria, Pimiento, Cebolla, Ajo, Papa, Judía, Maíz, Calabaza

@@ -1,0 +1,600 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+    background-color: #f5f5f5;
+}
+
+.app-container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.navbar {
+    background: #2d5a27;
+    color: white;
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.navbar a {
+    color: white;
+    text-decoration: none;
+    margin-left: 1.5rem;
+}
+
+.navbar > a {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-left: 0;
+}
+
+.nav-links {
+    display: flex;
+    align-items: center;
+}
+
+.main-content {
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.dashboard-header h1 {
+    color: #2d5a27;
+    margin: 0;
+}
+
+.view-toggle {
+    display: flex;
+    gap: 0.5rem;
+    background: #f0f0f0;
+    padding: 4px;
+    border-radius: 8px;
+}
+
+.view-toggle button {
+    padding: 0.5rem 1rem;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    color: #666;
+    transition: all 0.2s;
+}
+
+.view-toggle button:hover {
+    color: #2d5a27;
+}
+
+.view-toggle button.active {
+    background: white;
+    color: #2d5a27;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.add-form {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.add-form input, .add-form select {
+    padding: 0.75rem 1rem;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+}
+
+.add-form button {
+    padding: 0.75rem 1.5rem;
+    background: #2d5a27;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+.empty {
+    text-align: center;
+    padding: 3rem;
+    color: #666;
+}
+
+.gardens-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.garden-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.garden-card h2 {
+    color: #2d5a27;
+    margin: 0 0 0.5rem 0;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.header a {
+    color: #666;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    background: #eee;
+    border-radius: 6px;
+}
+
+.header h1 {
+    color: #2d5a27;
+    margin: 0;
+}
+
+.beds-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.bed-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.bed-card a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.bed-preview {
+    background: #e8f5e9;
+    border: 2px dashed #4a7c44;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+}
+
+.bed-card h3 {
+    margin: 0 0 0.5rem 0;
+    color: #2d5a27;
+}
+
+.bed-card p {
+    color: #666;
+    margin-bottom: 1rem;
+}
+
+.delete-btn {
+    background: #c0392b;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.editor-container {
+    display: flex;
+    gap: 2rem;
+}
+
+.plant-library {
+    width: 250px;
+    background: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.plant-library h3 {
+    margin: 0 0 1rem 0;
+    color: #2d5a27;
+}
+
+.plants-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.plant-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    background: white;
+    cursor: pointer;
+}
+
+.plant-btn.selected {
+    border-color: #2d5a27;
+    background: #e8f5e9;
+}
+
+.plant-btn .icon {
+    font-size: 1.5rem;
+}
+
+.hint {
+    font-size: 0.8rem;
+    color: #666;
+    margin-top: 1rem;
+}
+
+.canvas-container {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.canvas {
+    background: #e8f5e9;
+    border: 3px dashed #4a7c44;
+    border-radius: 8px;
+    position: relative;
+    cursor: crosshair;
+}
+
+.placed-plant {
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+.placed-plant.harvested {
+    opacity: 0.6;
+    border: 2px solid #f39c12;
+}
+
+.plant-actions {
+    position: absolute;
+    top: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: none;
+    gap: 2px;
+}
+
+.placed-plant:hover .plant-actions {
+    display: flex;
+}
+
+.harvest-btn, .remove-btn {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    font-size: 0.7rem;
+}
+
+.harvest-btn {
+    background: #f39c12;
+}
+
+.remove-btn {
+    background: #c0392b;
+    color: white;
+}
+
+.date-selector {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    padding: 0.75rem;
+    background: #e8f5e9;
+    border-radius: 8px;
+}
+
+.date-selector label {
+    font-weight: bold;
+    color: #2d5a27;
+}
+
+.date-selector input {
+    padding: 0.5rem;
+    border: 2px solid #ddd;
+    border-radius: 6px;
+}
+
+.calendar {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    overflow: hidden;
+}
+
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem;
+    background: #2d5a27;
+    color: white;
+}
+
+.calendar-header button {
+    background: rgba(255,255,255,0.2);
+    border: none;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.calendar-header h2 {
+    margin: 0;
+}
+
+.weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    background: #e8f5e9;
+    padding: 0.5rem 0;
+}
+
+.weekday {
+    text-align: center;
+    padding: 0.5rem;
+    font-weight: bold;
+    color: #2d5a27;
+}
+
+.days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+}
+
+.day {
+    min-height: 100px;
+    border: 1px solid #eee;
+    padding: 0.5rem;
+    background: white;
+}
+
+.day.today {
+    background: #fffde7;
+}
+
+.day.other-month {
+    background: #f5f5f5;
+    color: #999;
+}
+
+.day-number {
+    font-weight: bold;
+    font-size: 0.9rem;
+}
+
+.day-events {
+    margin-top: 0.25rem;
+}
+
+.event {
+    font-size: 0.7rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    margin-bottom: 0.25rem;
+    cursor: pointer;
+    background: #e8f5e9;
+    color: #2e7d32;
+}
+
+.tasks-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.task-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.task-card.completed {
+    opacity: 0.6;
+}
+
+.task-card.completed .task-title {
+    text-decoration: line-through;
+}
+
+.checkbox {
+    width: 24px;
+    height: 24px;
+    border: 2px solid #ddd;
+    border-radius: 50%;
+    background: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.checkbox.checked {
+    background: #4a7c44;
+    border-color: #4a7c44;
+    color: white;
+}
+
+.task-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.task-title {
+    font-size: 1rem;
+}
+
+.task-meta {
+    display: flex;
+    gap: 1rem;
+    font-size: 0.8rem;
+    color: #666;
+}
+
+.task-type {
+    padding: 0.125rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    background: #eceff1;
+    color: #546e7a;
+}
+
+.filters {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.filters select {
+    padding: 0.5rem;
+    border: 2px solid #ddd;
+    border-radius: 6px;
+}
+
+.add-btn {
+    padding: 0.75rem 1.5rem;
+    background: #2d5a27;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.entries-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.entry-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.entry-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #eee;
+}
+
+.entry-date {
+    font-weight: bold;
+    color: #2d5a27;
+}
+
+.entry-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.entry-actions button {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    background: #4a7c44;
+    color: white;
+    font-size: 0.85rem;
+}
+
+.entry-actions button.delete {
+    background: #c0392b;
+}
+
+.editor {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    margin-bottom: 2rem;
+}
+
+.editor input {
+    display: block;
+    width: 100%;
+    padding: 0.75rem;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+    margin-bottom: 1rem;
+}
+
+.editor textarea {
+    width: 100%;
+    padding: 1rem;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-family: monospace;
+    resize: vertical;
+}
+
+.editor-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.editor-actions button {
+    padding: 0.75rem 1.5rem;
+    background: #4a7c44;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}

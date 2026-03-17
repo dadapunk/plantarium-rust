@@ -1,0 +1,23 @@
+[application]
+name = "plantarium"
+out_dir = "dist"
+asset_dir = "assets"
+
+[web.app]
+title = "Plantarium"
+
+[web.watcher]
+reload_html = true
+watch_path = ["src", "assets"]
+
+[web.resource]
+style = ["/assets/main.css"]
+script = []
+
+[web.resource.dev]
+style = []
+script = []
+
+[bundle]
+identifier = "com.plantarium"
+publisher = "Plantarium"
