@@ -22,6 +22,8 @@
   let bedPlantsMap = $state<Record<string, Plant>>({});
   let gardenSettings = $state({ minBedDistance: 55, bedSpacing: 60 });
 
+  const PREVIEW_SCALE = 0.35;
+
   $effect(() => {
     const unsubGardens = store.gardens.subscribe(g => {
       garden = g.find(x => x.id === gardenId) || null;
@@ -266,11 +268,11 @@
       {#each beds as bed}
         <div class="bed-card">
           {#if editingBedId === bed.id}
-            <div class="bed-preview" style="width: {editWidth}px; height: {editHeight}px;">
+            <div class="bed-preview" style="width: {editWidth * PREVIEW_SCALE}px; height: {editHeight * PREVIEW_SCALE}px;">
               {#each bed.plants as plant}
                 <div 
                   class="plant-marker" 
-                  style="left: {plant.x}px; top: {plant.y}px;"
+                  style="left: {plant.x * PREVIEW_SCALE}px; top: {plant.y * PREVIEW_SCALE}px;"
                 ></div>
               {/each}
             </div>
@@ -291,11 +293,11 @@
               <button onclick={cancelEditSize}>✕</button>
             </div>
           {:else}
-            <div class="bed-preview" style="width: {bed.width}px; height: {bed.height}px;">
+            <div class="bed-preview" style="width: {bed.width * PREVIEW_SCALE}px; height: {bed.height * PREVIEW_SCALE}px;">
               {#each bed.plants as plant}
                 <div 
                   class="plant-marker" 
-                  style="left: {plant.x}px; top: {plant.y}px;"
+                  style="left: {plant.x * PREVIEW_SCALE}px; top: {plant.y * PREVIEW_SCALE}px;"
                 ></div>
               {/each}
             </div>

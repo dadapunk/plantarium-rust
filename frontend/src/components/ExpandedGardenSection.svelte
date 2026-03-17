@@ -22,7 +22,7 @@
     const unsubOrders = store.bedOrders.subscribe(() => {
       beds = store.getOrderedBeds(gardenId);
     });
-    const unsubBeds = store.beds.subscribe(() => {
+    const unsubBeds = store.beds.subscribe(_ => {
       beds = store.getOrderedBeds(gardenId);
     });
     beds = store.getOrderedBeds(gardenId);
@@ -121,6 +121,7 @@
     padding: 1.5rem;
     margin-bottom: 1.5rem;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    overflow: visible;
   }
 
   .garden-header {
