@@ -6,6 +6,7 @@ mod app_state;
 mod components;
 mod pages;
 mod router;
+mod storage;
 
 fn main() {
     dioxus::launch(App);

@@ -12,6 +12,8 @@ chrono = { version = "0.4", features = ["serde"] }
 gloo-storage = { version = "0.3", optional = true }
 pulldown-cmark = "0.12"
 ammonia = "4"
+rusqlite = { version = "0.30", features = ["bundled"] }
+directories = "5.0"
 
 [features]
 default = ["web"]
