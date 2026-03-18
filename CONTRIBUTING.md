@@ -10,7 +10,10 @@ Thank you for your interest in contributing to Plantarium!
 
 ## Development Setup
 
-Follow the instructions in [SETUP.md](SETUP.md) to set up your development environment.
+1. Install Rust 1.75+ from https://rustup.rs
+2. Clone the repository
+3. Run `cargo build` to install dependencies
+4. Run `cargo run` to start the desktop app
 
 ## Code Style
 

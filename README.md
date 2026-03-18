@@ -127,11 +127,11 @@ plantarium-rust/
 │       └── mod.rs          # Navbar
 ├── assets/
 │   └── main.css            # Estilos globales
-└── Documentation/
-    ├── README.md           # Este archivo
-    ├── CHANGELOG.md        # Historial de cambios
-    ├── SPEC.md             # Especificación funcional
-    └── STORAGE.md          # Documentación de persistencia
+├── README.md               # Este archivo
+├── CHANGELOG.md            # Historial de cambios
+├── SPEC.md                 # Especificación funcional
+├── STORAGE.md              # Documentación de persistencia
+└── CONTRIBUTING.md         # Guía de contribución
 ```
 
 ## Datos

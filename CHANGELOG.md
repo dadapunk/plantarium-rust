@@ -89,7 +89,6 @@ All notable changes to this project will be documented in this file.
 
 - Código original en `frontend/` (eliminado en 0.2.0)
 - Migración completada exitosamente a Rust puro
-- Ver MIGRATION_PLAN.md para detalles del proceso (histórico)
 
 ---
 

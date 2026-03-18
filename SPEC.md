@@ -106,16 +106,21 @@ Users seeking a digital alternative or supplement to paper-based garden planning
 
 | Component | Technology | Version |
 |-----------|------------|---------|
-
-
-
+| **UI Framework** | Dioxus | 0.7.3 |
+| **Language** | Rust | 1.75+ |
+| **Database** | SQLite (rusqlite) | 0.30 |
+| **Storage Paths** | directories | 5.0 |
+| **Serialization** | serde | 1.0 |
+| **Dates/Timestamps** | chrono | 0.4 |
+| **UUIDs** | uuid | 1.0 |
 
 ### External APIs
 - Permapeople API (Plant data)
 - OpenWeather API (Weather)
 
 ### Local Data Storage
-
+- SQLite database: `~/.plantarium/data.db` (desktop)
+- localStorage (web - future)
 
 ### Code Management
 - Git / Version Control System
