@@ -8,12 +8,13 @@ mod pages;
 mod router;
 
 fn main() {
-    app_state::load_from_storage();
     dioxus::launch(App);
 }
 
 #[component]
 fn App() -> Element {
+    app_state::load_from_storage();
+
     rsx! {
         document::Stylesheet { href: asset!("/assets/main.css") }
         Router::<Route> {}

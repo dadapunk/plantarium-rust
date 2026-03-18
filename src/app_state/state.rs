@@ -1,4 +1,5 @@
 use dioxus::prelude::*;
+#[cfg(target_arch = "wasm32")]
 use gloo_storage::{LocalStorage, Storage};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
@@ -191,40 +192,56 @@ fn plant(id: &str, name: &str, color: &str, icon: &str) -> Plant {
 }
 
 pub fn load_from_storage() {
-    if let Ok(data) = LocalStorage::get::<AppState>(STORAGE_KEY) {
-        *GARDENS.write() = data.gardens;
-        *BEDS.write() = data.beds;
-        *PLANTS.write() = if data.plants.is_empty() {
-            default_plants()
+    #[cfg(target_arch = "wasm32")]
+    {
+        if let Ok(data) = LocalStorage::get::<AppState>(STORAGE_KEY) {
+            *GARDENS.write() = data.gardens;
+            *BEDS.write() = data.beds;
+            *PLANTS.write() = if data.plants.is_empty() {
+                default_plants()
+            } else {
+                data.plants
+            };
+            *TASKS.write() = data.tasks;
+            *EVENTS.write() = data.events;
+            *JOURNAL.write() = data.journal;
+            *PLOT_ACTIONS.write() = data.plot_actions;
         } else {
-            data.plants
-        };
-        *TASKS.write() = data.tasks;
-        *EVENTS.write() = data.events;
-        *JOURNAL.write() = data.journal;
-        *PLOT_ACTIONS.write() = data.plot_actions;
-    } else {
-        *PLANTS.write() = default_plants();
+            *PLANTS.write() = default_plants();
+        }
+
+        if let Ok(orders) = LocalStorage::get::<HashMap<String, Vec<String>>>(BED_ORDERS_KEY) {
+            *BED_ORDERS.write() = orders;
+        }
     }
 
-    if let Ok(orders) = LocalStorage::get::<HashMap<String, Vec<String>>>(BED_ORDERS_KEY) {
-        *BED_ORDERS.write() = orders;
+    #[cfg(not(target_arch = "wasm32"))]
+    {
+        *PLANTS.write() = default_plants();
     }
 }
 
 pub fn save_to_storage() {
-    let state = AppState {
-        gardens: GARDENS.read().clone(),
-        beds: BEDS.read().clone(),
-        plants: PLANTS.read().clone(),
-        tasks: TASKS.read().clone(),
-        events: EVENTS.read().clone(),
-        journal: JOURNAL.read().clone(),
-        plot_actions: PLOT_ACTIONS.read().clone(),
-        bed_orders: BED_ORDERS.read().clone(),
-    };
-    let _ = LocalStorage::set(STORAGE_KEY, &state);
-    let _ = LocalStorage::set(BED_ORDERS_KEY, &*BED_ORDERS.read());
+    #[cfg(target_arch = "wasm32")]
+    {
+        let state = AppState {
+            gardens: GARDENS.read().clone(),
+            beds: BEDS.read().clone(),
+            plants: PLANTS.read().clone(),
+            tasks: TASKS.read().clone(),
+            events: EVENTS.read().clone(),
+            journal: JOURNAL.read().clone(),
+            plot_actions: PLOT_ACTIONS.read().clone(),
+            bed_orders: BED_ORDERS.read().clone(),
+        };
+        let _ = LocalStorage::set(STORAGE_KEY, &state);
+        let _ = LocalStorage::set(BED_ORDERS_KEY, &*BED_ORDERS.read());
+    }
+
+    #[cfg(not(target_arch = "wasm32"))]
+    {
+        // Desktop: no-op for now (data not persisted)
+    }
 }
 
 pub fn create_garden(name: &str) -> Garden {
