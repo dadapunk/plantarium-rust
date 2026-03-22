@@ -553,3 +553,37 @@ pub fn delete_journal_entry(id: &str) {
     }
     save_to_storage();
 }
+
+// Dashboard-specific structures for Stitch design
+#[derive(Clone, Debug, PartialEq)]
+pub enum GardenStatus {
+    Active,
+    NeedsWater,
+    Harvestable,
+}
+
+#[derive(Clone, Debug, PartialEq)]
+pub struct DemoGarden {
+    pub id: uuid::Uuid,
+    pub name: String,
+    pub bed_count: usize,
+    pub plant_count: usize,
+    pub status: GardenStatus,
+    pub last_activity: String,
+}
+
+#[derive(Clone, Debug, Default, PartialEq)]
+pub struct Stats {
+    pub total_gardens: usize,
+    pub total_plants: usize,
+    pub upcoming_tasks: usize,
+    pub recent_harvests: usize,
+}
+
+#[derive(Clone, Debug, PartialEq)]
+pub struct DemoTask {
+    pub id: uuid::Uuid,
+    pub title: String,
+    pub time: String,
+    pub completed: bool,
+}

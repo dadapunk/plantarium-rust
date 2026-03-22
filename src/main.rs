@@ -18,6 +18,7 @@ fn App() -> Element {
 
     rsx! {
         document::Stylesheet { href: asset!("/assets/main.css") }
+        document::Stylesheet { href: asset!("/assets/stitch-theme.css") }
         Router::<Route> {}
     }
 }
