@@ -1067,9 +1067,8 @@ body {
 }
 
 .garden-card-v2-badge {
-    background-color: var(--primary);
-    background-opacity: 0.1;
-    color: var(--primary);
+    background: rgba(102, 176, 65, 0.1);
+    color: #66b041;
     padding: 4px 12px;
     border-radius: var(--radius-full);
     font-size: 0.625rem;
@@ -1079,9 +1078,8 @@ body {
 }
 
 .garden-card-v2-badge.harvest {
-    background-color: var(--secondary);
-    background-opacity: 0.1;
-    color: var(--secondary);
+    background: rgba(230, 124, 115, 0.1);
+    color: #e67c73;
 }
 
 .garden-card-v2-meta {
@@ -1097,21 +1095,27 @@ body {
 }
 
 .garden-card-v2-tag {
-    background-color: var(--surface-container-high);
-    color: var(--on-surface-variant);
+    /* Match Stitch: semi-transparent background */
+    background: rgba(233, 232, 228, 0.6);
+    color: #42493e;
     padding: 6px 16px;
     border-radius: var(--radius-full);
-    font-size: 0.6875rem;
+    font-size: 11px;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.05em;
+    white-space: nowrap;
+    
+    /* Unify size */
+    display: inline-flex;
+    align-items: center;
+    min-height: 24px;
 }
 
 /* === Recent Harvests Section === */
 
 .recent-harvests {
-    background-color: var(--primary);
-    background-opacity: 0.05;
+    background: rgba(233, 232, 228, 0.5);
     border-radius: var(--radius-3xl);
     padding: var(--spacing-10);
     position: relative;
@@ -1119,8 +1123,7 @@ body {
     display: flex;
     flex-direction: column;
     gap: var(--spacing-8);
-    border: 1px solid var(--primary);
-    border-opacity: 0.1;
+    border: 1px solid rgba(135, 147, 144, 0.2);
     width: 100%;
 }
 
@@ -1236,9 +1239,8 @@ body {
 }
 
 .maintenance-panel-count {
-    background-color: var(--primary);
-    background-opacity: 0.1;
-    color: var(--primary);
+    background: rgba(102, 176, 65, 0.1);
+    color: #66b041;
     padding: 4px 16px;
     border-radius: var(--radius-full);
     font-size: 0.625rem;
@@ -1317,15 +1319,13 @@ body {
 }
 
 .maintenance-task-badge.critical {
-    background-color: var(--secondary);
-    background-opacity: 0.1;
-    color: var(--secondary);
+    background: rgba(230, 124, 115, 0.1);
+    color: #e67c73;
 }
 
 .maintenance-task-badge.normal {
-    background-color: var(--primary);
-    background-opacity: 0.1;
-    color: var(--primary);
+    background: rgba(102, 176, 65, 0.1);
+    color: #66b041;
 }
 
 /* === Primary Button V2 === */
@@ -1350,3 +1350,6 @@ body {
 .btn-primary-v2:active {
     transform: scale(0.98);
 }
+
+@import url("tasks.css");
+

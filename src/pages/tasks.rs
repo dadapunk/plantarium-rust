@@ -1,135 +1,144 @@
-use crate::app_state::{create_task, delete_task, toggle_task, TaskType, TASKS};
-use crate::components::Navbar;
+use crate::components::tasks::{
+    CalendarWidget, FeaturedCard, FertilizerAlertCard, NewTask, TaskCard, TaskCardData,
+    TaskItemData, TaskListItem, TaskModal, TasksHeader,
+};
+use crate::components::DashboardHeader;
 use dioxus::prelude::*;
 
 #[component]
 pub fn Tasks() -> Element {
-    let mut filter = use_signal(|| "all".to_string());
-    let mut show_add = use_signal(|| false);
-    let mut new_title = use_signal(|| String::new());
-    let mut new_date = use_signal(|| String::new());
-    let mut new_type = use_signal(|| TaskType::Custom);
+    let mut show_modal = use_signal(|| false);
 
-    let tasks = TASKS.read();
-    let filtered: Vec<_> = tasks
-        .iter()
-        .filter(|t| t.base.deleted_at.is_none())
-        .filter(|t| match filter().as_str() {
-            "pending" => !t.completed,
-            "completed" => t.completed,
-            _ => true,
-        })
-        .collect();
+    let urgent_tasks = use_signal(|| {
+        vec![
+        TaskCardData {
+            icon: "water_drop".to_string(),
+            badge: "Hydration".to_string(),
+            title: "Water Fiddle Leaf Fig".to_string(),
+            description: "Soil is extremely dry. Check drainage after watering.".to_string(),
+            plant_image: "https://lh3.googleusercontent.com/aida-public/AB6AXuDGcbqdNSTMM4MQp5oGZ9gRe0DLuIEmQa9qqGUPq9KpUM-iI71CbBB7neAiUfSqCEBIO_K6-G7xvY3gCm1MEzyhioFT8N5gsM-cvyO2QhHQ6PVDU-kv_tS3UcYg47DZ2ryQJh0NFjXTGuXcdx817tyDqF6oVY0cVTYGd7o_ZUIC7-rR3aTvSRqgGZD-aJH8pLTTd0AExHLYplXMQVQs4LKNhupYlO78v70HONEY9vOt3N_RoWhyqlIHnUa5nk3C-wKbY3dGH4wAtx7".to_string(),
+            location: "conservatory_west_wing".to_string(),
+            date: "Today".to_string(),
+        },
+        TaskCardData {
+            icon: "pest_control".to_string(),
+            badge: "Health".to_string(),
+            title: "Pest Inspection".to_string(),
+            description: "Possible mealybugs detected on the Swiss Cheese plant.".to_string(),
+            plant_image: "https://lh3.googleusercontent.com/aida-public/AB6AXuCHA3Kwqr7dL2NE66nQUXclAJ-b4SR8t1te5G1BF9PyRAmsokVmN2cS5O9PwUm3kL9Ib38usB0qeHY29CL2CK_89VaB6QtQcA332h5ZatTPsxUQQze52VXADJc4H_a5XRyrQGPBdEhstFYNYxsoVL55KHmuKdL-MiL5wUHmoCl6oE5_JPXgfK3iKt0UBA2fwgBx1GpR_sYEAwvqL1SgNV1VafFQBvOr3i4T6lnvPg3upHXfSVnRGpMH4rSKoZeMtSAysCOnYMsvWT4F".to_string(),
+            location: "terrace_section_04".to_string(),
+            date: "11:00 AM".to_string(),
+        },
+    ]
+    });
 
-    let mut add_task = move || {
-        if !new_title().trim().is_empty() && !new_date().is_empty() {
-            create_task(&new_title(), &new_date(), new_type());
-            new_title.set(String::new());
-            new_date.set(String::new());
-            show_add.set(false);
-        }
+    let routine_tasks = use_signal(|| {
+        vec![
+        TaskItemData {
+            title: "Mist Tropical Ferns".to_string(),
+            description: "Keep humidity above 60% during the dry afternoon.".to_string(),
+            image: "https://lh3.googleusercontent.com/aida-public/AB6AXuDSw4aav9Ict1I9_7GPlSBWa3SKahIctm_qjZz1oiv4lmW3shoCmiYRsBpOE850FYJ2Xmq5tYqWy2Y_O_ez20ZoKykU-0I8a8z57y6QLmgEmcnidSBj9uOdccWfDBvMZ01M_pTVJzR9zEl7_nnmixmru1aqZ8trAdbz-AzBt3JLwATeAqSsFh9FtVxM8GwsvSobZm7Fkyyw47p2Fi-94pzs8y3Rm5Yq-PmPqAvY7yI6YbEmwvWrKFhvHurMtrfuO-dP0jsxKgHUPWQA".to_string(),
+            frequency: "Every Day".to_string(),
+            frequency_icon: "repeat".to_string(),
+            badge: "Pruning".to_string(),
+        },
+        TaskItemData {
+            title: "Soil Aeration".to_string(),
+            description: "Gently poke holes in the topsoil of the large palms.".to_string(),
+            image: "https://lh3.googleusercontent.com/aida-public/AB6AXuDYIFhDuUtdRFNm9Gs2MwJKvF7fzC08hPtPbH4EyhzMjdBpYLjVBWiSA0GAwv67KnDTijckL73bthXEVt5hu4BWtg9UHl3RTkvPLNyILJTs_vN7CHnpKe9HGl-gvCcc40kFSQF5df4TM1CKrkRUoD0WToWSuKmwG-hpl40hx8GX8YIWh1P-AN3cZ4LZcbCxxj8vT70En8wTufwiztmAkkMRctQrJz0MBGHLFGv1cZ2PJXAQveFc97CC2RP4BiOFuXdwJO89Yyv1gf3Y".to_string(),
+            frequency: "Weekly".to_string(),
+            frequency_icon: "calendar_today".to_string(),
+            badge: "Tools".to_string(),
+        },
+        TaskItemData {
+            title: "Rotate Succulents".to_string(),
+            description: "Ensure even light exposure for the windowsill collection.".to_string(),
+            image: "https://lh3.googleusercontent.com/aida-public/AB6AXuCWM9OmL4XxA0ZiNRgM1ISU2pahwLuUc1Gyu6R0nF9NtWkTV5PVTtWvF4fxDRUnIoSTuYwj0oZ9ViVW8g4WF_FuNufT2pDSxz2J6ZaZR6w7V5XfFa23NIqx1nC2312wdR1Y7EP4f3gX2FS3y1y0bVjenjDXPpIeYQN8KeboWbNTwbWlxiad1d5BjBcz3_8Q0NEMKMNweShdp5w4fNMEa0sbzvoJTk6lhR10F5dR75KmRraluI2Q4OHqYGDmEUyNZXA7punCpCiZxWDZ".to_string(),
+            frequency: "Bi-Weekly".to_string(),
+            frequency_icon: "rotate_right".to_string(),
+            badge: "Light".to_string(),
+        },
+    ]
+    });
+
+    let handle_add_task = move |_new_task: NewTask| {
+        show_modal.set(false);
     };
 
     rsx! {
-        div { class: "app-container",
-            Navbar {}
-            div { class: "main-content",
-                div { class: "header",
-                    h1 { "Tareas" }
-                    button {
-                        class: "add-btn",
-                        onclick: move |_| show_add.toggle(),
-                        if show_add() { "Cancelar" } else { "+ Añadir Tarea" }
-                    }
+        div { class: "tasks-page",
+            DashboardHeader {}
+
+            main { class: "tasks-main",
+                TasksHeader {
+                    on_add_click: move |_| show_modal.set(true),
                 }
 
-                if show_add() {
-                    div { class: "add-form",
-                        input {
-                            r#type: "text",
-                            placeholder: "Título de la tarea",
-                            value: "{new_title}",
-                            oninput: move |evt| new_title.set(evt.value()),
+                div { class: "tasks-grid",
+                    // Sidebar (Calendar + Alerts)
+                    aside { class: "tasks-sidebar",
+                        CalendarWidget {}
+                        FertilizerAlertCard {
+                            on_action: move |_| {},
                         }
-                        select {
-                            onchange: move |evt| {
-                                new_type.set(match evt.value().as_str() {
-                                    "sowing" => TaskType::Sowing,
-                                    "watering" => TaskType::Watering,
-                                    "harvest" => TaskType::Harvest,
-                                    "fertilizing" => TaskType::Fertilizing,
-                                    _ => TaskType::Custom,
-                                });
-                            },
-                            option { value: "sowing", "Siembra" }
-                            option { value: "watering", "Riego" }
-                            option { value: "harvest", "Cosecha" }
-                            option { value: "fertilizing", "Fertilizar" }
-                            option { value: "custom", "Personalizado" }
-                        }
-                        input {
-                            r#type: "date",
-                            value: "{new_date}",
-                            oninput: move |evt| new_date.set(evt.value()),
-                        }
-                        button { onclick: move |_| add_task(), "Guardar" }
                     }
-                }
 
-                div { class: "filters",
-                    select {
-                        value: "{filter}",
-                        onchange: move |evt| filter.set(evt.value()),
-                        option { value: "all", "Todos" }
-                        option { value: "pending", "Pendientes" }
-                        option { value: "completed", "Completadas" }
-                    }
-                }
+                    // Main Tasks Content
+                    div { class: "tasks-content",
+                        // Urgent Care Section
+                        section { class: "task-category",
+                            div { class: "task-category-header",
+                                h2 { class: "task-category-title", "Urgent Care" }
+                                span { class: "task-category-count urgent", "3 Tasks" }
+                            }
 
-                div { class: "tasks-list",
-                    for task in filtered {
-                        TaskItem { task: task.clone() }
+                            div { class: "task-cards-grid",
+                                for task in urgent_tasks() {
+                                    TaskCard {
+                                        task: task.clone(),
+                                        on_toggle: move |_| {},
+                                    }
+                                }
+                            }
+                        }
+
+                        // Routine Maintenance Section
+                        section { class: "task-category",
+                            div { class: "task-category-header",
+                                h2 { class: "task-category-title", "Routine Maintenance" }
+                                span { class: "task-category-count routine", "8 Tasks" }
+                            }
+
+                            div { class: "task-list",
+                                for task in routine_tasks() {
+                                    TaskListItem {
+                                        task: task.clone(),
+                                        on_toggle: move |_| {},
+                                    }
+                                }
+                            }
+                        }
+
+                        // Featured Card (Journal Entry)
+                        FeaturedCard {
+                            on_action: move |_| {},
+                        }
                     }
                 }
             }
-        }
-    }
-}
 
-#[component]
-fn TaskItem(task: crate::app_state::Task) -> Element {
-    let _editing = use_signal(|| false);
-
-    let get_type_label = |t: &TaskType| -> &'static str {
-        match t {
-            TaskType::Sowing => "Siembra",
-            TaskType::Watering => "Riego",
-            TaskType::Harvest => "Cosecha",
-            TaskType::Fertilizing => "Fertilizar",
-            TaskType::Custom => "Personalizado",
-        }
-    };
-
-    let task_id = task.base.id.clone();
-    let task_id_delete = task.base.id.clone();
-
-    rsx! {
-        div { class: if task.completed { "task-card completed" } else { "task-card" },
+            // Floating Action Button
             button {
-                class: if task.completed { "checkbox checked" } else { "checkbox" },
-                onclick: move |_| toggle_task(&task_id),
+                class: "fab",
+                onclick: move |_| show_modal.set(true),
+                span { class: "material-symbols-outlined", "edit" }
             }
-            div { class: "task-content",
-                span { class: "task-title", "{task.title}" }
-                span { class: "task-meta",
-                    span { class: "task-type", "{get_type_label(&task.r#type)}" }
-                    span { class: "task-date", "{task.date}" }
-                }
-            }
-            button {
-                class: "delete-btn",
-                onclick: move |_| delete_task(&task_id_delete),
-                "×"
+
+            // Task Modal
+            TaskModal {
+                is_open: *show_modal.read(),
+                on_close: move |_| show_modal.set(false),
+                on_submit: handle_add_task,
             }
         }
     }

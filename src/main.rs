@@ -20,6 +20,7 @@ fn App() -> Element {
         document::Stylesheet { href: asset!("/assets/main.css") }
         document::Stylesheet { href: asset!("/assets/plantarium-theme.css") }
         document::Stylesheet { href: asset!("/assets/stitch-theme.css") }
+        document::Stylesheet { href: asset!("/assets/tasks.css") }
         Router::<Route> {}
     }
 }

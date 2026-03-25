@@ -54,7 +54,6 @@ fn MaintenanceTaskItem(task: MaintenanceTask) -> Element {
                     {due_text}
                 }
                 span { class: "{badge_class}",
-                    span { "{task.icon} " }
                     "{task.task_type}"
                 }
             }
