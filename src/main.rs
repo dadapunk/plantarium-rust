@@ -4,6 +4,7 @@ use dioxus_router::Router;
 
 mod app_state;
 mod components;
+mod layouts;
 mod pages;
 mod router;
 mod storage;
@@ -21,6 +22,8 @@ fn App() -> Element {
         document::Stylesheet { href: asset!("/assets/plantarium-theme.css") }
         document::Stylesheet { href: asset!("/assets/stitch-theme.css") }
         document::Stylesheet { href: asset!("/assets/tasks.css") }
-        Router::<Route> {}
+        body {
+            Router::<Route> {}
+        }
     }
 }
