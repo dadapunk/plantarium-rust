@@ -126,12 +126,48 @@ plantarium-rust/
 │   └── components/
 │       └── mod.rs          # Navbar
 ├── assets/
-│   └── main.css            # Estilos globales
+│   ├── main.css            # Estilos globales
+│   └── ui-designs/
+│       └── plantarium-screens/  # Diseños UI de Stitch
+│           ├── *.html      # 8 pantallas HTML+CSS
+│           └── index.html  # Navegador de pantallas
 ├── README.md               # Este archivo
 ├── CHANGELOG.md            # Historial de cambios
 ├── SPEC.md                 # Especificación funcional
 ├── STORAGE.md              # Documentación de persistencia
 └── CONTRIBUTING.md         # Guía de contribución
+```
+
+## Diseño UI
+
+Los diseños de interfaz están disponibles en `assets/ui-designs/plantarium-screens/`:
+
+### Pantallas Disponibles (8 total)
+
+| # | Pantalla | Tema | Resolución |
+|---|----------|------|------------|
+| 1 | Tareas del Jardín | Oscuro | 2560x2488 |
+| 2 | Editor de Bancales | Claro | 2560x2048 |
+| 3 | Dashboard | Claro | 2560x2640 |
+| 4 | Editor de Bancales | Oscuro | 2560x2048 |
+| 5 | Dashboard | Oscuro | 2560x2514 |
+| 6 | Botanical Journal | Claro | 2560x4904 |
+| 7 | Diario | Oscuro | 2560x2838 |
+| 8 | Tasks + Calendar | Claro | 2560x2668 |
+
+### Design System
+
+**"Botanical Editorial"** - Sistema de diseño basado en:
+- **Colores primarios**: `#37602C`, `#4F7942` (verdes naturales)
+- **Color secundario**: `#9F402D` (terracota)
+- **Tipografía**: Noto Serif (títulos) + Manrope (cuerpo)
+- **Redondeado**: 8px
+- **Modos**: Light y Dark themes
+
+Para explorar los diseños:
+```bash
+# Abrir navegador de pantallas
+open assets/ui-designs/plantarium-screens/index.html
 ```
 
 ## Datos

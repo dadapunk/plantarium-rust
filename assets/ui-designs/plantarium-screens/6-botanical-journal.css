@@ -1,0 +1,15 @@
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .botanical-gradient {
+            background: linear-gradient(135deg, #37602c 0%, #4f7942 100%);
+        }
+        .glass-overlay {
+            background: rgba(227, 226, 223, 0.6);
+            backdrop-filter: blur(20px);
+        }
+        body {
+            background-color: #faf9f5;
+            color: #1b1c1a;
+            font-family: 'Manrope', sans-serif;
+        }

@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,700;1,400&amp;family=Manrope:wght@300;400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "surface-tint": "#a1d494",
+                        "secondary-container": "#3b4d3f",
+                        "secondary-fixed": "#d3e8d5",
+                        "background": "#121412",
+                        "inverse-primary": "#3b6934",
+                        "tertiary": "#bfc9bf",
+                        "outline": "#8d928c",
+                        "primary-container": "#043405",
+                        "on-secondary": "#233427",
+                        "on-tertiary-container": "#8c968c",
+                        "on-primary-fixed-variant": "#23501e",
+                        "on-secondary-fixed": "#0e1f13",
+                        "surface-dim": "#121412",
+                        "on-primary-container": "#6e9f64",
+                        "primary-fixed": "#bcf0ae",
+                        "on-tertiary": "#2a332b",
+                        "outline-variant": "#434843",
+                        "tertiary-fixed": "#dbe5da",
+                        "on-primary-fixed": "#002201",
+                        "on-error-container": "#ffdad6",
+                        "on-background": "#e2e3df",
+                        "surface-container-highest": "#333533",
+                        "on-secondary-fixed-variant": "#394b3d",
+                        "on-tertiary-fixed-variant": "#404941",
+                        "on-primary": "#0a3909",
+                        "tertiary-fixed-dim": "#bfc9bf",
+                        "secondary": "#b7ccb9",
+                        "inverse-on-surface": "#2f312e",
+                        "tertiary-container": "#252e27",
+                        "inverse-surface": "#e2e3df",
+                        "on-error": "#690005",
+                        "on-secondary-container": "#a9beab",
+                        "surface-container-lowest": "#0d0f0d",
+                        "surface": "#121412",
+                        "primary": "#a1d494",
+                        "on-surface": "#e2e3df",
+                        "surface-bright": "#383a37",
+                        "error": "#ffb4ab",
+                        "surface-variant": "#333533",
+                        "surface-container": "#1e201e",
+                        "primary-fixed-dim": "#a1d494",
+                        "secondary-fixed-dim": "#b7ccb9",
+                        "surface-container-low": "#1a1c1a",
+                        "surface-container-high": "#292a28",
+                        "on-tertiary-fixed": "#151e17",
+                        "error-container": "#93000a",
+                        "on-surface-variant": "#c3c8c1"
+                    },
+                    fontFamily: {
+                        "headline": ["Noto Serif"],
+                        "body": ["Manrope"],
+                        "label": ["Manrope"]
+                    },
+                    borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            background-color: #121412;
+            color: #e2e3df;
+            font-family: 'Manrope', sans-serif;
+        }
+        .serif-display {
+            font-family: 'Noto Serif', serif;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background selection:bg-primary selection:text-on-primary">
+<!-- TopNavBar - Predictive Shell Mapping -->
+<header class="bg-[#121412] dark:bg-[#121412] backdrop-blur-md bg-opacity-60 docked full-width top-0 sticky z-50 shadow-[0_32px_32px_-4px_rgba(226,227,223,0.05)]">
+<div class="flex justify-between items-center w-full px-8 py-4 max-w-full mx-auto">
+<div class="text-2xl font-serif tracking-tighter text-[#e2e3df] dark:text-[#e2e3df]">Plantarium</div>
+<nav class="hidden md:flex items-center gap-8">
+<a class="text-[#a1d494] font-bold border-b-2 border-[#a1d494] pb-1 font-body text-sm tracking-wide" href="#">Dashboard</a>
+<a class="text-[#8d928c] dark:text-[#8d928c] hover:text-[#e2e3df] transition-colors duration-200 font-body text-sm tracking-wide" href="#">Tareas</a>
+<a class="text-[#8d928c] dark:text-[#8d928c] hover:text-[#e2e3df] transition-colors duration-200 font-body text-sm tracking-wide" href="#">Diario</a>
+<a class="text-[#8d928c] dark:text-[#8d928c] hover:text-[#e2e3df] transition-colors duration-200 font-body text-sm tracking-wide" href="#">Biblioteca</a>
+</nav>
+<div class="flex items-center gap-4">
+<button class="p-2 text-[#a1d494] hover:bg-[#292a28] dark:hover:bg-[#292a28] rounded-full transition-all active:scale-95 duration-150 ease-in-out">
+<span class="material-symbols-outlined">calendar_today</span>
+</button>
+<button class="p-2 text-[#a1d494] hover:bg-[#292a28] dark:hover:bg-[#292a28] rounded-full transition-all active:scale-95 duration-150 ease-in-out">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-2 text-[#a1d494] hover:bg-[#292a28] dark:hover:bg-[#292a28] rounded-full transition-all active:scale-95 duration-150 ease-in-out">
+<span class="material-symbols-outlined">account_circle</span>
+</button>
+</div>
+</div>
+</header>
+<main class="max-w-[1440px] mx-auto px-8 py-12">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+<!-- Left & Center Content: Main Garden Hub -->
+<div class="lg:col-span-8 space-y-16">
+<!-- Hero Section: Editorial Headline -->
+<section class="space-y-4">
+<span class="font-label text-xs uppercase tracking-[0.2em] text-primary">Estado del Ecosistema</span>
+<h1 class="serif-display text-5xl md:text-7xl font-bold tracking-tighter leading-none">Su jardín está prosperando</h1>
+<p class="font-body text-lg text-outline max-w-xl italic opacity-80">La humedad del suelo es óptima y la luz solar filtrada está fomentando un nuevo crecimiento en el ala norte.</p>
+</section>
+<!-- Garden Cards: Organic Asymmetry Bento -->
+<section class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<!-- Card 1 -->
+<div class="group relative bg-surface-container-low rounded-xl overflow-hidden shadow-2xl transition-all duration-300 hover:surface-container-high border-none">
+<div class="h-80 overflow-hidden">
+<img alt="Invernadero Tropical" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="Close up of a lush Monstera Deliciosa leaf with water droplets" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBZ9KzD3CCqX3Pm_jCwesv_SXIo01sJWKSPZTHAsEJ8v7v09x8PIKOUdZRLAwvRoJUJJ1-sQS38fsKRpY-BOfzly5xT7dJJTVkXYDlNiazAwq66B4FlvBoNk_4LNCBZxjo6wms4oSMpZ8AWGmDhswTPWJEBHpsNLjKVpfEbKyF4F6CW0K4-rWLkSNzFPDXea4RWWGFy7W5han5lY9f7BOVusigDkfWgZPrwbyyRGt6ArBqD40kqLckOqd0pzLYm2nHrHsk2Ype827A6"/>
+</div>
+<div class="p-8 space-y-4">
+<div class="flex justify-between items-start">
+<div>
+<span class="font-label text-[10px] uppercase tracking-widest text-outline">ZONA 01</span>
+<h3 class="serif-display text-2xl font-bold mt-1">Invernadero Tropical</h3>
+</div>
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">eco</span>
+</div>
+<div class="flex gap-2">
+<span class="bg-secondary-container text-on-secondary-container px-3 py-1 rounded-sm text-[10px] font-label font-bold tracking-wider">SPECIES: MONSTERA</span>
+<span class="bg-secondary-container text-on-secondary-container px-3 py-1 rounded-sm text-[10px] font-label font-bold tracking-wider">TEMP: 24°C</span>
+</div>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="group relative bg-surface-container-low rounded-xl overflow-hidden shadow-2xl transition-all duration-300 hover:surface-container-high md:translate-y-12 border-none">
+<div class="h-80 overflow-hidden">
+<img alt="Rincón de Suculentas" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="Succulent arrangement in a minimalist ceramic pot" src="https://lh3.googleusercontent.com/aida-public/AB6AXuABSUDHspntFdzQaNCQ9NAv2AzZ9LgK_nNn4CQzwFikJqsTtelu_mwZDNzuJFSEDajxQdlXO08XagTvRFC3xyt_9CK6MYuiLUc4_sjXY1fTAnRWPaKdMHMX534wKFrpqoQVGmSMNxjTdPoAAhryn1nKScEMcTARm6f9KxUEa-qju651RbBFBcuNwe2KeKZL3Lu5XU90P6ugVWQpmvz4-yfaYM56iygUJYlIT4dO0WBevlGNP8-fC1-0NWAS4gt1aEZd8uwaempIBTsK"/>
+</div>
+<div class="p-8 space-y-4">
+<div class="flex justify-between items-start">
+<div>
+<span class="font-label text-[10px] uppercase tracking-widest text-outline">ZONA 02</span>
+<h3 class="serif-display text-2xl font-bold mt-1">Rincón de Suculentas</h3>
+</div>
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">wb_sunny</span>
+</div>
+<div class="flex gap-2">
+<span class="bg-secondary-container text-on-secondary-container px-3 py-1 rounded-sm text-[10px] font-label font-bold tracking-wider">SPECIES: ALOE</span>
+<span class="bg-secondary-container text-on-secondary-container px-3 py-1 rounded-sm text-[10px] font-label font-bold tracking-wider">HUM: 15%</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Harvest Progress: Horizontal Editorial Bar -->
+<section class="bg-surface-container-low p-8 rounded-xl space-y-6">
+<div class="flex justify-between items-end">
+<div class="space-y-1">
+<span class="font-label text-xs uppercase tracking-widest text-outline">Temporada de Cosecha</span>
+<h4 class="serif-display text-2xl font-bold">Progreso de Recolección</h4>
+</div>
+<div class="text-right">
+<span class="serif-display text-4xl font-bold text-primary">74%</span>
+<span class="block font-label text-[10px] uppercase text-outline">Estimado: 12 días</span>
+</div>
+</div>
+<div class="w-full h-1 bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full bg-gradient-to-r from-primary to-primary-container w-[74%] rounded-full"></div>
+</div>
+<p class="font-body text-sm text-outline-variant">Tus hierbas aromáticas y tomates reliquia están alcanzando su madurez máxima. Se recomienda poda ligera mañana.</p>
+</section>
+</div>
+<!-- Right Column: Contextual Widgets -->
+<aside class="lg:col-span-4 space-y-10">
+<!-- Weather/Season Widget -->
+<div class="bg-surface-container-high p-8 rounded-xl shadow-xl relative overflow-hidden">
+<div class="relative z-10 space-y-6">
+<div class="flex justify-between items-center">
+<span class="material-symbols-outlined text-4xl text-primary" style="font-variation-settings: 'FILL' 1;">partly_cloudy_day</span>
+<span class="serif-display text-3xl font-bold">19°C</span>
+</div>
+<div>
+<h5 class="serif-display text-xl font-bold">Equinoccio de Otoño</h5>
+<p class="font-body text-sm text-outline">Luz decreciente, ciclo de reposo iniciado para bulbos.</p>
+</div>
+<div class="grid grid-cols-2 gap-4 pt-4 border-t border-outline-variant/20">
+<div>
+<span class="block font-label text-[10px] uppercase text-outline">Viento</span>
+<span class="font-body text-sm">8 km/h NE</span>
+</div>
+<div>
+<span class="block font-label text-[10px] uppercase text-outline">UV Index</span>
+<span class="font-body text-sm">3 Mediano</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Todo List: Task Management -->
+<div class="space-y-6">
+<div class="flex items-center justify-between">
+<h5 class="serif-display text-xl font-bold">Tareas Pendientes</h5>
+<button class="text-primary text-xs font-label uppercase tracking-widest hover:underline transition-all">Ver todas</button>
+</div>
+<div class="space-y-4">
+<!-- Task 1 -->
+<div class="flex items-start gap-4 group cursor-pointer">
+<div class="mt-1 w-5 h-5 rounded-full border border-primary flex items-center justify-center transition-colors group-hover:bg-primary/20">
+<span class="material-symbols-outlined text-[12px] opacity-0 group-hover:opacity-100">check</span>
+</div>
+<div>
+<p class="font-body text-sm text-on-surface">Fertilizar Calathea 'Orbifolia'</p>
+<span class="font-label text-[10px] text-outline uppercase tracking-wider">Hoy • 09:00 AM</span>
+</div>
+</div>
+<!-- Task 2 -->
+<div class="flex items-start gap-4 group cursor-pointer">
+<div class="mt-1 w-5 h-5 rounded-full border border-outline-variant flex items-center justify-center transition-colors">
+<span class="material-symbols-outlined text-[12px] opacity-0">check</span>
+</div>
+<div>
+<p class="font-body text-sm text-on-surface">Trasplantar esquejes de Pothos</p>
+<span class="font-label text-[10px] text-outline uppercase tracking-wider">Mañana • Jardín Norte</span>
+</div>
+</div>
+<!-- Task 3 -->
+<div class="flex items-start gap-4 group cursor-pointer">
+<div class="mt-1 w-5 h-5 rounded-full border border-outline-variant flex items-center justify-center transition-colors">
+<span class="material-symbols-outlined text-[12px] opacity-0">check</span>
+</div>
+<div>
+<p class="font-body text-sm text-on-surface">Limpieza de hojas de Ficus</p>
+<span class="font-label text-[10px] text-outline uppercase tracking-wider">Viernes • Sala de Estar</span>
+</div>
+</div>
+</div>
+</div>
+<!-- CTA: Scientific Catalog -->
+<div class="bg-gradient-to-br from-primary-container to-surface-container-lowest p-8 rounded-xl border border-primary/10">
+<h5 class="serif-display text-lg font-bold text-primary mb-2">Explora la Biblioteca</h5>
+<p class="font-body text-sm text-on-surface/80 mb-6">Accede a nuestra base de datos de más de 12,000 especímenes botánicos para un cuidado experto.</p>
+<button class="w-full bg-primary text-on-primary py-3 rounded-full font-label text-xs font-bold uppercase tracking-widest hover:brightness-110 transition-all flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-sm">search</span>
+                        Consultar Archivo
+                    </button>
+</div>
+</aside>
+</div>
+</main>
+<!-- FAB: Minimalist Action -->
+<div class="fixed bottom-8 right-8 z-50">
+<button class="w-16 h-16 bg-gradient-to-br from-primary to-inverse-primary text-on-primary rounded-full shadow-[0_32px_32px_-4px_rgba(161,212,148,0.2)] flex items-center justify-center hover:scale-110 transition-all active:scale-95 group">
+<span class="material-symbols-outlined text-3xl" style="font-variation-settings: 'FILL' 1;">add</span>
+</button>
+</div>
+</body></html>

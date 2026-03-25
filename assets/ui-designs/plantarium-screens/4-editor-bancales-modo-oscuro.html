@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Plantarium - Editor de Bancales</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700&amp;family=Manrope:wght@300;400;600;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "surface-tint": "#a1d494",
+                        "secondary-container": "#3b4d3f",
+                        "secondary-fixed": "#d3e8d5",
+                        "background": "#121412",
+                        "inverse-primary": "#3b6934",
+                        "tertiary": "#bfc9bf",
+                        "outline": "#8d928c",
+                        "primary-container": "#043405",
+                        "on-secondary": "#233427",
+                        "on-tertiary-container": "#8c968c",
+                        "on-primary-fixed-variant": "#23501e",
+                        "on-secondary-fixed": "#0e1f13",
+                        "surface-dim": "#121412",
+                        "on-primary-container": "#6e9f64",
+                        "primary-fixed": "#bcf0ae",
+                        "on-tertiary": "#2a332b",
+                        "outline-variant": "#434843",
+                        "tertiary-fixed": "#dbe5da",
+                        "on-primary-fixed": "#002201",
+                        "on-error-container": "#ffdad6",
+                        "on-background": "#e2e3df",
+                        "surface-container-highest": "#333533",
+                        "on-secondary-fixed-variant": "#394b3d",
+                        "on-tertiary-fixed-variant": "#404941",
+                        "on-primary": "#0a3909",
+                        "tertiary-fixed-dim": "#bfc9bf",
+                        "secondary": "#b7ccb9",
+                        "inverse-on-surface": "#2f312e",
+                        "tertiary-container": "#252e27",
+                        "inverse-surface": "#e2e3df",
+                        "on-error": "#690005",
+                        "on-secondary-container": "#a9beab",
+                        "surface-container-lowest": "#0d0f0d",
+                        "surface": "#121412",
+                        "primary": "#a1d494",
+                        "on-surface": "#e2e3df",
+                        "surface-bright": "#383a37",
+                        "error": "#ffb4ab",
+                        "surface-variant": "#333533",
+                        "surface-container": "#1e201e",
+                        "primary-fixed-dim": "#a1d494",
+                        "secondary-fixed-dim": "#b7ccb9",
+                        "surface-container-low": "#1a1c1a",
+                        "surface-container-high": "#292a28",
+                        "on-tertiary-fixed": "#151e17",
+                        "error-container": "#93000a",
+                        "on-surface-variant": "#c3c8c1"
+                    },
+                    fontFamily: {
+                        "headline": ["Noto Serif"],
+                        "body": ["Manrope"],
+                        "label": ["Manrope"]
+                    },
+                    borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .garden-grid {
+            background-image: 
+                linear-gradient(to right, rgba(141, 146, 140, 0.1) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(141, 146, 140, 0.1) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+        .soil-texture {
+            background-color: #2c241d;
+            background-image: radial-gradient(rgba(0,0,0,0.2) 1px, transparent 1px);
+            background-size: 4px 4px;
+        }
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #434843; border-radius: 10px; }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body min-h-screen flex flex-col overflow-hidden">
+<!-- TopNavBar (Shared Component) -->
+<header class="bg-[#121412] dark:bg-[#121412] backdrop-blur-md bg-opacity-60 docked full-width top-0 sticky z-50 shadow-[0_32px_32px_-4px_rgba(226,227,223,0.05)] border-none">
+<div class="flex justify-between items-center w-full px-8 py-4 max-w-full mx-auto">
+<div class="text-2xl font-serif tracking-tighter text-[#e2e3df] dark:text-[#e2e3df]">Plantarium</div>
+<nav class="hidden md:flex items-center gap-8">
+<a class="text-[#8d928c] dark:text-[#8d928c] hover:text-[#e2e3df] transition-colors duration-200 font-label text-sm uppercase tracking-widest" href="#">Dashboard</a>
+<a class="text-[#a1d494] font-bold border-b-2 border-[#a1d494] pb-1 font-label text-sm uppercase tracking-widest" href="#">Tareas</a>
+<a class="text-[#8d928c] dark:text-[#8d928c] hover:text-[#e2e3df] transition-colors duration-200 font-label text-sm uppercase tracking-widest" href="#">Diario</a>
+<a class="text-[#8d928c] dark:text-[#8d928c] hover:text-[#e2e3df] transition-colors duration-200 font-label text-sm uppercase tracking-widest" href="#">Biblioteca</a>
+</nav>
+<div class="flex items-center gap-4">
+<button class="p-2 hover:bg-[#292a28] dark:hover:bg-[#292a28] rounded-full transition-all active:scale-95 duration-150 ease-in-out">
+<span class="material-symbols-outlined text-[#a1d494]">calendar_today</span>
+</button>
+<button class="p-2 hover:bg-[#292a28] dark:hover:bg-[#292a28] rounded-full transition-all active:scale-95 duration-150 ease-in-out">
+<span class="material-symbols-outlined text-[#a1d494]">notifications</span>
+</button>
+<button class="p-2 hover:bg-[#292a28] dark:hover:bg-[#292a28] rounded-full transition-all active:scale-95 duration-150 ease-in-out">
+<span class="material-symbols-outlined text-[#a1d494]">account_circle</span>
+</button>
+</div>
+</div>
+</header>
+<main class="flex-1 flex overflow-hidden">
+<!-- Panel Izquierdo: Librería de Plantas -->
+<aside class="w-80 bg-surface-container-low flex flex-col border-r border-outline-variant/10">
+<div class="p-6">
+<h2 class="font-headline text-xl text-on-surface mb-1">Librería de Plantas</h2>
+<p class="font-label text-[10px] uppercase tracking-widest text-outline mb-6">Arrastra al bancal</p>
+<div class="relative mb-6">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-sm">search</span>
+<input class="w-full bg-surface-container-lowest border-b border-outline/30 focus:border-primary focus:ring-0 text-sm py-2 pl-10 pr-4 transition-all duration-300" placeholder="Buscar especie..." type="text"/>
+</div>
+<div class="space-y-6 overflow-y-auto max-h-[calc(100vh-280px)] pr-2">
+<!-- Categoría -->
+<div>
+<span class="font-label text-[10px] text-primary tracking-[0.2em] mb-4 block">HORTALIZAS</span>
+<div class="grid grid-cols-2 gap-3">
+<div class="group bg-surface-container-high p-3 rounded-md cursor-grab active:cursor-grabbing hover:bg-surface-variant transition-all">
+<div class="text-3xl mb-2">🍅</div>
+<div class="font-label text-xs font-bold text-on-surface truncate">Tomate Cherry</div>
+<div class="text-[10px] text-outline">Solanum lyc.</div>
+</div>
+<div class="group bg-surface-container-high p-3 rounded-md cursor-grab active:cursor-grabbing hover:bg-surface-variant transition-all">
+<div class="text-3xl mb-2">🥬</div>
+<div class="font-label text-xs font-bold text-on-surface truncate">Lechuga Romana</div>
+<div class="text-[10px] text-outline">Lactuca sat.</div>
+</div>
+<div class="group bg-surface-container-high p-3 rounded-md cursor-grab active:cursor-grabbing hover:bg-surface-variant transition-all">
+<div class="text-3xl mb-2">🥕</div>
+<div class="font-label text-xs font-bold text-on-surface truncate">Zanahoria</div>
+<div class="text-[10px] text-outline">Daucus car.</div>
+</div>
+<div class="group bg-surface-container-high p-3 rounded-md cursor-grab active:cursor-grabbing hover:bg-surface-variant transition-all">
+<div class="text-3xl mb-2">🫑</div>
+<div class="font-label text-xs font-bold text-on-surface truncate">Pimiento</div>
+<div class="text-[10px] text-outline">Capsicum an.</div>
+</div>
+</div>
+</div>
+<!-- Categoría -->
+<div>
+<span class="font-label text-[10px] text-primary tracking-[0.2em] mb-4 block">AROMÁTICAS</span>
+<div class="grid grid-cols-2 gap-3">
+<div class="group bg-surface-container-high p-3 rounded-md cursor-grab active:cursor-grabbing hover:bg-surface-variant transition-all">
+<div class="text-3xl mb-2">🌿</div>
+<div class="font-label text-xs font-bold text-on-surface truncate">Albahaca</div>
+<div class="text-[10px] text-outline">Ocimum bas.</div>
+</div>
+<div class="group bg-surface-container-high p-3 rounded-md cursor-grab active:cursor-grabbing hover:bg-surface-variant transition-all">
+<div class="text-3xl mb-2">🌱</div>
+<div class="font-label text-xs font-bold text-on-surface truncate">Menta</div>
+<div class="text-[10px] text-outline">Mentha sp.</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</aside>
+<!-- Área Central: Cuadrícula y Regla -->
+<section class="flex-1 relative bg-surface-container-lowest overflow-auto p-12">
+<!-- Barra de Herramientas Flotante -->
+<div class="absolute top-6 left-1/2 -translate-x-1/2 bg-surface-container-high/80 backdrop-blur-md rounded-full px-6 py-2 flex items-center gap-6 z-10 shadow-2xl border border-outline-variant/10">
+<button class="flex items-center gap-2 text-primary hover:text-on-primary-container transition-colors">
+<span class="material-symbols-outlined text-lg">grid_on</span>
+<span class="font-label text-[10px] font-bold">GRID ON</span>
+</button>
+<div class="w-[1px] h-4 bg-outline/20"></div>
+<button class="text-on-surface/60 hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined text-lg">zoom_in</span>
+</button>
+<button class="text-on-surface/60 hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined text-lg">zoom_out</span>
+</button>
+<div class="w-[1px] h-4 bg-outline/20"></div>
+<button class="text-on-surface/60 hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined text-lg">undo</span>
+</button>
+<button class="text-on-surface/60 hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined text-lg">redo</span>
+</button>
+</div>
+<!-- Canvas del Editor -->
+<div class="relative mx-auto mt-8 w-fit">
+<!-- Regla Superior -->
+<div class="absolute -top-8 left-0 right-0 h-6 flex justify-between px-2 font-label text-[8px] text-outline/50 tracking-widest border-b border-outline/10">
+<span>0cm</span><span>40cm</span><span>80cm</span><span>120cm</span><span>160cm</span><span>200cm</span>
+</div>
+<!-- Regla Lateral -->
+<div class="absolute top-0 -left-10 bottom-0 w-6 flex flex-col justify-between py-2 font-label text-[8px] text-outline/50 tracking-widest border-r border-outline/10">
+<span class="rotate-[-90deg]">0cm</span>
+<span class="rotate-[-90deg]">50cm</span>
+<span class="rotate-[-90deg]">100cm</span>
+</div>
+<!-- El Bancal -->
+<div class="w-[800px] h-[400px] soil-texture garden-grid rounded-sm relative shadow-[0_50px_100px_-20px_rgba(0,0,0,0.5)] flex items-center justify-center">
+<!-- Plantas colocadas (Muestras) -->
+<div class="absolute top-10 left-10 w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center border border-primary/30 group cursor-pointer hover:bg-primary/20 transition-all">
+<span class="text-4xl">🍅</span>
+<div class="absolute -top-2 -right-2 bg-primary text-on-primary text-[8px] font-bold px-1 rounded-sm opacity-0 group-hover:opacity-100 transition-opacity">CHERRY</div>
+</div>
+<div class="absolute top-40 left-40 w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center border border-primary/30 group cursor-pointer hover:bg-primary/20 transition-all">
+<span class="text-3xl">🥕</span>
+</div>
+<div class="absolute top-10 left-[400px] w-24 h-24 bg-primary/10 rounded-full flex items-center justify-center border border-primary/30 group cursor-pointer hover:bg-primary/20 transition-all">
+<span class="text-5xl">🥬</span>
+</div>
+<div class="absolute bottom-10 right-20 w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center border border-primary/30 group cursor-pointer hover:bg-primary/20 transition-all">
+<span class="text-3xl">🌿</span>
+</div>
+</div>
+<div class="mt-8 flex justify-between items-center px-4">
+<div class="flex flex-col">
+<span class="font-headline text-2xl text-on-surface">Bancal Sur: Primavera</span>
+<span class="font-label text-xs text-primary">DIMENSIONES: 200cm x 100cm</span>
+</div>
+<button class="bg-gradient-to-tr from-primary to-primary-container px-8 py-3 rounded-full font-label text-[10px] font-extrabold text-on-primary-container tracking-widest uppercase hover:opacity-90 transition-all shadow-lg">
+                        GUARDAR DISEÑO
+                    </button>
+</div>
+</div>
+</section>
+<!-- Panel Derecho: Detalles del Cultivar -->
+<aside class="w-80 bg-surface-container-low border-l border-outline-variant/10 overflow-y-auto">
+<div class="p-6">
+<div class="mb-8">
+<img class="w-full h-48 object-cover rounded-md mb-4 grayscale hover:grayscale-0 transition-all duration-500" data-alt="Red cherry tomatoes growing on a vine in dark background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBrjy1ozrcUWoOD3Jn__lF3fas5NQkNXJE64Tl066dIW36xHoAteKOMVJ5OuElyfieH1QJbYGIcPPL02j1cEY52VSHvcsZyj42DsyrMtfCehSXIxAM7CA1UEL8AcnEzqobaujViCkBlR6t85ufwcRflzxy4OmdEqQJSNKz5FMKmn41vtcBoV79GPKZFj5Xf6YJC9PK-6Zvo_eCQIlWgyM1CfihX4CwUw1AWovPdSKGLQrbnKDc02NB_rauch0XDHA7fcFNCEYcRSPOp"/>
+<div class="flex justify-between items-start mb-2">
+<h3 class="font-headline text-2xl text-on-surface">Tomate Cherry</h3>
+<span class="material-symbols-outlined text-primary cursor-pointer">favorite</span>
+</div>
+<span class="bg-secondary-container/50 text-secondary px-3 py-1 rounded-sm font-label text-[10px] tracking-wider uppercase">Solanum lycopersicum</span>
+</div>
+<div class="space-y-6">
+<div>
+<span class="font-label text-[10px] text-outline tracking-widest block mb-3 uppercase">REQUERIMIENTOS</span>
+<div class="grid grid-cols-2 gap-4">
+<div class="bg-surface-container-lowest p-3 rounded-md">
+<span class="material-symbols-outlined text-primary block mb-1 text-lg">wb_sunny</span>
+<div class="font-label text-[10px] text-on-surface font-bold">SOL DIRECTO</div>
+<div class="text-[9px] text-outline">6-8 horas</div>
+</div>
+<div class="bg-surface-container-lowest p-3 rounded-md">
+<span class="material-symbols-outlined text-primary block mb-1 text-lg">water_drop</span>
+<div class="font-label text-[10px] text-on-surface font-bold">RIEGO</div>
+<div class="text-[9px] text-outline">Frecuente</div>
+</div>
+</div>
+</div>
+<div>
+<span class="font-label text-[10px] text-outline tracking-widest block mb-3 uppercase">ESTADÍSTICAS DEL BANCAL</span>
+<div class="space-y-4">
+<div class="flex justify-between items-end border-b border-outline/10 pb-2">
+<span class="text-xs text-on-surface/80">Densidad de Plantación</span>
+<span class="font-label font-bold text-primary">85%</span>
+</div>
+<div class="flex justify-between items-end border-b border-outline/10 pb-2">
+<span class="text-xs text-on-surface/80">Compatibilidad Alelopática</span>
+<span class="font-label font-bold text-primary">ÓPTIMA</span>
+</div>
+<div class="flex justify-between items-end border-b border-outline/10 pb-2">
+<span class="text-xs text-on-surface/80">Cosecha Estimada</span>
+<span class="font-label font-bold text-on-surface">JUL - SEP</span>
+</div>
+</div>
+</div>
+<div class="bg-primary/5 p-4 rounded-md">
+<div class="flex items-center gap-2 mb-2">
+<span class="material-symbols-outlined text-primary text-sm">info</span>
+<span class="font-label text-[10px] font-bold tracking-widest text-primary uppercase">NOTA BOTÁNICA</span>
+</div>
+<p class="text-xs text-on-surface/70 leading-relaxed italic">
+                            "Ideal para cultivar junto a la Albahaca. La albahaca repele moscas y mosquitos, potenciando el sabor del tomate."
+                        </p>
+</div>
+<button class="w-full border border-outline/30 hover:bg-surface-container-high py-3 rounded-full font-label text-[10px] font-bold tracking-widest uppercase transition-all">
+                        GUÍA COMPLETA DE CULTIVO
+                    </button>
+</div>
+</div>
+</aside>
+</main>
+<!-- Barra de Estado Inferior -->
+<footer class="h-10 bg-surface-container-lowest flex items-center px-8 border-t border-outline-variant/5 text-[9px] tracking-widest text-outline uppercase font-label">
+<div class="flex gap-6 items-center">
+<span class="flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-primary"></span> Editor Activo</span>
+<span>Unidad: Centímetros (Metric)</span>
+<span>Escala: 1:10</span>
+</div>
+<div class="ml-auto flex gap-4">
+<span>Plantas en diseño: 4</span>
+<span>Superficie ocupada: 0.82m²</span>
+</div>
+</footer>
+</body></html>

@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Plantarium - Botanical Journal</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700&amp;family=Manrope:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "secondary-fixed-dim": "#ffb4a5",
+                        "primary-fixed-dim": "#a4d393",
+                        "surface-container": "#efeeea",
+                        "error-container": "#ffdad6",
+                        "on-surface-variant": "#42493e",
+                        "surface-container-high": "#e9e8e4",
+                        "on-tertiary-fixed": "#161f00",
+                        "surface-container-low": "#f4f4f0",
+                        "on-error": "#ffffff",
+                        "on-secondary-container": "#732010",
+                        "inverse-surface": "#2f312e",
+                        "tertiary-container": "#66753a",
+                        "secondary": "#9f402d",
+                        "inverse-on-surface": "#f2f1ed",
+                        "surface-variant": "#e3e2df",
+                        "error": "#ba1a1a",
+                        "primary": "#37602c",
+                        "on-surface": "#1b1c1a",
+                        "surface-bright": "#faf9f5",
+                        "surface-container-lowest": "#ffffff",
+                        "surface": "#faf9f5",
+                        "on-background": "#1b1c1a",
+                        "on-error-container": "#93000a",
+                        "tertiary-fixed": "#d9eaa3",
+                        "on-primary-fixed": "#022100",
+                        "outline-variant": "#c2c9bb",
+                        "on-primary": "#ffffff",
+                        "tertiary-fixed-dim": "#bdce89",
+                        "on-tertiary-fixed-variant": "#3e4c16",
+                        "on-secondary-fixed-variant": "#802918",
+                        "surface-container-highest": "#e3e2df",
+                        "primary-container": "#4f7942",
+                        "on-tertiary-container": "#eafbb3",
+                        "on-secondary": "#ffffff",
+                        "tertiary": "#4e5c24",
+                        "outline": "#73796d",
+                        "inverse-primary": "#a4d393",
+                        "background": "#faf9f5",
+                        "surface-tint": "#3f6833",
+                        "secondary-fixed": "#ffdad3",
+                        "secondary-container": "#fd876f",
+                        "primary-fixed": "#c0f0ad",
+                        "on-tertiary": "#ffffff",
+                        "on-primary-container": "#d3ffc1",
+                        "surface-dim": "#dbdad6",
+                        "on-secondary-fixed": "#3e0500",
+                        "on-primary-fixed-variant": "#28501e"
+                    },
+                    fontFamily: {
+                        "headline": ["Noto Serif"],
+                        "body": ["Manrope"],
+                        "label": ["Manrope"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .botanical-gradient {
+            background: linear-gradient(135deg, #37602c 0%, #4f7942 100%);
+        }
+        .glass-overlay {
+            background: rgba(227, 226, 223, 0.6);
+            backdrop-filter: blur(20px);
+        }
+        body {
+            background-color: #faf9f5;
+            color: #1b1c1a;
+            font-family: 'Manrope', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-surface selection:bg-primary-fixed selection:text-on-primary-fixed">
+<!-- TopNavBar Implementation -->
+<nav class="bg-[#faf9f5] dark:bg-[#1b1c1a] docked full-width top-0 z-50 bg-[#efeeea] dark:bg-[#2a2b29] no-border tonal-shift">
+<div class="flex justify-between items-center w-full px-8 py-4 max-w-screen-2xl mx-auto">
+<!-- Brand Logo -->
+<div class="text-2xl font-bold font-noto-serif text-[#37602c] dark:text-[#c0f0ad]">Plantarium</div>
+<!-- Navigation Links -->
+<div class="hidden md:flex items-center gap-8">
+<a class="text-[#73796d] dark:text-[#8e9289] font-medium hover:text-[#37602c] dark:hover:text-[#c0f0ad] transition-colors hover:bg-[#efeeea]/50 dark:hover:bg-[#2a2b29]/50 rounded-lg transition-all px-2 py-1" href="#">Dashboard</a>
+<a class="text-[#73796d] dark:text-[#8e9289] font-medium hover:text-[#37602c] dark:hover:text-[#c0f0ad] transition-colors hover:bg-[#efeeea]/50 dark:hover:bg-[#2a2b29]/50 rounded-lg transition-all px-2 py-1" href="#">Tasks</a>
+<a class="text-[#37602c] dark:text-[#c0f0ad] font-bold border-b-2 border-[#37602c] dark:border-[#c0f0ad] pb-1" href="#">Journal</a>
+<a class="text-[#73796d] dark:text-[#8e9289] font-medium hover:text-[#37602c] dark:hover:text-[#c0f0ad] transition-colors hover:bg-[#efeeea]/50 dark:hover:bg-[#2a2b29]/50 rounded-lg transition-all px-2 py-1" href="#">Library</a>
+</div>
+<!-- Trailing Actions -->
+<div class="flex items-center gap-4">
+<button class="p-2 text-[#37602c] dark:text-[#c0f0ad] hover:bg-[#efeeea]/50 dark:hover:bg-[#2a2b29]/50 rounded-lg transition-all active:scale-95 duration-150 ease-in-out">
+<span class="material-symbols-outlined" data-icon="calendar_month">calendar_month</span>
+</button>
+<button class="p-2 text-[#73796d] dark:text-[#8e9289] hover:bg-[#efeeea]/50 dark:hover:bg-[#2a2b29]/50 rounded-lg transition-all active:scale-95 duration-150 ease-in-out">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="p-2 text-[#73796d] dark:text-[#8e9289] hover:bg-[#efeeea]/50 dark:hover:bg-[#2a2b29]/50 rounded-lg transition-all active:scale-95 duration-150 ease-in-out">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+<div class="w-10 h-10 rounded-full overflow-hidden ml-2 border border-outline-variant/30">
+<img alt="User profile" class="w-full h-full object-cover" data-alt="Portrait of a person in a garden" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAvUFEG_pwzaDJAtQ3-yuks8pQv9Stevkg7w00NXXPtdGLtnDLTqB1fo4p6YfRoEgakl8sdIXfMxIkuI7wvZ8r9SLGQv3DPJi-JHdWjo_djVyNJeHu-o4_im1ify8oOc99afIPFQr_oy5Cw9uDFl2Gxe6UXPf_WvfqUgN6lofawJoYxGDhub18aFuIXXwffIkr79M8zqX0jB16RWBupt-lM9B0jkdQyDvzBX9TmDVPzc05fRgO2oAHnVoeNapVvKsM1akmzSlT02XyQ"/>
+</div>
+</div>
+</div>
+</nav>
+<main class="max-w-screen-2xl mx-auto px-8 py-12">
+<!-- Floating Calendar Panel (Simulated) -->
+<div class="fixed right-8 top-24 z-40 w-80 bg-surface-container-high rounded-xl p-6 shadow-2xl border border-outline-variant/10 hidden lg:block">
+<div class="flex items-center justify-between mb-6">
+<h3 class="font-headline font-bold text-on-surface">September 2023</h3>
+<div class="flex gap-2">
+<span class="material-symbols-outlined text-outline cursor-pointer">chevron_left</span>
+<span class="material-symbols-outlined text-outline cursor-pointer">chevron_right</span>
+</div>
+</div>
+<div class="grid grid-cols-7 gap-2 text-center text-xs font-bold text-outline mb-4">
+<span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span>
+</div>
+<div class="grid grid-cols-7 gap-2 text-center text-sm">
+<span class="p-2 text-outline/40">27</span>
+<span class="p-2 text-outline/40">28</span>
+<span class="p-2 text-outline/40">29</span>
+<span class="p-2 text-outline/40">30</span>
+<span class="p-2 text-outline/40">31</span>
+<span class="p-2 font-medium">1</span>
+<span class="p-2 font-medium">2</span>
+<span class="p-2 font-medium">3</span>
+<span class="p-2 font-medium bg-primary text-on-primary rounded-full">4</span>
+<span class="p-2 font-medium">5</span>
+<span class="p-2 font-medium">6</span>
+<span class="p-2 font-medium">7</span>
+<span class="p-2 font-medium">8</span>
+<span class="p-2 font-medium">9</span>
+<span class="p-2 font-medium">10</span>
+<!-- Calendar content continues... -->
+</div>
+<div class="mt-6 pt-6 border-t border-outline-variant/20">
+<div class="flex items-center gap-3 mb-4">
+<div class="w-2 h-2 rounded-full bg-secondary"></div>
+<span class="text-xs font-semibold uppercase tracking-wider text-outline">Upcoming Task</span>
+</div>
+<p class="text-sm font-medium text-on-surface">Repotting Monstera Deliciosa</p>
+<p class="text-xs text-outline mt-1">Tomorrow, 10:00 AM</p>
+</div>
+</div>
+<!-- Editorial Content Area -->
+<div class="lg:mr-96">
+<!-- Header Section -->
+<header class="mb-16">
+<span class="text-secondary font-bold tracking-widest uppercase text-xs mb-4 block">The Digital Conservatory</span>
+<h1 class="font-headline text-6xl md:text-7xl font-bold text-on-surface tracking-tight leading-none mb-6">
+                    Botanical Journal
+                </h1>
+<p class="font-body text-xl text-outline max-w-2xl leading-relaxed">
+                    A curated chronicle of growth, seasonal transitions, and the silent dialogue between the gardener and the garden.
+                </p>
+</header>
+<!-- Featured Entry: Asymmetric Layout -->
+<section class="mb-24 grid grid-cols-12 gap-8 items-center">
+<div class="col-span-12 md:col-span-7 relative group">
+<div class="aspect-[4/5] overflow-hidden rounded-xl bg-surface-container-high">
+<img alt="Lush green fern leaves close up" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="Detailed close up of vibrant green fern leaves" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDPfAUje_CUA-r7lr89yHlMCD126W2HRNxzSju1O_6NcIn0zTecbK6pqIs52hoyVUw8YrcgJCFCUADjfmFVKaWWQc5J7MY5J794_ajWTxk2ygzUUEJbnRqZj2Jo9YNaPeSbvCz_rXnwAvZC89YrOrsqUsfn-P11k3yytOOO2hQHh60FTeCJR7uJPfkl1JWFWrSddEshwd1HM3c4ZDfdQpWGQJq6uQ8i0ssekyLdCUexr-if2s_c58FYeDJa2xbcHsOoQKFiaPwhusFI"/>
+</div>
+<!-- Overlapping Glass Card -->
+<div class="absolute -bottom-12 -right-12 hidden md:block w-72 p-8 glass-overlay rounded-xl border border-outline-variant/10 shadow-xl">
+<span class="text-primary font-bold text-xs uppercase tracking-tighter">Current Season</span>
+<h4 class="font-headline text-2xl font-bold mt-2">Late Summer Harvest</h4>
+<div class="mt-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-sm">wb_sunny</span>
+<span class="text-xs font-medium text-outline">82°F • Humidity 65%</span>
+</div>
+</div>
+</div>
+<div class="col-span-12 md:col-span-5 md:pl-12">
+<div class="flex items-center gap-4 mb-6">
+<span class="px-3 py-1 bg-tertiary-fixed text-on-tertiary-fixed rounded-full text-xs font-bold">New Entry</span>
+<span class="text-outline text-sm font-medium">Sept 12, 2023</span>
+</div>
+<h2 class="font-headline text-4xl font-bold mb-6 leading-tight">The Resilience of the Silver Fern</h2>
+<p class="text-on-surface/80 leading-loose mb-8">
+                        Observing the Cyathea dealbata this morning, I noticed the underside of the fronds have taken on a brilliant metallic sheen. This specimen has weathered the unusually dry August with remarkable grace, proving that depth of root is more vital than frequency of rain.
+                    </p>
+<button class="px-8 py-4 botanical-gradient text-on-primary rounded-xl font-bold text-sm shadow-lg hover:opacity-90 transition-opacity flex items-center gap-3">
+                        Read Full Entry
+                        <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+</div>
+</section>
+<!-- Bento Grid of Journal Entries -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+<!-- Entry 2 -->
+<article class="bg-surface-container-low rounded-xl overflow-hidden flex flex-col group">
+<div class="aspect-video overflow-hidden">
+<img alt="Terracotta pots with small plants" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Collection of rustic terracotta pots with medicinal herbs" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA6FL4qI6xLkL3nywetlR-Gs6J4mFWbUqMsLvgWH4c8VW9dNFcuesF4aQy3B7hNGtOXzPcwZOKfWFCxkvOPinei5L76DRQZyMF1Tf4TP1jEQPVv_C1AnAjmcNDbuE0zUequUzorl8z17W5LwzM0ZX7ML-QDuOQGzvdAz8sY6Eoa-MEIB3r1Kao2D2jKOPoEm7ThWZRf5On6nLVb6NXVYuJHfYTDpMYhfXvWpOkMG4ut3CxxXq3h6NkFACrqQnZ3gFF-RNFaRXC4tI5V"/>
+</div>
+<div class="p-10">
+<div class="flex justify-between items-center mb-6">
+<span class="text-secondary font-bold text-xs uppercase tracking-widest">Technique</span>
+<span class="text-outline text-xs">Aug 28, 2023</span>
+</div>
+<h3 class="font-headline text-2xl font-bold mb-4">Mastering the Terracotta Patina</h3>
+<p class="text-sm text-outline leading-relaxed mb-6">
+                            How intentional moisture management can encourage a natural, weathered look on traditional clay vessels while maintaining soil health.
+                        </p>
+<div class="flex items-center gap-4 mt-auto">
+<span class="material-symbols-outlined text-outline">book</span>
+<span class="text-xs font-bold text-primary">8 min read</span>
+</div>
+</div>
+</article>
+<!-- Entry 3 -->
+<article class="bg-surface-container-low rounded-xl overflow-hidden flex flex-col group">
+<div class="aspect-video overflow-hidden">
+<img alt="Succulents in a glass terrarium" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Modern geometric glass terrarium with diverse succulent species" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA2Ze6VM4tLLp9tIkLv6JWEWnqzbymepsAZiawP2w659Q-BPi2a6bDfED8QwlSbOlGD9omm6UMG7pudrYBILzlXIKEQg7tlO3Jc3SfcAcPrWYnTOzIGvNtaOw4ZZxdZIUWSUUcSs_B9K5r3-5CWOo-p2kHqPOS4v5SipWXEBV2V8G_wLzDuM6CgTGE7VDtI3i8NBqBLLyRb6jXcmaKSRs0dOSIe9tLnh39nFsFgAAAgldTE-RklUlX_BZxQP3R93_GQB-KhCBDYHrV3"/>
+</div>
+<div class="p-10">
+<div class="flex justify-between items-center mb-6">
+<span class="text-secondary font-bold text-xs uppercase tracking-widest">Indoor Care</span>
+<span class="text-outline text-xs">Aug 15, 2023</span>
+</div>
+<h3 class="font-headline text-2xl font-bold mb-4">The Geometry of Enclosed Ecosystems</h3>
+<p class="text-sm text-outline leading-relaxed mb-6">
+                            Understanding the delicate balance of transpiration and condensation within a sealed glass environment.
+                        </p>
+<div class="flex items-center gap-4 mt-auto">
+<span class="material-symbols-outlined text-outline" data-weight="fill" style="font-variation-settings: 'FILL' 1;">book</span>
+<span class="text-xs font-bold text-primary">12 min read</span>
+</div>
+</div>
+</article>
+</div>
+<!-- Asymmetric Quote Section -->
+<section class="mt-24 py-24 border-t border-outline-variant/10">
+<div class="max-w-xl">
+<span class="material-symbols-outlined text-6xl text-primary/20 mb-8">format_quote</span>
+<blockquote class="font-headline text-3xl font-bold italic text-on-surface leading-tight mb-8">
+                        "The garden is a slow teacher. It does not shout its wisdom, it whispers through the slow unfurling of a leaf."
+                    </blockquote>
+<cite class="not-italic text-sm font-bold text-outline uppercase tracking-widest">— Journal Entry, June 2023</cite>
+</div>
+</section>
+</div>
+</main>
+<!-- Floating Action Button -->
+<button class="fixed bottom-8 right-8 z-50 w-16 h-16 rounded-full botanical-gradient text-on-primary shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all">
+<span class="material-symbols-outlined text-3xl">add</span>
+</button>
+<!-- Tooltip / Toolbox Chips Footer -->
+<footer class="bg-surface-container py-12 px-8 mt-24">
+<div class="max-w-screen-2xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
+<div class="flex gap-4 flex-wrap justify-center">
+<span class="px-4 py-2 rounded-full border border-outline-variant text-xs font-bold text-outline">Pruning</span>
+<span class="px-4 py-2 rounded-full border border-outline-variant text-xs font-bold text-outline">Fertilizing</span>
+<span class="px-4 py-2 rounded-full border border-outline-variant text-xs font-bold text-outline">Soil PH</span>
+<span class="px-4 py-2 rounded-full border border-outline-variant text-xs font-bold text-outline">Propagating</span>
+</div>
+<div class="text-outline text-xs font-medium">
+                © 2023 Plantarium Digital Conservatory • All Rights Reserved
+            </div>
+</div>
+</footer>
+</body></html>

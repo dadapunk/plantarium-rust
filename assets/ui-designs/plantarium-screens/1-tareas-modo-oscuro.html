@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Plantarium - Garden Tasks</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,300;0,400;0,700;1,300&amp;family=Manrope:wght@300;400;500;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              colors: {
+                "on-secondary-fixed-variant": "#394b3d",
+                "on-surface": "#e2e3df",
+                "on-background": "#e2e3df",
+                "on-tertiary-fixed-variant": "#404941",
+                "error-container": "#93000a",
+                "surface-bright": "#383a37",
+                "surface-variant": "#333533",
+                "surface-container-high": "#292a28",
+                "secondary-fixed-dim": "#b7ccb9",
+                "surface-tint": "#a1d494",
+                "surface-container-low": "#1a1c1a",
+                "primary": "#a1d494",
+                "error": "#ffb4ab",
+                "tertiary-container": "#252e27",
+                "primary-container": "#043405",
+                "surface-dim": "#121412",
+                "surface-container-lowest": "#0d0f0d",
+                "surface-container": "#1e201e",
+                "on-tertiary": "#2a332b",
+                "surface": "#121412",
+                "on-error-container": "#ffdad6",
+                "inverse-on-surface": "#2f312e",
+                "primary-fixed-dim": "#a1d494",
+                "on-tertiary-fixed": "#151e17",
+                "tertiary": "#bfc9bf",
+                "secondary-container": "#3b4d3f",
+                "surface-container-highest": "#333533",
+                "tertiary-fixed-dim": "#bfc9bf",
+                "on-primary": "#0a3909",
+                "on-secondary": "#233427",
+                "on-tertiary-container": "#8c968c",
+                "secondary": "#b7ccb9",
+                "outline-variant": "#434843",
+                "on-secondary-container": "#a9beab",
+                "on-primary-fixed": "#002201",
+                "background": "#121412",
+                "on-secondary-fixed": "#0e1f13",
+                "on-surface-variant": "#c3c8c1",
+                "secondary-fixed": "#d3e8d5",
+                "on-primary-fixed-variant": "#23501e",
+                "on-error": "#690005",
+                "inverse-primary": "#3b6934",
+                "primary-fixed": "#bcf0ae",
+                "inverse-surface": "#e2e3df",
+                "on-primary-container": "#6e9f64",
+                "tertiary-fixed": "#dbe5da",
+                "outline": "#8d928c"
+              },
+              fontFamily: {
+                "headline": ["Noto Serif"],
+                "body": ["Manrope"],
+                "label": ["Manrope"]
+              },
+              borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+            },
+          },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            background-color: #121412;
+            color: #e2e3df;
+        }
+        .editorial-shadow {
+            box-shadow: 0 32px 64px -12px rgba(0,0,0,0.5);
+        }
+        .glass-nav {
+            backdrop-filter: blur(20px);
+        }
+    </style>
+</head>
+<body class="font-body selection:bg-primary/30">
+<!-- TopAppBar Shell -->
+<header class="fixed top-0 w-full z-50 bg-[#121412] dark:bg-[#121412]/60 backdrop-blur-xl shadow-[0_32px_64px_-12px_rgba(0,0,0,0.5)]">
+<div class="flex justify-between items-center w-full px-6 py-4 max-w-full">
+<div class="flex items-center gap-4">
+<span class="text-[#e2e3df] font-serif italic text-2xl tracking-tight">Plantarium</span>
+</div>
+<div class="flex items-center gap-6">
+<button class="text-[#8d928c] hover:text-[#e2e3df] transition-colors p-2 hover:bg-[#292a28] rounded-full active:scale-95 duration-200">
+<span class="material-symbols-outlined" data-icon="calendar_today">calendar_today</span>
+</button>
+<button class="text-[#8d928c] hover:text-[#e2e3df] transition-colors p-2 hover:bg-[#292a28] rounded-full active:scale-95 duration-200">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<div class="w-8 h-8 rounded-full overflow-hidden bg-surface-container">
+<img alt="User profile avatar" data-alt="Close up of a human profile picture" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDjlgPmlpdA0074iW34mZH29p2XcDT7LlQwO1nV1Yedh5JWXdd3n66pa6fF0EMv1Z3Ou0ZOfzEKnJcGQVSgGP4BtrHB9RIlBhDBxttW1dN3txTHa8Izl1mOVatRDuaX_fUbi82Wpv02R7MdXgugKf4zj0d9EntdAeJXczGf6uTjVV57hVV0Ty8pmmYaJnJsSPJKSGeIfRkpQaDLMvaxrvoU7XXxjqJXJ72LbrSUF_VoNr1jmy5EeBTIRFDvfKN4LbJeGO3eLO9FO2Cg"/>
+</div>
+</div>
+</div>
+</header>
+<main class="pt-24 pb-32 px-6 max-w-5xl mx-auto">
+<!-- Editorial Header Section -->
+<section class="mb-14">
+<span class="font-label text-xs uppercase tracking-[0.2em] text-primary mb-4 block">Current Cycle</span>
+<div class="flex flex-col md:flex-row justify-between items-baseline gap-6">
+<h1 class="font-headline text-5xl md:text-6xl font-light tracking-tighter text-on-surface leading-tight">
+                    Garden <span class="italic font-light">Tasks</span>
+</h1>
+<button class="bg-gradient-to-br from-primary to-primary-container text-on-primary-fixed px-8 py-3 rounded-full font-label text-xs font-bold uppercase tracking-widest shadow-lg hover:brightness-110 active:scale-95 transition-all">
+                    New Task
+                </button>
+</div>
+</section>
+<!-- Tasks Grid & Editorial Content -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-10">
+<!-- Main Tasks Column -->
+<div class="lg:col-span-8 space-y-12">
+<!-- Pending Tasks -->
+<div>
+<h2 class="font-headline text-2xl mb-8 text-on-surface-variant flex items-center gap-3">
+                        Pending Actions
+                        <span class="h-[1px] flex-grow bg-outline-variant/20"></span>
+</h2>
+<div class="space-y-4">
+<!-- Watering Task - High Priority -->
+<div class="group bg-surface-container-low p-6 rounded-xl flex items-start gap-5 hover:bg-surface-container transition-colors relative overflow-hidden">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-error"></div>
+<button class="mt-1 w-6 h-6 rounded-full border border-outline group-hover:border-primary transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined text-[16px] opacity-0 group-hover:opacity-100 text-primary">check</span>
+</button>
+<div class="flex-grow">
+<div class="flex justify-between items-start mb-1">
+<h3 class="font-headline text-xl text-on-surface">Watering: Monstera Deliciosa</h3>
+<span class="bg-error-container/20 text-error px-3 py-0.5 rounded-sm font-label text-[10px] font-bold uppercase tracking-wider">High Priority</span>
+</div>
+<p class="text-on-surface-variant text-sm font-light mb-4">Soil is dry to the touch. Ensure deep hydration today.</p>
+<div class="flex gap-3">
+<span class="bg-secondary-container/30 text-secondary px-3 py-1 rounded-sm font-label text-[10px] uppercase">Watering</span>
+<span class="text-outline text-[10px] uppercase font-bold tracking-tighter flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">schedule</span> Due Today
+                                    </span>
+</div>
+</div>
+</div>
+<!-- Pruning Task - Medium Priority -->
+<div class="group bg-surface-container-low p-6 rounded-xl flex items-start gap-5 hover:bg-surface-container transition-colors relative">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-primary"></div>
+<button class="mt-1 w-6 h-6 rounded-full border border-outline group-hover:border-primary transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined text-[16px] opacity-0 group-hover:opacity-100 text-primary">check</span>
+</button>
+<div class="flex-grow">
+<div class="flex justify-between items-start mb-1">
+<h3 class="font-headline text-xl text-on-surface">Pruning: Fiddle Leaf Fig</h3>
+<span class="bg-primary-container/30 text-primary px-3 py-0.5 rounded-sm font-label text-[10px] font-bold uppercase tracking-wider">Medium</span>
+</div>
+<p class="text-on-surface-variant text-sm font-light mb-4">Remove yellowed lower leaves to encourage upward growth.</p>
+<div class="flex gap-3">
+<span class="bg-secondary-container/30 text-secondary px-3 py-1 rounded-sm font-label text-[10px] uppercase">Pruning</span>
+<span class="text-outline text-[10px] uppercase font-bold tracking-tighter flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">schedule</span> Tomorrow
+                                    </span>
+</div>
+</div>
+</div>
+<!-- Fertilizing Task - Low Priority -->
+<div class="group bg-surface-container-low p-6 rounded-xl flex items-start gap-5 hover:bg-surface-container transition-colors relative">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-outline"></div>
+<button class="mt-1 w-6 h-6 rounded-full border border-outline group-hover:border-primary transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined text-[16px] opacity-0 group-hover:opacity-100 text-primary">check</span>
+</button>
+<div class="flex-grow">
+<div class="flex justify-between items-start mb-1">
+<h3 class="font-headline text-xl text-on-surface">Fertilizing: Fern Collection</h3>
+<span class="bg-surface-container-high text-on-surface-variant px-3 py-0.5 rounded-sm font-label text-[10px] font-bold uppercase tracking-wider">Low</span>
+</div>
+<p class="text-on-surface-variant text-sm font-light mb-4">Quarter-strength liquid fertilizer for the humidity tray ferns.</p>
+<div class="flex gap-3">
+<span class="bg-secondary-container/30 text-secondary px-3 py-1 rounded-sm font-label text-[10px] uppercase">Fertilizing</span>
+<span class="text-outline text-[10px] uppercase font-bold tracking-tighter flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">schedule</span> Next week
+                                    </span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Completed Section -->
+<div>
+<h2 class="font-headline text-2xl mb-8 text-on-surface-variant/50 flex items-center gap-3">
+                        Archived Achievements
+                        <span class="h-[1px] flex-grow bg-outline-variant/10"></span>
+</h2>
+<div class="space-y-3 opacity-60">
+<div class="bg-surface-container-lowest p-4 rounded-lg flex items-center gap-4 border border-outline-variant/10">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="font-headline text-lg line-through decoration-primary/40 text-on-surface-variant">Harvesting: Kitchen Herb Box</span>
+<span class="ml-auto text-[10px] uppercase font-label tracking-widest">Yesterday</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Sidebar / Tips Column -->
+<div class="lg:col-span-4 space-y-10">
+<!-- Seasonal Tips Card -->
+<div class="bg-surface-container-low p-8 rounded-2xl relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-4 opacity-10 group-hover:scale-110 transition-transform duration-700">
+<span class="material-symbols-outlined text-8xl" data-icon="park">park</span>
+</div>
+<h3 class="font-headline text-2xl mb-6 relative z-10">Seasonal Tips</h3>
+<div class="space-y-6 relative z-10">
+<div class="border-l-2 border-primary pl-4">
+<h4 class="font-label text-xs font-bold uppercase tracking-widest text-primary mb-1">Early Autumn</h4>
+<p class="text-sm leading-relaxed text-on-surface-variant">Begin reducing watering frequency as light levels drop. Move delicate species away from drafty windows.</p>
+</div>
+<div class="border-l-2 border-outline-variant pl-4">
+<h4 class="font-label text-xs font-bold uppercase tracking-widest text-on-surface mb-1">Soil Care</h4>
+<p class="text-sm leading-relaxed text-on-surface-variant">Refresh the top inch of soil for your large specimens to provide a nutrient boost before the dormant season.</p>
+</div>
+</div>
+<div class="mt-10 bg-primary-container p-6 rounded-xl text-center">
+<p class="font-headline italic text-lg text-primary-fixed mb-4">"The forest is a quiet master of patience."</p>
+<span class="font-label text-[10px] uppercase tracking-widest text-primary-fixed-dim">— Botanical Digest</span>
+</div>
+</div>
+<!-- Progress Visual -->
+<div class="bg-[#0d0f0d] p-8 rounded-2xl border border-outline-variant/5">
+<h3 class="font-label text-xs font-bold uppercase tracking-widest mb-6">Weekly Progress</h3>
+<div class="flex items-end gap-3 h-32 mb-6">
+<div class="flex-grow bg-primary-container/20 h-1/2 rounded-t-sm"></div>
+<div class="flex-grow bg-primary-container/20 h-3/4 rounded-t-sm"></div>
+<div class="flex-grow bg-primary-container h-full rounded-t-sm"></div>
+<div class="flex-grow bg-primary-container/20 h-1/3 rounded-t-sm"></div>
+<div class="flex-grow bg-primary h-[90%] rounded-t-sm"></div>
+</div>
+<div class="flex justify-between text-[10px] font-label text-outline uppercase">
+<span>Mon</span>
+<span>Wed</span>
+<span>Fri</span>
+<span>Sun</span>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation Shell -->
+<nav class="fixed bottom-0 left-0 w-full z-50">
+<div class="bg-gradient-to-t from-[#0d0f0d] to-transparent h-12 w-full"></div>
+<div class="bg-[#121412]/80 backdrop-blur-2xl flex justify-around items-end px-4 pb-6 pt-2 rounded-t-[2rem] shadow-2xl">
+<!-- Dashboard -->
+<a class="flex flex-col items-center justify-center text-[#8d928c] p-2 hover:text-[#a1d494] transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-sans text-[10px] uppercase tracking-widest font-bold mt-1">Dashboard</span>
+</a>
+<!-- Tasks (Active) -->
+<a class="flex flex-col items-center justify-center bg-gradient-to-br from-[#a1d494] to-[#043405] text-[#121412] rounded-full p-3 shadow-lg scale-110 -translate-y-2 animate-pulse-slow" href="#">
+<span class="material-symbols-outlined" data-icon="checklist">checklist</span>
+<span class="font-sans text-[10px] uppercase tracking-widest font-bold mt-1">Tasks</span>
+</a>
+<!-- Journal -->
+<a class="flex flex-col items-center justify-center text-[#8d928c] p-2 hover:text-[#a1d494] transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="auto_stories">auto_stories</span>
+<span class="font-sans text-[10px] uppercase tracking-widest font-bold mt-1">Journal</span>
+</a>
+<!-- Library -->
+<a class="flex flex-col items-center justify-center text-[#8d928c] p-2 hover:text-[#a1d494] transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="local_library">local_library</span>
+<span class="font-sans text-[10px] uppercase tracking-widest font-bold mt-1">Library</span>
+</a>
+</div>
+</nav>
+</body></html>

@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Plantarium - Digital Conservatory</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,700;0,800;1,400;1,700&amp;family=Manrope:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "secondary-fixed-dim": "#ffb4a5",
+              "primary-fixed-dim": "#a4d393",
+              "surface-container": "#efeeea",
+              "error-container": "#ffdad6",
+              "on-surface-variant": "#42493e",
+              "surface-container-high": "#e9e8e4",
+              "on-tertiary-fixed": "#161f00",
+              "surface-container-low": "#f4f4f0",
+              "on-error": "#ffffff",
+              "on-secondary-container": "#732010",
+              "inverse-surface": "#2f312e",
+              "tertiary-container": "#66753a",
+              "secondary": "#9f402d",
+              "inverse-on-surface": "#f2f1ed",
+              "surface-variant": "#e3e2df",
+              "error": "#ba1a1a",
+              "primary": "#4F7942",
+              "on-surface": "#1b1c1a",
+              "surface-bright": "#faf9f5",
+              "surface-container-lowest": "#ffffff",
+              "surface": "#faf9f5",
+              "on-background": "#1b1c1a",
+              "on-error-container": "#93000a",
+              "tertiary-fixed": "#d9eaa3",
+              "on-primary-fixed": "#022100",
+              "outline-variant": "#c2c9bb",
+              "on-primary": "#ffffff",
+              "tertiary-fixed-dim": "#bdce89",
+              "on-tertiary-fixed-variant": "#3e4c16",
+              "on-secondary-fixed-variant": "#802918",
+              "surface-container-highest": "#e3e2df",
+              "primary-container": "#4f7942",
+              "on-tertiary-container": "#eafbb3",
+              "on-secondary": "#ffffff",
+              "tertiary": "#4e5c24",
+              "outline": "#73796d",
+              "inverse-primary": "#a4d393",
+              "background": "#faf9f5",
+              "surface-tint": "#4F7942",
+              "secondary-fixed": "#ffdad3",
+              "secondary-container": "#fd876f",
+              "primary-fixed": "#c0f0ad",
+              "on-tertiary": "#ffffff",
+              "on-primary-container": "#d3ffc1",
+              "surface-dim": "#dbdad6",
+              "on-secondary-fixed": "#3e0500",
+              "on-primary-fixed-variant": "#28501e"
+            },
+            fontFamily: {
+              "headline": ["Noto Serif", "serif"],
+              "body": ["Manrope", "sans-serif"],
+              "label": ["Manrope", "sans-serif"]
+            },
+            borderRadius: {
+                "DEFAULT": "0.5rem", 
+                "lg": "0.75rem", 
+                "xl": "1rem", 
+                "2xl": "1.5rem",
+                "3xl": "2rem",
+                "full": "9999px"
+            },
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .noto-serif { font-family: 'Noto Serif', serif; }
+        .manrope { font-family: 'Manrope', sans-serif; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface manrope selection:bg-primary-fixed selection:text-on-primary-fixed-variant">
+<header class="bg-[#faf9f5] dark:bg-[#1b1c1a] border-b border-outline-variant/30 sticky top-0 z-50">
+<div class="flex justify-between items-center w-full px-8 py-4 max-w-screen-2xl mx-auto">
+<!-- Brand -->
+<div class="text-2xl font-bold noto-serif italic text-primary">Plantarium</div>
+<!-- Navigation Links -->
+<nav class="hidden md:flex items-center gap-10">
+<a class="text-primary font-bold border-b-2 border-primary pb-1" href="#">Dashboard</a>
+<a class="text-outline font-medium hover:text-primary transition-colors" href="#">Tasks</a>
+<a class="text-outline font-medium hover:text-primary transition-colors" href="#">Journal</a>
+<a class="text-outline font-medium hover:text-primary transition-colors" href="#">Library</a>
+</nav>
+<!-- Actions Area & Weather Widget -->
+<div class="flex items-center gap-6">
+<!-- Weather & Season Widget -->
+<div class="hidden sm:flex items-center gap-2 bg-surface-container-low px-4 py-2 rounded-full border border-outline-variant/50">
+<span class="material-symbols-outlined text-primary text-xl">wb_sunny</span>
+<div class="flex flex-col leading-none">
+<span class="manrope text-[10px] font-bold uppercase tracking-wider text-outline">Summer Solstice</span>
+<span class="manrope text-sm font-bold text-on-surface">24°C</span>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<button class="p-2 hover:bg-surface-container-high rounded-full transition-all text-on-surface-variant">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-2 hover:bg-surface-container-high rounded-full transition-all text-on-surface-variant">
+<span class="material-symbols-outlined">settings</span>
+</button>
+<div class="h-10 w-10 rounded-full overflow-hidden ml-2 ring-2 ring-primary/20 ring-offset-2">
+<img alt="User profile" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB9v-ytZ4ouYuGS2sVT6DrGlEUcXQzJy-_W4Bau48jg9cAw1qZ-YRhMqNyS-HIeq7Qm9A-nlHuWqiQ-UjQcpuNCxGAMtP-3icKlO8FJjh3RyuSR2hVg1Xr8qoVnjNzG1wiqlbSM-pRP-nmmJhXY_Ccmg8JnfpWPofr-PDdFli3diFclr2cSiL2y4xj2gbd5LUQTRY8bGMHtdnnpJ4e3mDFEFD6NQ1zxfTqT81YqYoKgKQYZ-BY9sUfqiy8GUGisFJemTKp7P7_6J_Hs"/>
+</div>
+</div>
+</div>
+</div>
+</header>
+<main class="max-w-screen-2xl mx-auto px-8 py-12">
+<!-- Dashboard Header -->
+<header class="mb-14 max-w-4xl">
+<p class="manrope text-xs font-bold text-primary tracking-[0.2em] uppercase mb-4 flex items-center gap-2">
+<span class="w-8 h-[1px] bg-primary"></span> 
+            The Digital Conservatory
+        </p>
+<h1 class="noto-serif text-6xl font-bold text-on-surface leading-[1.15]">
+            Your conservatory is <span class="text-primary italic font-normal">thriving</span>.
+        </h1>
+</header>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-12 gap-10 items-start">
+<!-- Left Column: Your Gardens (Primary Section) -->
+<section class="col-span-12 lg:col-span-8 space-y-10">
+<div class="flex justify-between items-end">
+<div>
+<h2 class="noto-serif text-3xl font-bold">Your Gardens</h2>
+<p class="manrope text-sm text-outline mt-1">Nurturing 24 species across 4 micro-climates.</p>
+</div>
+<a class="manrope text-sm font-bold text-primary flex items-center gap-2 hover:underline group" href="#">
+                    Explore All <span class="material-symbols-outlined text-sm transition-transform group-hover:translate-x-1">arrow_forward</span>
+</a>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<!-- Garden Card 1 - High Quality Imagery -->
+<div class="group bg-surface-container-lowest rounded-2xl overflow-hidden border border-outline-variant/30 shadow-sm transition-all hover:shadow-xl hover:border-primary/20">
+<div class="aspect-[16/10] overflow-hidden">
+<img alt="South Terrace" class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBxJzkAGpvOZ0-ASw0s_HD3B3rXKoYp1GuMuuc6mSxFfByyoCLjvvMUJNIuORcPqeNyOOw7067xGPYMuKID6FOyX6G3O4xRBEDp34DsEtCGssp7hpzq9eW835v2XWtLWBf6J8g9jhzb-iarRR27CvGh_5O6bt5gXsHWJWBkyn7GunupdiD9oDlK2AFXWaM3MSNn6iaPsgxgDrpRw109R4RSUMaY3WV8xLMaXIBadlq-mvXPTv1mx0HTRSFWFOd7fhW8nBwTCkAn0NqV"/>
+</div>
+<div class="p-8">
+<div class="flex justify-between items-start mb-2">
+<h3 class="noto-serif text-2xl font-bold">South Terrace</h3>
+<span class="bg-primary/10 text-primary px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest">Active</span>
+</div>
+<p class="manrope text-sm text-outline mb-6">12 Species • High Light Exposure</p>
+<div class="flex gap-2">
+<span class="bg-surface-container-high text-on-surface-variant px-4 py-1.5 rounded-full text-[11px] font-bold uppercase tracking-wider">Moist</span>
+<span class="bg-surface-container-high text-on-surface-variant px-4 py-1.5 rounded-full text-[11px] font-bold uppercase tracking-wider">Nutrient Rich</span>
+</div>
+</div>
+</div>
+<!-- Garden Card 2 -->
+<div class="group bg-surface-container-lowest rounded-2xl overflow-hidden border border-outline-variant/30 shadow-sm transition-all hover:shadow-xl hover:border-primary/20">
+<div class="aspect-[16/10] overflow-hidden">
+<img alt="Kitchen Herbarium" class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDkbLWEQwF4HdptCfxLeOfc538OerGP5q0ODtj4O22ZwbAnjPy4--_7ADA08KN9jGnM69pTZT9UMGUY-xtexUP6GzOZar6shdXmj6IPQh_m-mWbRyPGf56R9FK7NW_nwjZSen-chaIfCCZJdT_pE1j2L8OC3qvvavlr_E1KtvzSrDl0y7BpwU4w3Yl04SAYgBej5cerq-jbAMRX-vF8ySgWUqn--crS3sJx1L3HtIe6JVg2BZsWp9tQOWk17knCQZSTnn49sNI3CisA"/>
+</div>
+<div class="p-8">
+<div class="flex justify-between items-start mb-2">
+<h3 class="noto-serif text-2xl font-bold">Kitchen Herbarium</h3>
+<span class="bg-secondary/10 text-secondary px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest">Harvest Ready</span>
+</div>
+<p class="manrope text-sm text-outline mb-6">8 Species • Moderate Light Exposure</p>
+<div class="flex gap-2">
+<span class="bg-surface-container-high text-on-surface-variant px-4 py-1.5 rounded-full text-[11px] font-bold uppercase tracking-wider">Culinary</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Recent Harvests (Varied Card Style) -->
+<div class="bg-primary/5 rounded-3xl p-10 relative overflow-hidden flex flex-col md:flex-row gap-8 items-center border border-primary/10">
+<div class="relative z-10 flex-1">
+<h2 class="noto-serif text-3xl font-bold mb-2">Recent Harvests</h2>
+<p class="manrope text-sm text-on-surface-variant mb-8">Your labor is bearing fruit. View your latest yields.</p>
+<div class="space-y-6 mb-8">
+<div class="flex items-center gap-5">
+<div class="w-14 h-14 rounded-2xl bg-white flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined text-primary text-2xl">local_florist</span>
+</div>
+<div>
+<p class="manrope font-bold text-lg text-on-surface">Sweet Basil</p>
+<p class="manrope text-sm text-outline">Harvested 2 days ago • 150g yield</p>
+</div>
+</div>
+<div class="flex items-center gap-5">
+<div class="w-14 h-14 rounded-2xl bg-white flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined text-primary text-2xl">psychology_alt</span>
+</div>
+<div>
+<p class="manrope font-bold text-lg text-on-surface">Wild Mint</p>
+<p class="manrope text-sm text-outline">Harvested yesterday • 45g yield</p>
+</div>
+</div>
+</div>
+<button class="bg-primary text-on-primary px-8 py-4 rounded-xl manrope font-bold text-sm shadow-lg hover:shadow-primary/20 transition-all active:scale-[0.98]">
+                        Log New Harvest
+                    </button>
+</div>
+<div class="w-full md:w-2/5 aspect-square rounded-2xl overflow-hidden shadow-2xl rotate-2">
+<img alt="Fresh herbs" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB5C50xB4VCJyYo6fcGJBogCPDKkNqqVASjJWAJfPIcmFiLsArnhfTEVPLNiBzMo6M3NjPQ0-362PnH304A8Y-kZ5kMKqxupyg1ao7kZ2yMI_7Mo4ghqbHev3YfZWgFkYKtiq_fHP3K2hJDXb6Lexl4kEWMCfo6gicEFErpX6VXQiKNTrDrdH5OXUngzxv60BbbT01o98XH-jqoo5oLhAqRkTWmZqOQM-OJAEC9fblUJ7EL_OhksytKRsfbhiIanrFkM-BIOn-YbLvw"/>
+</div>
+</div>
+</section>
+<!-- Right Column: Tasks (Sidebar Style) -->
+<section class="col-span-12 lg:col-span-4 sticky top-28">
+<div class="bg-surface-container-low rounded-3xl p-10 border border-outline-variant/20">
+<div class="flex items-center justify-between mb-10">
+<h2 class="noto-serif text-2xl font-bold">Maintenance</h2>
+<div class="bg-primary/10 text-primary px-4 py-1 rounded-full text-[10px] font-bold manrope uppercase tracking-widest">4 Tasks</div>
+</div>
+<div class="space-y-8">
+<!-- Task 1 -->
+<div class="flex gap-5 group cursor-pointer">
+<div class="mt-1 w-7 h-7 rounded-lg border-2 border-primary/20 flex items-center justify-center group-hover:bg-primary-fixed group-hover:border-primary transition-all">
+<span class="material-symbols-outlined text-primary text-base hidden group-hover:block">check</span>
+</div>
+<div class="flex-1">
+<h4 class="manrope font-bold text-on-surface group-hover:text-primary transition-colors">Water Fiddle Leaf Fig</h4>
+<p class="manrope text-xs text-outline mb-2">Living Room • <span class="text-secondary font-bold">Due Today</span></p>
+<span class="inline-flex items-center gap-1.5 text-[10px] font-bold text-secondary uppercase tracking-[0.1em] bg-secondary/10 px-2 py-0.5 rounded">
+<span class="material-symbols-outlined text-xs">water_drop</span> Critical Care
+                            </span>
+</div>
+</div>
+<!-- Task 2 -->
+<div class="flex gap-5 group cursor-pointer">
+<div class="mt-1 w-7 h-7 rounded-lg border-2 border-primary/20 flex items-center justify-center group-hover:bg-primary-fixed transition-all">
+<span class="material-symbols-outlined text-primary text-base hidden group-hover:block">check</span>
+</div>
+<div class="flex-1">
+<h4 class="manrope font-bold text-on-surface group-hover:text-primary transition-colors">Prune Monstera</h4>
+<p class="manrope text-xs text-outline mb-2">South Terrace • Due Tomorrow</p>
+<span class="inline-flex items-center gap-1.5 text-[10px] font-bold text-primary uppercase tracking-[0.1em] bg-primary/10 px-2 py-0.5 rounded">
+<span class="material-symbols-outlined text-xs">content_cut</span> Maintenance
+                            </span>
+</div>
+</div>
+<!-- Task 3 -->
+<div class="flex gap-5 group cursor-pointer">
+<div class="mt-1 w-7 h-7 rounded-lg border-2 border-primary/20 flex items-center justify-center group-hover:bg-primary-fixed transition-all">
+<span class="material-symbols-outlined text-primary text-base hidden group-hover:block">check</span>
+</div>
+<div class="flex-1">
+<h4 class="manrope font-bold text-on-surface group-hover:text-primary transition-colors">Fertilize Garden Bed</h4>
+<p class="manrope text-xs text-outline mb-2">Outdoor Plot • In 2 days</p>
+<span class="inline-flex items-center gap-1.5 text-[10px] font-bold text-tertiary uppercase tracking-[0.1em] bg-tertiary/10 px-2 py-0.5 rounded">
+<span class="material-symbols-outlined text-xs">eco</span> Nutrients
+                            </span>
+</div>
+</div>
+</div>
+<div class="mt-12 pt-10 border-t border-outline-variant/30">
+<div class="bg-surface-container-highest/50 rounded-2xl p-6 relative overflow-hidden group">
+<h5 class="manrope font-bold text-primary mb-2 flex items-center gap-2">
+<span class="material-symbols-outlined text-lg">lightbulb</span> 
+                            Botanist Tip
+                        </h5>
+<p class="manrope text-xs text-on-surface-variant leading-relaxed">
+                            Early morning is the best time to prune to prevent moisture loss and stress on your plants. Ensure your shears are sterilized.
+                        </p>
+</div>
+</div>
+</div>
+<!-- Growth Analytics (Enhanced Card) -->
+<div class="mt-8 bg-tertiary-fixed/20 rounded-3xl p-8 border border-tertiary-fixed flex items-center justify-between">
+<div>
+<p class="manrope text-[10px] font-bold text-on-tertiary-fixed-variant uppercase tracking-[0.2em] mb-1">Growth Index</p>
+<p class="noto-serif text-4xl font-bold text-on-tertiary-fixed-variant">+14% <span class="text-xl font-normal opacity-60">↑</span></p>
+</div>
+<div class="flex items-end gap-1.5 h-16">
+<div class="w-3.5 h-[30%] bg-tertiary-container/40 rounded-full"></div>
+<div class="w-3.5 h-[50%] bg-tertiary-container/50 rounded-full"></div>
+<div class="w-3.5 h-[20%] bg-tertiary-container/60 rounded-full"></div>
+<div class="w-3.5 h-[70%] bg-tertiary-container/80 rounded-full"></div>
+<div class="w-3.5 h-[100%] bg-primary rounded-full"></div>
+</div>
+</div>
+</section>
+</div>
+</main>
+<!-- Floating Action Button -->
+<button class="fixed bottom-10 right-10 w-16 h-16 bg-primary text-on-primary rounded-full shadow-2xl flex items-center justify-center transition-all hover:scale-110 active:scale-95 z-40 group hover:ring-8 hover:ring-primary/10">
+<span class="material-symbols-outlined text-3xl">add</span>
+<span class="absolute right-20 bg-on-surface text-surface text-[10px] font-bold uppercase tracking-widest py-2 px-5 rounded-full opacity-0 group-hover:opacity-100 transition-all pointer-events-none whitespace-nowrap shadow-xl translate-x-4 group-hover:translate-x-0">
+        New Specimen
+    </span>
+</button>
+</body></html>

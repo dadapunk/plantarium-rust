@@ -1,87 +1,82 @@
-use crate::app_state::{get_demo_gardens, get_demo_stats, get_demo_tasks};
-use crate::components::{AddGardenCard, GardenCard, Header, ProTip, QuickReminders, StatCard};
+use crate::app_state::{get_demo_gardens_v2, get_demo_harvests, get_demo_maintenance_tasks};
+use crate::components::{
+    DashboardHeader, GardenCardV2, GardenData, MaintenancePanel, RecentHarvests,
+};
 use dioxus::prelude::*;
 
 #[component]
 pub fn Dashboard() -> Element {
-    let demo_gardens = use_signal(get_demo_gardens);
-    let demo_stats = use_signal(get_demo_stats);
-    let demo_tasks = use_signal(get_demo_tasks);
-
-    // Clone data to avoid lifetime issues in RSX
-    let gardens_clone = demo_gardens.read().clone();
-    let stats_clone = demo_stats.read().clone();
-    let tasks_clone = demo_tasks.read().clone();
+    let demo_gardens = use_signal(get_demo_gardens_v2);
+    let demo_harvests = use_signal(get_demo_harvests);
+    let demo_maintenance_tasks = use_signal(get_demo_maintenance_tasks);
 
     rsx! {
-        div { class: "dashboard-page",
-            Header {}
+        div { class: "dashboard-v2",
+            DashboardHeader {}
 
-            // Stats Section
-            section { class: "stats-section",
-                StatCard {
-                    title: "Total Gardens".to_string(),
-                    value: stats_clone.total_gardens.to_string(),
-                    icon: "🌱".to_string()
-                }
-                StatCard {
-                    title: "Total Plants".to_string(),
-                    value: stats_clone.total_plants.to_string(),
-                    icon: "🌿".to_string()
-                }
-                StatCard {
-                    title: "Upcoming Tasks".to_string(),
-                    value: stats_clone.upcoming_tasks.to_string(),
-                    icon: "✅".to_string()
-                }
-                StatCard {
-                    title: "Recent Harvests".to_string(),
-                    value: stats_clone.recent_harvests.to_string(),
-                    icon: "🌾".to_string()
-                }
-            }
-
-            // Gardens Section
-            section { class: "gardens-section",
-                div { class: "section-header",
-                    h2 { "Your Gardens" }
-                    div { class: "view-toggle",
-                        button { class: "toggle-btn active", "📊 Grid" }
-                        button { class: "toggle-btn", "📋 List" }
+            main { class: "dashboard-main",
+                // Hero Section
+                header { class: "dashboard-hero",
+                    p { class: "dashboard-hero-label",
+                        span { class: "dashboard-hero-label-line" }
+                        "The Digital Conservatory"
+                    }
+                    h1 {
+                        "Your conservatory is "
+                        em { "thriving" }
+                        "."
                     }
                 }
 
-                div { class: "gardens-grid",
-                    for garden in gardens_clone.iter() {
-                        GardenCard {
-                            key: "{garden.id:?}",
-                            garden: garden.clone(),
-                            on_view: move |_| {
-                                // TODO: Navigate to garden detail
-                                println!("View garden");
-                            },
-                            on_edit: move |_| {
-                                // TODO: Navigate to garden edit
-                                println!("Edit garden");
+                // Bento Grid
+                div { class: "dashboard-grid",
+                    // Main Content
+                    section { class: "dashboard-grid-main",
+                        // Gardens Section Header (sibling of grid and recent-harvests)
+                        div { class: "gardens-section-header",
+                            div {
+                                h2 { class: "gardens-section-title", "Your Gardens" }
+                                p { class: "gardens-section-subtitle",
+                                    "Nurturing 24 species across 4 micro-climates."
+                                }
+                            }
+                            a { href: "#", class: "gardens-section-link",
+                                "Explore All"
+                                span { style: "margin-left: 8px;", "→" }
                             }
                         }
+
+                        // Gardens Cards Grid (sibling of header and recent-harvests)
+                        div { class: "gardens-cards-grid",
+                            GardenGrid { gardens: demo_gardens }
+                        }
+
+                        // Recent Harvests (sibling of header and grid)
+                        RecentHarvests { harvests: demo_harvests.read().clone() }
                     }
 
-                    AddGardenCard {
-                        on_click: move |_| {
-                            // TODO: Show add garden modal
-                            println!("Add new garden clicked");
-                        }
+                    // Sidebar
+                    section { class: "dashboard-grid-sidebar",
+                        MaintenancePanel { tasks: demo_maintenance_tasks.read().clone() }
                     }
                 }
             }
+        }
+    }
+}
 
-            // Pro Tip
-            ProTip {}
+#[component]
+fn GardenGrid(gardens: Signal<Vec<GardenData>>) -> Element {
+    let gardens_list = gardens.read().clone();
 
-            // Quick Reminders
-            QuickReminders {
-                tasks: tasks_clone
+    rsx! {
+        for (index, garden) in gardens_list.iter().enumerate() {
+            GardenCardV2 {
+                key: "{index}",
+                garden: garden.clone(),
+                on_click: move |_| {
+                    println!("Garden clicked");
+                }
             }
         }
     }

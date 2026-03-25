@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plantarium - Garden Management UI</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #faf9f5 0%, #f4f4f0 100%);
+            color: #1b1c1a;
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            margin-bottom: 10px;
+            color: #37602c;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            font-size: 1.25rem;
+            color: #73796d;
+            margin-bottom: 20px;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #4f7942;
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: #73796d;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(26, 28, 28, 0.06);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 16px 48px rgba(26, 28, 28, 0.12);
+        }
+
+        .card-image {
+            width: 100%;
+            height: 240px;
+            background: linear-gradient(135deg, #e3e2df 0%, #f4f4f0 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: #c2c9bb;
+        }
+
+        .card-content {
+            padding: 24px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-number {
+            display: inline-block;
+            background: #c0f0ad;
+            color: #022100;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            width: fit-content;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #37602c;
+            margin-bottom: 8px;
+        }
+
+        .card-description {
+            font-size: 0.875rem;
+            color: #73796d;
+            margin-bottom: 4px;
+        }
+
+        .card-specs {
+            font-size: 0.75rem;
+            color: #bcc9bb;
+            margin-top: auto;
+            padding-top: 16px;
+            border-top: 1px solid #e3e2df;
+        }
+
+        .card-spec {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 4px;
+        }
+
+        .card-link {
+            margin-top: 20px;
+            display: inline-block;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #37602c 0%, #4f7942 100%);
+            color: white;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.875rem;
+            transition: all 0.3s ease;
+        }
+
+        .card-link:hover {
+            transform: scale(1.05);
+        }
+
+        .icon {
+            font-size: 2.5rem;
+            margin-bottom: 8px;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 60px;
+            padding-top: 40px;
+            border-top: 1px solid #e3e2df;
+            color: #73796d;
+            font-size: 0.875rem;
+        }
+
+        .theme-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            background: #e0e3e6;
+            color: #1b1c1a;
+            border-radius: 4px;
+            font-size: 0.65rem;
+            margin-left: 8px;
+        }
+
+        .theme-dark {
+            background: #2d3133;
+            color: #f7f9fc;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats {
+                gap: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🌱 Plantarium</h1>
+            <p class="subtitle">Garden Management UI</p>
+            <div class="stats">
+                <div class="stat">
+                    <div class="stat-number">8</div>
+                    <div class="stat-label">Pantallas</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">2</div>
+                    <div class="stat-label">Temas</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">100%</div>
+                    <div class="stat-label">HTML + CSS</div>
+                </div>
+            </div>
+        </header>
+
+        <div class="grid">
+            <!-- Screen 1 -->
+            <div class="card">
+                <div class="card-image">📋</div>
+                <div class="card-content">
+                    <span class="card-number">01</span>
+                    <h3 class="card-title">Tareas del Jardín
+                        <span class="theme-badge theme-dark">Oscuro</span>
+                    </h3>
+                    <p class="card-description">Vista de tareas con tema oscuro</p>
+                    <div class="card-specs">
+                        <div class="card-spec">
+                            <span>Resolución:</span>
+                            <strong>2560x2488</strong>
+                        </div>
+                        <div class="card-spec">
+                            <span>Tipo:</span>
+                            <strong>Desktop</strong>
+                        </div>
+                    </div>
+                    <a href="1-tareas-modo-oscuro.html" class="card-link">Ver Pantalla →</a>
+                </div>
+            </div>
+
+            <!-- Screen 2 -->
+            <div class="card">
+                <div class="card-image">🛠️</div>
+                <div class="card-content">
+                    <span class="card-number">02</span>
+                    <h3 class="card-title">Editor de Bancales
+                        <span class="theme-badge">Mejorado</span>
+                    </h3>
+                    <p class="card-description">Editor visual para camas de cultivo</p>
+                    <div class="card-specs">
+                        <div class="card-spec">
+                            <span>Resolución:</span>
+                            <strong>2560x2048</strong>
+                        </div>
+                        <div class="card-spec">
+                            <span>Tipo:</span>
+                            <strong>Desktop</strong>
+                        </div>
+                    </div>
+                    <a href="2-editor-bancales-mejorado.html" class="card-link">Ver Pantalla →</a>
+                </div>
+            </div>
+
+            <!-- Screen 3 -->
+            <div class="card">
+                <div class="card-image">📊</div>
+                <div class="card-content">
+                    <span class="card-number">03</span>
+                    <h3 class="card-title">Dashboard
+                        <span class="theme-badge">Mejorado</span>
+                    </h3>
+                    <p class="card-description">Panel principal mejorado</p>
+                    <div class="card-specs">
+                        <div class="card-spec">
+                            <span>Resolución:</span>
+                            <strong>2560x2640</strong>
+                        </div>
+                        <div class="card-spec">
+                            <span>Tipo:</span>
+                            <strong>Desktop</strong>
+                        </div>
+                    </div>
+                    <a href="3-dashboard-mejorado.html" class="card-link">Ver Pantalla →</a>
+                </div>
+            </div>
+
+            <!-- Screen 4 -->
+            <div class="card">
+                <div class="card-image">🛠️</div>
+                <div class="card-content">
+                    <span class="card-number">04</span>
+                    <h3 class="card-title">Editor de Bancales
+                        <span class="theme-badge theme-dark">Oscuro</span>
+                    </h3>
+                    <p class="card-description">Editor de bancales con tema oscuro</p>
+                    <div class="card-specs">
+                        <div class="card-spec">
+                            <span>Resolución:</span>
+                            <strong>2560x2048</strong>
+                        </div>
+                        <div class="card-spec">
+                            <span>Tipo:</span>
+                            <strong>Desktop</strong>
+                        </div>
+                    </div>
+                    <a href="4-editor-bancales-modo-oscuro.html" class="card-link">Ver Pantalla →</a>
+                </div>
+            </div>
+
+            <!-- Screen 5 -->
+            <div class="card">
+                <div class="card-image">📊</div>
+                <div class="card-content">
+                    <span class="card-number">05</span>
+                    <h3 class="card-title">Dashboard Plantarium
+                        <span class="theme-badge theme-dark">Oscuro</span>
+                    </h3>
+                    <p class="card-description">Dashboard principal en modo oscuro</p>
+                    <div class="card-specs">
+                        <div class="card-spec">
+                            <span>Resolución:</span>
+                            <strong>2560x2514</strong>
+                        </div>
+                        <div class="card-spec">
+                            <span>Tipo:</span>
+                            <strong>Desktop</strong>
+                        </div>
+                    </div>
+                    <a href="5-dashboard-modo-oscuro.html" class="card-link">Ver Pantalla →</a>
+                </div>
+            </div>
+
+            <!-- Screen 6 -->
+            <div class="card">
+                <div class="card-image">📔</div>
+                <div class="card-content">
+                    <span class="card-number">06</span>
+                    <h3 class="card-title">Botanical Journal
+                        <span class="theme-badge">Calendario</span>
+                    </h3>
+                    <p class="card-description">Diario botánico con calendario integrado</p>
+                    <div class="card-specs">
+                        <div class="card-spec">
+                            <span>Resolución:</span>
+                            <strong>2560x4904</strong>
+                        </div>
+                        <div class="card-spec">
+                            <span>Tipo:</span>
+                            <strong>Desktop</strong>
+                        </div>
+                    </div>
+                    <a href="6-botanical-journal.html" class="card-link">Ver Pantalla →</a>
+                </div>
+            </div>
+
+            <!-- Screen 7 -->
+            <div class="card">
+                <div class="card-image">📔</div>
+                <div class="card-content">
+                    <span class="card-number">07</span>
+                    <h3 class="card-title">Diario Plantarium
+                        <span class="theme-badge theme-dark">Oscuro</span>
+                    </h3>
+                    <p class="card-description">Diario con tema oscuro</p>
+                    <div class="card-specs">
+                        <div class="card-spec">
+                            <span>Resolución:</span>
+                            <strong>2560x2838</strong>
+                        </div>
+                        <div class="card-spec">
+                            <span>Tipo:</span>
+                            <strong>Desktop</strong>
+                        </div>
+                    </div>
+                    <a href="7-diario-modo-oscuro.html" class="card-link">Ver Pantalla →</a>
+                </div>
+            </div>
+
+            <!-- Screen 8 -->
+            <div class="card">
+                <div class="card-image">✓</div>
+                <div class="card-content">
+                    <span class="card-number">08</span>
+                    <h3 class="card-title">Tasks
+                        <span class="theme-badge">Calendario</span>
+                    </h3>
+                    <p class="card-description">Vista de tareas con calendario</p>
+                    <div class="card-specs">
+                        <div class="card-spec">
+                            <span>Resolución:</span>
+                            <strong>2560x2668</strong>
+                        </div>
+                        <div class="card-spec">
+                            <span>Tipo:</span>
+                            <strong>Desktop</strong>
+                        </div>
+                    </div>
+                    <a href="8-tasks-calendar.html" class="card-link">Ver Pantalla →</a>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>Plantarium - Garden Management UI | Proyecto Stitch | Todos los derechos reservados 2026</p>
+            <p style="margin-top: 10px; font-size: 0.75rem; color: #bcc9bb;">
+                Design System: Botanical Editorial | Colors: #37602C, #4F7942, #9F402D | Fonts: Noto Serif, Manrope
+            </p>
+        </footer>
+    </div>
+</body>
+</html>
