@@ -24,7 +24,9 @@
   5. WAL mode enabled - no "database locked" errors during normal use
   6. Database errors show user-friendly messages, not crashes
 
-**Plans**: TBD
+**Plans**: 
+- [ ] 01-01-PLAN.md — Wire SQLite persistence to state
+- [ ] 01-02-PLAN.md — Complete CRUD, fix journal edit
 
 ---
 
@@ -71,6 +73,6 @@
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Persistence & Core CRUD | 0/1 | Not started | - |
+| 1. Persistence & Core CRUD | 0/2 | Not started | - |
 | 2. Tasks & Calendar | 0/1 | Not started | - |
 | 3. Dashboard & Plant Database | 0/1 | Not started | - |
