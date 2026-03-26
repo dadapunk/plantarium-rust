@@ -485,6 +485,36 @@ pub fn delete_task(id: &str) {
     save_to_storage();
 }
 
+pub fn update_task(id: &str, title: &str, date: &str, task_type: TaskType) {
+    let now = chrono::Utc::now().timestamp_millis();
+    let mut tasks = TASKS.write();
+    if let Some(task) = tasks.iter_mut().find(|t| t.base.id == id) {
+        task.title = title.into();
+        task.date = date.into();
+        task.r#type = task_type;
+        task.base.updated_at = now;
+    }
+    save_to_storage();
+}
+
+pub fn get_tasks_by_type(task_type: TaskType) -> Vec<Task> {
+    TASKS
+        .read()
+        .iter()
+        .filter(|t| t.r#type == task_type && t.base.deleted_at.is_none())
+        .cloned()
+        .collect()
+}
+
+pub fn get_tasks_by_status(completed: bool) -> Vec<Task> {
+    TASKS
+        .read()
+        .iter()
+        .filter(|t| t.completed == completed && t.base.deleted_at.is_none())
+        .cloned()
+        .collect()
+}
+
 pub fn create_event(
     title: &str,
     date: &str,
@@ -514,6 +544,25 @@ pub fn delete_event(id: &str) {
     let mut events = EVENTS.write();
     if let Some(event) = events.iter_mut().find(|e| e.base.id == id) {
         event.base.deleted_at = Some(now);
+    }
+    save_to_storage();
+}
+
+pub fn update_event(
+    id: &str,
+    title: &str,
+    date: &str,
+    event_type: TaskType,
+    plant_id: Option<String>,
+) {
+    let now = chrono::Utc::now().timestamp_millis();
+    let mut events = EVENTS.write();
+    if let Some(event) = events.iter_mut().find(|e| e.base.id == id) {
+        event.title = title.into();
+        event.date = date.into();
+        event.r#type = event_type;
+        event.plant_id = plant_id;
+        event.base.updated_at = now;
     }
     save_to_storage();
 }

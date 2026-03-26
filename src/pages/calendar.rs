@@ -1,4 +1,4 @@
-use crate::app_state::{create_event, TaskType};
+use crate::app_state::{create_event, delete_event, CalendarEvent, TaskType, EVENTS};
 use crate::components::Navbar;
 use chrono::Datelike;
 use dioxus::prelude::*;
@@ -12,14 +12,19 @@ pub fn Calendar() -> Element {
     let mut new_date = use_signal(|| String::new());
     let mut new_type = use_signal(|| TaskType::Custom);
 
-    let mut add_event = move || {
-        if !new_title().trim().is_empty() && !new_date().is_empty() {
-            create_event(&new_title(), &new_date(), new_type(), None);
-            new_title.set(String::new());
-            new_date.set(String::new());
-            show_add.set(false);
-        }
-    };
+    let all_events = EVENTS.read();
+    let events_for_month: Vec<CalendarEvent> = all_events
+        .iter()
+        .filter(|e| e.base.deleted_at.is_none())
+        .filter(|e| {
+            if let Ok(date) = chrono::NaiveDate::parse_from_str(&e.date, "%Y-%m-%d") {
+                date.month() as i32 == current_month() && date.year() == current_year()
+            } else {
+                false
+            }
+        })
+        .cloned()
+        .collect();
 
     let month_names = [
         "Enero",
@@ -92,7 +97,17 @@ pub fn Calendar() -> Element {
                             value: "{new_date}",
                             oninput: move |evt| new_date.set(evt.value()),
                         }
-                        button { onclick: move |_| add_event(), "Guardar" }
+                        button {
+                            onclick: move |_| {
+                                if !new_title().trim().is_empty() && !new_date().is_empty() {
+                                    create_event(&new_title(), &new_date(), new_type(), None);
+                                    new_title.set(String::new());
+                                    new_date.set(String::new());
+                                    show_add.set(false);
+                                }
+                            },
+                            "Guardar"
+                        }
                     }
                 }
 
@@ -135,7 +150,6 @@ pub fn Calendar() -> Element {
                         for day in 1..=days_in_month {
                             div { class: "day",
                                 span { class: "day-number", "{day}" }
-                                div { class: "day-events" }
                             }
                         }
                     }
