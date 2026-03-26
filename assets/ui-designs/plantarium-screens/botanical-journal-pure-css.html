@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Plantarium - Botanical Journal</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700&amp;family=Manrope:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        :root {
+            --primary: #37602c;
+            --primary-container: #4f7942;
+            --on-primary: #ffffff;
+            --secondary: #9f402d;
+            --surface: #faf9f5;
+            --on-surface: #1b1c1a;
+            --surface-container: #efeeea;
+            --surface-container-high: #e9e8e4;
+            --surface-container-low: #f4f4f0;
+            --outline: #73796d;
+            --outline-variant: #c2c9bb;
+            --tertiary-fixed: #d9eaa3;
+            --on-tertiary-fixed: #161f00;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--surface);
+            color: var(--on-surface);
+            font-family: 'Manrope', sans-serif;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        h1, h2, h3, h4, blockquote {
+            font-family: 'Noto Serif', serif;
+        }
+
+        .container {
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* Navigation */
+        nav {
+            background-color: var(--surface);
+            border-bottom: 1px solid transparent;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 80px;
+        }
+
+        .logo {
+            font-family: 'Noto Serif', serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: none;
+            gap: 2rem;
+        }
+
+        @media (min-width: 768px) {
+            .nav-links {
+                display: flex;
+                align-items: center;
+            }
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: var(--outline);
+            font-weight: 500;
+            font-size: 0.875rem;
+            transition: color 0.2s;
+        }
+
+        .nav-link.active {
+            color: var(--primary);
+            font-weight: 700;
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 4px;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .icon-btn {
+            background: none;
+            border: none;
+            color: var(--outline);
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 8px;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .icon-btn:hover {
+            background-color: var(--surface-container);
+        }
+
+        .icon-btn.primary {
+            color: var(--primary);
+        }
+
+        .profile-img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1px solid var(--outline-variant);
+        }
+
+        /* Main Content Layout */
+        main {
+            padding-top: 3rem;
+            padding-bottom: 6rem;
+            position: relative;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 4rem;
+        }
+
+        @media (min-width: 1024px) {
+            .content-grid {
+                grid-template-columns: 1fr 320px;
+            }
+        }
+
+        /* Sidebar Calendar */
+        .sidebar {
+            display: none;
+        }
+
+        @media (min-width: 1024px) {
+            .sidebar {
+                display: block;
+            }
+        }
+
+        .calendar-card {
+            background-color: var(--surface-container-high);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            position: sticky;
+            top: 120px;
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .calendar-title {
+            font-weight: 700;
+            font-size: 1rem;
+        }
+
+        .calendar-nav {
+            display: flex;
+            gap: 0.5rem;
+            color: var(--outline);
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 4px;
+            text-align: center;
+            font-size: 0.75rem;
+        }
+
+        .day-label {
+            font-weight: 700;
+            color: var(--outline);
+            margin-bottom: 0.5rem;
+        }
+
+        .day {
+            padding: 8px 0;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .day.muted {
+            color: rgba(115, 121, 109, 0.4);
+        }
+
+        .day.active {
+            background-color: var(--primary);
+            color: var(--on-primary);
+            font-weight: 700;
+        }
+
+        .upcoming-task {
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(194, 201, 187, 0.3);
+        }
+
+        .task-tag {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--outline);
+            margin-bottom: 0.5rem;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            background-color: var(--secondary);
+            border-radius: 50%;
+        }
+
+        .task-name {
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        .task-time {
+            font-size: 0.75rem;
+            color: var(--outline);
+            margin-top: 2px;
+        }
+
+        /* Editorial Header */
+        .page-header {
+            margin-bottom: 4rem;
+        }
+
+        .sub-label {
+            color: var(--secondary);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-size: 0.75rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .page-title {
+            font-size: 4.5rem;
+            line-height: 1;
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+        }
+
+        .page-description {
+            font-size: 1.25rem;
+            color: var(--outline);
+            max-width: 600px;
+            line-height: 1.6;
+        }
+
+        /* Featured Article */
+        .featured-article {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 3rem;
+            align-items: center;
+            margin-bottom: 6rem;
+        }
+
+        @media (min-width: 768px) {
+            .featured-article {
+                grid-template-columns: 1.2fr 1fr;
+            }
+        }
+
+        .featured-image-container {
+            position: relative;
+        }
+
+        .featured-img {
+            width: 100%;
+            aspect-ratio: 4/5;
+            object-fit: cover;
+            border-radius: 1rem;
+        }
+
+        .glass-card {
+            display: none;
+            position: absolute;
+            bottom: -2rem;
+            right: -2rem;
+            width: 280px;
+            padding: 2rem;
+            background: rgba(227, 226, 223, 0.6);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(194, 201, 187, 0.2);
+            border-radius: 1rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        @media (min-width: 768px) {
+            .glass-card {
+                display: block;
+            }
+        }
+
+        .glass-tag {
+            font-size: 0.65rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-transform: uppercase;
+        }
+
+        .glass-title {
+            font-size: 1.5rem;
+            margin-top: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .weather {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: var(--outline);
+        }
+
+        .article-meta {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .badge {
+            background-color: var(--tertiary-fixed);
+            color: var(--on-tertiary-fixed);
+            padding: 4px 12px;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        .date {
+            font-size: 0.875rem;
+            color: var(--outline);
+            font-weight: 500;
+        }
+
+        .article-title {
+            font-size: 2.5rem;
+            line-height: 1.2;
+            margin-bottom: 1.5rem;
+        }
+
+        .article-excerpt {
+            font-size: 1rem;
+            line-height: 1.8;
+            color: rgba(27, 28, 26, 0.8);
+            margin-bottom: 2rem;
+        }
+
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            background: linear-gradient(135deg, #37602c 0%, #4f7942 100%);
+            color: var(--on-primary);
+            padding: 1rem 2rem;
+            border-radius: 0.75rem;
+            font-weight: 700;
+            font-size: 0.875rem;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            box-shadow: 0 10px 15px -3px rgba(55, 96, 44, 0.3);
+            transition: opacity 0.2s;
+        }
+
+        .btn-primary:hover {
+            opacity: 0.9;
+        }
+
+        /* Article Grid */
+        .article-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 3rem;
+        }
+
+        @media (min-width: 768px) {
+            .article-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .article-card {
+            background-color: var(--surface-container-low);
+            border-radius: 1rem;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-img-wrapper {
+            aspect-ratio: 16/9;
+            overflow: hidden;
+        }
+
+        .card-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+
+        .article-card:hover .card-img {
+            transform: scale(1.05);
+        }
+
+        .card-content {
+            padding: 2.5rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-tag {
+            color: var(--secondary);
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.1em;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .card-excerpt {
+            font-size: 0.875rem;
+            color: var(--outline);
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-footer {
+            margin-top: auto;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .read-time {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        /* Quote Section */
+        .quote-section {
+            margin-top: 6rem;
+            padding: 6rem 0;
+            border-top: 1px solid rgba(194, 201, 187, 0.2);
+            max-width: 600px;
+        }
+
+        .quote-icon {
+            font-size: 4rem;
+            color: rgba(55, 96, 44, 0.2);
+            margin-bottom: 2rem;
+            display: block;
+        }
+
+        blockquote {
+            font-size: 2rem;
+            font-weight: 700;
+            font-style: italic;
+            line-height: 1.3;
+            margin-bottom: 2rem;
+        }
+
+        cite {
+            font-style: normal;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--outline);
+        }
+
+        /* FAB */
+        .fab {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #37602c 0%, #4f7942 100%);
+            color: var(--on-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            z-index: 100;
+            transition: transform 0.2s;
+        }
+
+        .fab:hover {
+            transform: scale(1.1);
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--surface-container);
+            padding: 3rem 0;
+            margin-top: 6rem;
+        }
+
+        .footer-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        @media (min-width: 768px) {
+            .footer-content {
+                flex-direction: row;
+                justify-content: space-between;
+            }
+        }
+
+        .chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .chip {
+            padding: 0.5rem 1rem;
+            border-radius: 9999px;
+            border: 1px solid var(--outline-variant);
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--outline);
+        }
+
+        .copyright {
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: var(--outline);
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        .fill-1 {
+            font-variation-settings: 'FILL' 1;
+        }
+    </style>
+</head>
+<body>
+<nav>
+<div class="container nav-content">
+<a class="logo" href="#">Plantarium</a>
+<div class="nav-links">
+<a class="nav-link" href="#">Dashboard</a>
+<a class="nav-link" href="#">Tasks</a>
+<a class="nav-link active" href="#">Journal</a>
+<a class="nav-link" href="#">Library</a>
+</div>
+<div class="nav-actions">
+<button class="icon-btn primary">
+<span class="material-symbols-outlined">calendar_month</span>
+</button>
+<button class="icon-btn">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="icon-btn">
+<span class="material-symbols-outlined">settings</span>
+</button>
+<img alt="User" class="profile-img" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAvUFEG_pwzaDJAtQ3-yuks8pQv9Stevkg7w00NXXPtdGLtnDLTqB1fo4p6YfRoEgakl8sdIXfMxIkuI7wvZ8r9SLGQv3DPJi-JHdWjo_djVyNJeHu-o4_im1ify8oOc99afIPFQr_oy5Cw9uDFl2Gxe6UXPf_WvfqUgN6lofawJoYxGDhub18aFuIXXwffIkr79M8zqX0jB16RWBupt-lM9B0jkdQyDvzBX9TmDVPzc05fRgO2oAHnVoeNapVvKsM1akmzSlT02XyQ"/>
+</div>
+</div>
+</nav>
+<main class="container">
+<div class="content-grid">
+<div class="editorial-area">
+<header class="page-header">
+<span class="sub-label">The Digital Conservatory</span>
+<h1 class="page-title">Botanical Journal</h1>
+<p class="page-description">A curated chronicle of growth, seasonal transitions, and the silent dialogue between the gardener and the garden.</p>
+</header>
+<section class="featured-article">
+<div class="featured-image-container">
+<img alt="Silver Fern" class="featured-img" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDPfAUje_CUA-r7lr89yHlMCD126W2HRNxzSju1O_6NcIn0zTecbK6pqIs52hoyVUw8YrcgJCFCUADjfmFVKaWWQc5J7MY5J794_ajWTxk2ygzUUEJbnRqZj2Jo9YNaPeSbvCz_rXnwAvZC89YrOrsqUsfn-P11k3yytOOO2hQHh60FTeCJR7uJPfkl1JWFWrSddEshwd1HM3c4ZDfdQpWGQJq6uQ8i0ssekyLdCUexr-if2s_c58FYeDJa2xbcHsOoQKFiaPwhusFI"/>
+<div class="glass-card">
+<span class="glass-tag">Current Season</span>
+<h4 class="glass-title">Late Summer Harvest</h4>
+<div class="weather">
+<span class="material-symbols-outlined" style="font-size: 16px;">wb_sunny</span>
+                                82°F • Humidity 65%
+                            </div>
+</div>
+</div>
+<div class="featured-content">
+<div class="article-meta">
+<span class="badge">New Entry</span>
+<span class="date">Sept 12, 2023</span>
+</div>
+<h2 class="article-title">The Resilience of the Silver Fern</h2>
+<p class="article-excerpt">
+                            Observing the Cyathea dealbata this morning, I noticed the underside of the fronds have taken on a brilliant metallic sheen. This specimen has weathered the unusually dry August with remarkable grace, proving that depth of root is more vital than frequency of rain.
+                        </p>
+<a class="btn-primary" href="#">
+                            Read Full Entry
+                            <span class="material-symbols-outlined" style="font-size: 18px;">arrow_forward</span>
+</a>
+</div>
+</section>
+<div class="article-grid">
+<article class="article-card">
+<div class="card-img-wrapper">
+<img alt="Terracotta Pots" class="card-img" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA6FL4qI6xLkL3nywetlR-Gs6J4mFWbUqMsLvgWH4c8VW9dNFcuesF4aQy3B7hNGtOXzPcwZOKfWFCxkvOPinei5L76DRQZyMF1Tf4TP1jEQPVv_C1AnAjmcNDbuE0zUequUzorl8z17W5LwzM0ZX7ML-QDuOQGzvdAz8sY6Eoa-MEIB3r1Kao2D2jKOPoEm7ThWZRf5On6nLVb6NXVYuJHfYTDpMYhfXvWpOkMG4ut3CxxXq3h6NkFACrqQnZ3gFF-RNFaRXC4tI5V"/>
+</div>
+<div class="card-content">
+<div class="card-meta">
+<span class="card-tag">Technique</span>
+<span class="date">Aug 28, 2023</span>
+</div>
+<h3 class="card-title">Mastering the Terracotta Patina</h3>
+<p class="card-excerpt">How intentional moisture management can encourage a natural, weathered look on traditional clay vessels while maintaining soil health.</p>
+<div class="card-footer">
+<span class="material-symbols-outlined" style="color: var(--outline);">book</span>
+<span class="read-time">8 min read</span>
+</div>
+</div>
+</article>
+<article class="article-card">
+<div class="card-img-wrapper">
+<img alt="Terrarium" class="card-img" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA2Ze6VM4tLLp9tIkLv6JWEWnqzbymepsAZiawP2w659Q-BPi2a6bDfED8QwlSbOlGD9omm6UMG7pudrYBILzlXIKEQg7tlO3Jc3SfcAcPrWYnTOzIGvNtaOw4ZZxdZIUWSUUcSs_B9K5r3-5CWOo-p2kHqPOS4v5SipWXEBV2V8G_wLzDuM6CgTGE7VDtI3i8NBqBLLyRb6jXcmaKSRs0dOSIe9tLnh39nFsFgAAAgldTE-RklUlX_BZxQP3R93_GQB-KhCBDYHrV3"/>
+</div>
+<div class="card-content">
+<div class="card-meta">
+<span class="card-tag">Indoor Care</span>
+<span class="date">Aug 15, 2023</span>
+</div>
+<h3 class="card-title">The Geometry of Enclosed Ecosystems</h3>
+<p class="card-excerpt">Understanding the delicate balance of transpiration and condensation within a sealed glass environment.</p>
+<div class="card-footer">
+<span class="material-symbols-outlined fill-1" style="color: var(--outline);">book</span>
+<span class="read-time">12 min read</span>
+</div>
+</div>
+</article>
+</div>
+<section class="quote-section">
+<span class="material-symbols-outlined quote-icon">format_quote</span>
+<blockquote class="quote-text">
+                        "The garden is a slow teacher. It does not shout its wisdom, it whispers through the slow unfurling of a leaf."
+                    </blockquote>
+<cite>— Journal Entry, June 2023</cite>
+</section>
+</div>
+<aside class="sidebar">
+<div class="calendar-card">
+<div class="calendar-header">
+<h3 class="calendar-title">September 2023</h3>
+<div class="calendar-nav">
+<span class="material-symbols-outlined" style="cursor: pointer;">chevron_left</span>
+<span class="material-symbols-outlined" style="cursor: pointer;">chevron_right</span>
+</div>
+</div>
+<div class="calendar-grid">
+<span class="day-label">S</span><span class="day-label">M</span><span class="day-label">T</span><span class="day-label">W</span><span class="day-label">T</span><span class="day-label">F</span><span class="day-label">S</span>
+<span class="day muted">27</span><span class="day muted">28</span><span class="day muted">29</span><span class="day muted">30</span><span class="day muted">31</span><span class="day">1</span><span class="day">2</span>
+<span class="day">3</span><span class="day active">4</span><span class="day">5</span><span class="day">6</span><span class="day">7</span><span class="day">8</span><span class="day">9</span>
+<span class="day">10</span>
+</div>
+<div class="upcoming-task">
+<div class="task-tag">
+<div class="dot"></div>
+                            Upcoming Task
+                        </div>
+<p class="task-name">Repotting Monstera Deliciosa</p>
+<p class="task-time">Tomorrow, 10:00 AM</p>
+</div>
+</div>
+</aside>
+</div>
+</main>
+<button class="fab">
+<span class="material-symbols-outlined" style="font-size: 32px;">add</span>
+</button>
+<footer>
+<div class="container footer-content">
+<div class="chips">
+<span class="chip">Pruning</span>
+<span class="chip">Fertilizing</span>
+<span class="chip">Soil PH</span>
+<span class="chip">Propagating</span>
+</div>
+<div class="copyright">
+                © 2023 Plantarium Digital Conservatory • All Rights Reserved
+            </div>
+</div>
+</footer>
+</body></html>
