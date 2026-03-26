@@ -46,7 +46,8 @@
   5. User can create, edit, and delete calendar events (sowing, watering, harvest)
   6. Calendar displays all events correctly
 
-**Plans**: TBD
+**Plans**: 
+- [ ] 02-01-PLAN.md — Full task and calendar CRUD with persistence
 
 ---
 
