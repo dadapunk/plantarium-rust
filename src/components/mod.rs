@@ -5,8 +5,7 @@ pub mod dashboard_v2;
 pub mod tasks;
 
 pub use dashboard_v2::{
-    DashboardHeader, GardenCardV2, GardenData, HarvestItem, MaintenancePanel, MaintenanceTask,
-    RecentHarvests,
+    GardenCardV2, GardenData, HarvestItem, MaintenancePanel, MaintenanceTask, RecentHarvests,
 };
 
 #[component]

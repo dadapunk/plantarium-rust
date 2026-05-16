@@ -29,6 +29,7 @@ fn garden_status(
 pub fn Dashboard() -> Element {
     let mut show_add = use_signal(|| false);
     let mut new_name = use_signal(|| String::new());
+    let mut toast_msg = use_signal(|| Option::<String>::None);
 
     let gardens = GARDENS.read();
     let beds = BEDS.read();
@@ -113,16 +114,25 @@ pub fn Dashboard() -> Element {
         let name = new_name();
         if !name.trim().is_empty() {
             create_garden(&name);
+            toast_msg.set(Some(format!("Jardín \"{}\" creado", name)));
             new_name.set(String::new());
             show_add.set(false);
         }
     };
 
     rsx! {
-        div { class: "app-container",
+        div { class: "dashboard-v2",
             Navbar {}
-            div { class: "dashboard-v2",
-                header { class: "dashboard-hero",
+
+            if let Some(msg) = toast_msg() {
+                div {
+                    class: "toast",
+                    onclick: move |_| toast_msg.set(None),
+                    "{msg}"
+                }
+            }
+
+            header { class: "dashboard-hero",
                     p { class: "dashboard-hero-label",
                         span { class: "dashboard-hero-label-line" }
                         "El Invernadero Digital"
@@ -195,7 +205,6 @@ pub fn Dashboard() -> Element {
                         }
                     }
                 }
-            }
         }
     }
 }
