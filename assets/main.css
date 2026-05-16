@@ -47,6 +47,47 @@ body {
     width: 100%;
 }
 
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.dashboard-header h1 {
+    color: #2d5a27;
+    margin: 0;
+}
+
+.view-toggle {
+    display: flex;
+    gap: 0.5rem;
+    background: #f0f0f0;
+    padding: 4px;
+    border-radius: 8px;
+}
+
+.view-toggle button {
+    padding: 0.5rem 1rem;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    color: #666;
+    transition: all 0.2s;
+}
+
+.view-toggle button:hover {
+    color: #2d5a27;
+}
+
+.view-toggle button.active {
+    background: white;
+    color: #2d5a27;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
 .add-form {
     display: flex;
     gap: 1rem;
@@ -74,6 +115,24 @@ body {
     text-align: center;
     padding: 3rem;
     color: #666;
+}
+
+.gardens-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.garden-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.garden-card h2 {
+    color: #2d5a27;
+    margin: 0 0 0.5rem 0;
 }
 
 .header {
@@ -360,6 +419,86 @@ body {
     cursor: pointer;
     background: #e8f5e9;
     color: #2e7d32;
+}
+
+.tasks-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.task-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.task-card.completed {
+    opacity: 0.6;
+}
+
+.task-card.completed .task-title {
+    text-decoration: line-through;
+}
+
+.checkbox {
+    width: 24px;
+    height: 24px;
+    border: 2px solid #ddd;
+    border-radius: 50%;
+    background: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.checkbox.checked {
+    background: #4a7c44;
+    border-color: #4a7c44;
+    color: white;
+}
+
+.task-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.task-title {
+    font-size: 1rem;
+}
+
+.task-meta {
+    display: flex;
+    gap: 1rem;
+    font-size: 0.8rem;
+    color: #666;
+}
+
+.task-type {
+    padding: 0.125rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    background: #eceff1;
+    color: #546e7a;
+}
+
+.filters {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.filters select {
+    padding: 0.5rem;
+    border: 2px solid #ddd;
+    border-radius: 6px;
 }
 
 .add-btn {
@@ -1264,4 +1403,6 @@ a.garden-card-v2 {
     color: var(--outline);
     font-size: 1.125rem;
 }
+
+@import url("tasks.css");
 
