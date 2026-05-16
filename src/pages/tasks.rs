@@ -3,7 +3,7 @@ use crate::components::tasks::{
     CalendarWidget, FeaturedCard, FertilizerAlertCard, NewTask, TaskCard, TaskCardData,
     TaskItemData, TaskListItem, TaskModal, TasksHeader,
 };
-use crate::components::Navbar;
+use crate::components::DashboardHeader;
 use dioxus::prelude::*;
 
 fn task_to_card_data(task: &Task) -> TaskCardData {
@@ -147,11 +147,10 @@ pub fn Tasks() -> Element {
         .collect();
 
     rsx! {
-        div { class: "app-container",
-            Navbar {}
+        div { class: "tasks-page",
+            DashboardHeader {}
 
-            div { class: "main-content",
-                main { class: "tasks-main",
+            main { class: "tasks-main",
                 TasksHeader {
                     on_add_click: move |_| show_modal.set(true),
                 }
@@ -270,7 +269,6 @@ pub fn Tasks() -> Element {
                         }
                     }
                 }
-            }
             }
 
             // Floating Action Button

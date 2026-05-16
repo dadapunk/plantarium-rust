@@ -3,7 +3,6 @@ mod garden_card_v2;
 mod maintenance_panel;
 mod recent_harvests;
 
-#[allow(unused_imports)]
 pub use dashboard_header::DashboardHeader;
 pub use garden_card_v2::{GardenCardV2, GardenData};
 pub use maintenance_panel::{MaintenancePanel, MaintenanceTask};
