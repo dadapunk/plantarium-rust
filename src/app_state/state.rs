@@ -4,9 +4,7 @@ use gloo_storage::{LocalStorage, Storage};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
-#[allow(dead_code)]
 const STORAGE_KEY: &str = "plantarium_data_v2";
-#[allow(dead_code)]
 const BED_ORDERS_KEY: &str = "plantarium_bed_order";
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
@@ -141,7 +139,6 @@ pub struct JournalEntry {
     pub content: String,
 }
 
-#[allow(dead_code)]
 #[derive(Clone, Debug, Serialize, Deserialize, Default)]
 pub struct AppState {
     pub gardens: Vec<Garden>,
@@ -161,7 +158,6 @@ pub static TASKS: GlobalSignal<Vec<Task>> = Signal::global(Vec::new);
 pub static EVENTS: GlobalSignal<Vec<CalendarEvent>> = Signal::global(Vec::new);
 pub static JOURNAL: GlobalSignal<Vec<JournalEntry>> = Signal::global(Vec::new);
 pub static PLOT_ACTIONS: GlobalSignal<Vec<PlotAction>> = Signal::global(Vec::new);
-#[allow(dead_code)]
 pub static BED_ORDERS: GlobalSignal<HashMap<String, Vec<String>>> = Signal::global(HashMap::new);
 
 fn default_plants() -> Vec<Plant> {
@@ -248,7 +244,6 @@ pub fn save_to_storage() {
     }
 }
 
-#[allow(dead_code)]
 pub fn create_garden(name: &str) -> Garden {
     let now = chrono::Utc::now().timestamp_millis();
     let garden = Garden {
@@ -403,7 +398,6 @@ pub fn remove_plant_from_bed(bed_id: &str, placed_plant_id: &str, date: &str) {
     }
 }
 
-#[allow(dead_code)]
 pub fn get_garden_beds(garden_id: &str) -> Vec<Bed> {
     BEDS.read()
         .iter()
@@ -412,12 +406,10 @@ pub fn get_garden_beds(garden_id: &str) -> Vec<Bed> {
         .collect()
 }
 
-#[allow(dead_code)]
 pub fn get_bed_by_id(bed_id: &str) -> Option<Bed> {
     BEDS.read().iter().find(|b| b.base.id == bed_id).cloned()
 }
 
-#[allow(dead_code)]
 pub fn get_plant_by_id(plant_id: &str) -> Option<Plant> {
     PLANTS
         .read()
@@ -426,7 +418,6 @@ pub fn get_plant_by_id(plant_id: &str) -> Option<Plant> {
         .cloned()
 }
 
-#[allow(dead_code)]
 pub fn get_plot_actions_by_bed(bed_id: &str) -> Vec<PlotAction> {
     PLOT_ACTIONS
         .read()
@@ -436,7 +427,6 @@ pub fn get_plot_actions_by_bed(bed_id: &str) -> Vec<PlotAction> {
         .collect()
 }
 
-#[allow(dead_code)]
 pub fn update_bed_position(bed_id: &str, x: i32, y: i32) {
     let now = chrono::Utc::now().timestamp_millis();
     let mut beds = BEDS.write();
@@ -549,7 +539,6 @@ pub fn create_event(
     event
 }
 
-#[allow(dead_code)]
 pub fn delete_event(id: &str) {
     let now = chrono::Utc::now().timestamp_millis();
     let mut events = EVENTS.write();
@@ -612,4 +601,38 @@ pub fn delete_journal_entry(id: &str) {
         entry.base.deleted_at = Some(now);
     }
     save_to_storage();
+}
+
+// Dashboard-specific structures for Stitch design
+#[derive(Clone, Debug, PartialEq)]
+pub enum GardenStatus {
+    Active,
+    NeedsWater,
+    Harvestable,
+}
+
+#[derive(Clone, Debug, PartialEq)]
+pub struct DemoGarden {
+    pub id: uuid::Uuid,
+    pub name: String,
+    pub bed_count: usize,
+    pub plant_count: usize,
+    pub status: GardenStatus,
+    pub last_activity: String,
+}
+
+#[derive(Clone, Debug, Default, PartialEq)]
+pub struct Stats {
+    pub total_gardens: usize,
+    pub total_plants: usize,
+    pub upcoming_tasks: usize,
+    pub recent_harvests: usize,
+}
+
+#[derive(Clone, Debug, PartialEq)]
+pub struct DemoTask {
+    pub id: uuid::Uuid,
+    pub title: String,
+    pub time: String,
+    pub completed: bool,
 }

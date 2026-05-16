@@ -1,7 +1,6 @@
 use crate::app_state::AppState;
 use std::io;
 
-#[allow(dead_code)]
 #[derive(Debug)]
 pub enum StorageError {
     DatabaseError(String),
@@ -33,7 +32,6 @@ impl std::fmt::Display for StorageError {
 
 impl std::error::Error for StorageError {}
 
-#[allow(dead_code)]
 pub trait StorageProvider {
     fn load_all(&self) -> Result<AppState, StorageError>;
     fn save_all(&self, state: &AppState) -> Result<(), StorageError>;
