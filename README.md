@@ -79,11 +79,11 @@ Plantarium es una aplicación de escritorio para planificar y gestionar huertos 
 git clone https://github.com/tu-usuario/plantarium-rust
 cd plantarium-rust
 
-# Ejecutar en modo desarrollo (desktop)
+# Ejecutar en modo desarrollo (desktop, default)
 cargo run
 
 # Ejecutar en modo desarrollo (web)
-cargo run --features web
+cargo run --no-default-features --features web
 
 # Verificar compilación
 cargo check
@@ -93,11 +93,11 @@ cargo build
 ### Producción
 
 ```bash
-# Build optimizado desktop
+# Build optimizado desktop (default)
 cargo build --release
 
 # Build optimizado web
-cargo build --features web --release
+cargo build --no-default-features --features web --release
 ```
 
 ## Estructura del Proyecto

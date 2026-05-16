@@ -1,82 +1,119 @@
-use crate::app_state::{get_demo_gardens_v2, get_demo_harvests, get_demo_maintenance_tasks};
-use crate::components::{
-    DashboardHeader, GardenCardV2, GardenData, MaintenancePanel, RecentHarvests,
-};
+use crate::app_state::{create_garden, BEDS, GARDENS, PLOT_ACTIONS, TASKS};
+use crate::components::{AddGardenCard, GardenCard, Navbar, ProTip, QuickReminders, StatCard};
 use dioxus::prelude::*;
 
 #[component]
 pub fn Dashboard() -> Element {
-    let demo_gardens = use_signal(get_demo_gardens_v2);
-    let demo_harvests = use_signal(get_demo_harvests);
-    let demo_maintenance_tasks = use_signal(get_demo_maintenance_tasks);
+    let mut show_add = use_signal(|| false);
+    let mut new_name = use_signal(|| String::new());
 
-    rsx! {
-        div { class: "dashboard-v2",
-            DashboardHeader {}
+    let gardens = GARDENS.read();
+    let beds = BEDS.read();
+    let tasks = TASKS.read();
+    let actions = PLOT_ACTIONS.read();
 
-            main { class: "dashboard-main",
-                // Hero Section
-                header { class: "dashboard-hero",
-                    p { class: "dashboard-hero-label",
-                        span { class: "dashboard-hero-label-line" }
-                        "The Digital Conservatory"
-                    }
-                    h1 {
-                        "Your conservatory is "
-                        em { "thriving" }
-                        "."
-                    }
-                }
+    let active_gardens: Vec<_> = gardens
+        .iter()
+        .filter(|g| g.base.deleted_at.is_none())
+        .cloned()
+        .collect();
+    let active_beds: Vec<_> = beds
+        .iter()
+        .filter(|b| b.base.deleted_at.is_none())
+        .cloned()
+        .collect();
+    let active_tasks: Vec<_> = tasks
+        .iter()
+        .filter(|t| t.base.deleted_at.is_none())
+        .cloned()
+        .collect();
+    let harvests = actions
+        .iter()
+        .filter(|a| a.action == crate::app_state::PlotActionType::Harvested)
+        .count();
 
-                // Bento Grid
-                div { class: "dashboard-grid",
-                    // Main Content
-                    section { class: "dashboard-grid-main",
-                        // Gardens Section Header (sibling of grid and recent-harvests)
-                        div { class: "gardens-section-header",
-                            div {
-                                h2 { class: "gardens-section-title", "Your Gardens" }
-                                p { class: "gardens-section-subtitle",
-                                    "Nurturing 24 species across 4 micro-climates."
-                                }
-                            }
-                            a { href: "#", class: "gardens-section-link",
-                                "Explore All"
-                                span { style: "margin-left: 8px;", "→" }
-                            }
-                        }
+    let total_plants: usize = active_beds
+        .iter()
+        .map(|b| b.plants.iter().filter(|p| p.harvested_at.is_none()).count())
+        .sum();
+    let total_gardens = active_gardens.len();
+    let upcoming = active_tasks.iter().filter(|t| !t.completed).count();
 
-                        // Gardens Cards Grid (sibling of header and recent-harvests)
-                        div { class: "gardens-cards-grid",
-                            GardenGrid { gardens: demo_gardens }
-                        }
-
-                        // Recent Harvests (sibling of header and grid)
-                        RecentHarvests { harvests: demo_harvests.read().clone() }
-                    }
-
-                    // Sidebar
-                    section { class: "dashboard-grid-sidebar",
-                        MaintenancePanel { tasks: demo_maintenance_tasks.read().clone() }
-                    }
+    let garden_cards: Vec<_> = active_gardens
+        .iter()
+        .map(|garden| {
+            let gid = garden.base.id.clone();
+            let gname = garden.name.clone();
+            let gbeds: Vec<_> = active_beds.iter().filter(|b| b.garden_id == gid).collect();
+            let bed_count = gbeds.len();
+            let plant_count: usize = gbeds
+                .iter()
+                .map(|b| b.plants.iter().filter(|p| p.harvested_at.is_none()).count())
+                .sum();
+            rsx! {
+                GardenCard {
+                    key: "{gid}",
+                    id: gid,
+                    name: gname,
+                    bed_count,
+                    plant_count,
                 }
             }
-        }
-    }
-}
+        })
+        .collect();
 
-#[component]
-fn GardenGrid(gardens: Signal<Vec<GardenData>>) -> Element {
-    let gardens_list = gardens.read().clone();
+    let mut add_garden = move || {
+        let name = new_name();
+        if !name.trim().is_empty() {
+            create_garden(&name);
+            new_name.set(String::new());
+            show_add.set(false);
+        }
+    };
 
     rsx! {
-        for (index, garden) in gardens_list.iter().enumerate() {
-            GardenCardV2 {
-                key: "{index}",
-                garden: garden.clone(),
-                on_click: move |_| {
-                    println!("Garden clicked");
+        div { class: "app-container",
+            Navbar {}
+            div { class: "main-content",
+                div { class: "header",
+                    h1 { "Mis Jardines" }
+                    button {
+                        class: "add-btn",
+                        onclick: move |_| show_add.toggle(),
+                        if show_add() { "Cancelar" } else { "+ Nuevo Jardín" }
+                    }
                 }
+
+                if show_add() {
+                    div { class: "add-form",
+                        input {
+                            r#type: "text",
+                            placeholder: "Nombre del jardín",
+                            value: "{new_name}",
+                            oninput: move |evt| new_name.set(evt.value()),
+                        }
+                        button { onclick: move |_| add_garden(), "Crear" }
+                    }
+                }
+
+                section { class: "stats-section",
+                    StatCard { title: "Jardines".to_string(), value: total_gardens.to_string(), icon: "🌱".to_string() }
+                    StatCard { title: "Plantas".to_string(), value: total_plants.to_string(), icon: "🌿".to_string() }
+                    StatCard { title: "Tareas Pendientes".to_string(), value: upcoming.to_string(), icon: "✅".to_string() }
+                    StatCard { title: "Cosechas".to_string(), value: harvests.to_string(), icon: "🌾".to_string() }
+                }
+
+                div { class: "gardens-section",
+                    div { class: "gardens-grid",
+                        {garden_cards.into_iter()}
+                        AddGardenCard {
+                            on_click: move |_| show_add.toggle()
+                        }
+                    }
+                }
+
+                ProTip {}
+                QuickReminders { tasks: active_tasks.clone() }
             }
         }
     }

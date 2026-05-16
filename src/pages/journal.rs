@@ -2,10 +2,29 @@ use crate::app_state::{create_journal_entry, delete_journal_entry, update_journa
 use crate::components::Navbar;
 use dioxus::prelude::*;
 
+fn render_markdown(content: &str) -> String {
+    use ammonia::Builder;
+    use pulldown_cmark::{html, Options, Parser};
+
+    let mut options = Options::empty();
+    options.insert(Options::ENABLE_STRIKETHROUGH);
+    options.insert(Options::ENABLE_TABLES);
+
+    let parser = Parser::new_ext(content, options);
+    let mut html_output = String::new();
+    html::push_html(&mut html_output, parser);
+
+    Builder::default()
+        .url_relative(ammonia::UrlRelative::Deny)
+        .clean(&html_output)
+        .to_string()
+}
+
 #[component]
 pub fn Journal() -> Element {
     let mut show_add = use_signal(|| false);
     let mut editing_id = use_signal(|| Option::<String>::None);
+    let mut edit_date = use_signal(|| chrono::Local::now().format("%Y-%m-%d").to_string());
     let mut new_date = use_signal(|| chrono::Local::now().format("%Y-%m-%d").to_string());
     let mut new_content = use_signal(|| String::new());
 
@@ -16,6 +35,13 @@ pub fn Journal() -> Element {
         .cloned()
         .collect();
     sorted.sort_by(|a, b| b.date.cmp(&a.date));
+
+    let start_edit = move |(id, date, content): (String, String, String)| {
+        editing_id.set(Some(id));
+        edit_date.set(date);
+        new_content.set(content);
+        show_add.set(true);
+    };
 
     let mut save_entry = move || {
         if !new_content().trim().is_empty() {
@@ -57,10 +83,19 @@ pub fn Journal() -> Element {
 
                 if show_add() {
                     div { class: "editor",
-                        input {
-                            r#type: "date",
-                            value: "{new_date}",
-                            oninput: move |evt| new_date.set(evt.value()),
+                        p {
+                            "Editando: "
+                            input {
+                                r#type: "date",
+                                value: if editing_id().is_some() { "{edit_date}" } else { "{new_date}" },
+                                oninput: move |evt| {
+                                    if editing_id().is_some() {
+                                        edit_date.set(evt.value());
+                                    } else {
+                                        new_date.set(evt.value());
+                                    }
+                                },
+                            }
                         }
                         textarea {
                             placeholder: "Escribe tu nota en markdown...",
@@ -76,7 +111,11 @@ pub fn Journal() -> Element {
 
                 div { class: "entries-list",
                     for entry in sorted {
-                        JournalEntry { entry: entry.clone() }
+                        JournalEntry {
+                            key: "{entry.base.id}",
+                            entry,
+                            on_edit: start_edit,
+                        }
                     }
                 }
             }
@@ -84,20 +123,32 @@ pub fn Journal() -> Element {
     }
 }
 
+#[derive(Props, Clone, PartialEq)]
+struct JournalEntryProps {
+    entry: crate::app_state::JournalEntry,
+    on_edit: EventHandler<(String, String, String)>,
+}
+
 #[component]
-fn JournalEntry(entry: crate::app_state::JournalEntry) -> Element {
-    let _entry_id = entry.base.id.clone();
-    let entry_id_delete = entry.base.id.clone();
+fn JournalEntry(props: JournalEntryProps) -> Element {
+    let entry_id_delete = props.entry.base.id.clone();
+    let rendered = render_markdown(&props.entry.content);
 
     rsx! {
         div { class: "entry-card",
             div { class: "entry-header",
-                span { class: "entry-date", "{entry.date}" }
+                span { class: "entry-date", "{props.entry.date}" }
                 div { class: "entry-actions",
                     button {
                         onclick: move |_| {
-                            // Edit functionality could be added here
+                            props.on_edit.call((
+                                props.entry.base.id.clone(),
+                                props.entry.date.clone(),
+                                props.entry.content.clone(),
+                            ));
                         },
+                        // Alternative: direct closure
+                        // onclick: move |_| {} // keep for now
                         "Editar"
                     }
                     button {
@@ -107,8 +158,8 @@ fn JournalEntry(entry: crate::app_state::JournalEntry) -> Element {
                     }
                 }
             }
-            div { class: "entry-content",
-                pre { "{entry.content}" }
+            div { class: "entry-content markdown-body",
+                dangerous_inner_html: "{rendered}",
             }
         }
     }

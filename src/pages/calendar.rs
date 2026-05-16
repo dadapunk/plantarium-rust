@@ -55,6 +55,26 @@ pub fn Calendar() -> Element {
         _ => 30,
     };
 
+    let cm = current_month();
+    let cy = current_year();
+    let day_cells: Vec<_> = (1..=days_in_month)
+        .map(|day| {
+            let _date_str = format!("{}-{:02}-{:02}", cy, cm, day);
+            let day_events: Vec<_> = events_for_month
+                .iter()
+                .filter(|e| {
+                    if let Ok(d) = chrono::NaiveDate::parse_from_str(&e.date, "%Y-%m-%d") {
+                        d.day() == day as u32
+                    } else {
+                        false
+                    }
+                })
+                .cloned()
+                .collect();
+            (day, day_events)
+        })
+        .collect();
+
     rsx! {
         div { class: "app-container",
             Navbar {}
@@ -147,9 +167,21 @@ pub fn Calendar() -> Element {
                     }
 
                     div { class: "days",
-                        for day in 1..=days_in_month {
+                        for (day, day_events) in &day_cells {
                             div { class: "day",
                                 span { class: "day-number", "{day}" }
+                                div { class: "day-events",
+                                    for event in day_events {
+                                        div { class: "day-event",
+                                            span { "{event.title}" }
+                                            button {
+                                                class: "event-delete",
+                                                onclick: { let eid = event.base.id.clone(); move |_| delete_event(&eid) },
+                                                "✕"
+                                            }
+                                        }
+                                    }
+                                }
                             }
                         }
                     }

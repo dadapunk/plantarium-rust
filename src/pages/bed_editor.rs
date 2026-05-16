@@ -12,7 +12,6 @@ pub fn BedEditor(id: String) -> Element {
     let mut action_date = use_signal(|| chrono::Local::now().format("%Y-%m-%d").to_string());
 
     let plants_vec: Vec<_> = plants.iter().cloned().collect();
-    let plants_for_iter = plants_vec.clone();
     let bed_clone = bed.clone();
 
     rsx! {
@@ -39,9 +38,9 @@ pub fn BedEditor(id: String) -> Element {
                     div { class: "plant-library",
                         h3 { "Biblioteca de Plantas" }
                         div { class: "plants-grid",
-                            for plant in plants_for_iter {
+                            for plant in &plants_vec {
                                 PlantButton {
-                                    plant: plant,
+                                    plant: plant.clone(),
                                     selected_id: selected_plant_id.clone(),
                                 }
                             }
@@ -95,16 +94,25 @@ fn BedCanvas(
 ) -> Element {
     let bid = bed.base.id.clone();
     let bid_for_add = bed.base.id.clone();
+    let mut canvas_pos = use_signal(|| (0.0f64, 0.0f64));
 
     rsx! {
         div {
             class: "canvas",
-            style: "width: {bed.width}px; height: {bed.height}px;",
+            style: "width: {bed.width}px; height: {bed.height}px; position: relative;",
+            onmounted: move |evt| {
+                spawn(async move {
+                    if let Ok(rect) = evt.get_client_rect().await {
+                        canvas_pos.set((rect.origin.x, rect.origin.y));
+                    }
+                });
+            },
             onclick: move |evt| {
                 if let Some(plant_id) = selected_plant_id() {
-                    let rect = evt.client_coordinates();
-                    let x = rect.x as f64;
-                    let y = rect.y as f64;
+                    let (cx, cy) = canvas_pos();
+                    let coords = evt.client_coordinates();
+                    let x = coords.x - cx;
+                    let y = coords.y - cy;
                     add_plant_to_bed(&bid_for_add, &plant_id, x, y, &action_date());
                 }
             },

@@ -1,33 +1,33 @@
-use crate::app_state::DemoTask;
+use crate::app_state::Task;
+use crate::router::Route;
 use dioxus::prelude::*;
 
 #[derive(Props, Clone, PartialEq)]
 pub struct QuickRemindersProps {
-    pub tasks: Vec<DemoTask>,
+    pub tasks: Vec<Task>,
 }
 
 #[component]
 pub fn QuickReminders(props: QuickRemindersProps) -> Element {
+    let pending: Vec<_> = props.tasks.iter().filter(|t| !t.completed).collect();
+
     rsx! {
         div { class: "quick-reminders",
-            h3 { "⏰ Quick Reminders" }
-            p { "You have {props.tasks.len()} tasks due today." }
+            h3 { "⏰ Tareas Pendientes" }
+            p { "Tienes {pending.len()} tareas sin completar." }
 
             div { class: "reminder-list",
-                for task in props.tasks.iter() {
+                for task in pending.iter().take(5) {
                     div { class: "reminder-item",
                         div { class: "reminder-info",
                             span { "{task.title}" }
                         }
-                        span {
-                            class: if task.completed { "reminder-status" } else { "reminder-time" },
-                            "{task.time}"
-                        }
+                        span { class: "reminder-time", "{task.date}" }
                     }
                 }
             }
 
-            a { href: "#", class: "go-to-tasks", "Go to Tasks →" }
+            Link { to: Route::Tasks {}, class: "go-to-tasks", "Ir a Tareas →" }
         }
     }
 }

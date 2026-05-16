@@ -4,10 +4,12 @@ use directories::ProjectDirs;
 use rusqlite::Connection;
 use std::path::PathBuf;
 
+#[allow(dead_code)]
 pub struct SqliteStorage {
     db_path: PathBuf,
 }
 
+#[allow(dead_code)]
 impl SqliteStorage {
     pub fn new() -> Result<Self, StorageError> {
         let db_path = Self::get_db_path()?;
@@ -31,6 +33,7 @@ impl SqliteStorage {
     }
 }
 
+#[allow(dead_code)]
 impl StorageProvider for SqliteStorage {
     fn init(&self) -> Result<(), StorageError> {
         let conn = self.open_connection()?;
@@ -147,7 +150,7 @@ impl StorageProvider for SqliteStorage {
     fn load_all(&self) -> Result<AppState, StorageError> {
         let _conn = self.open_connection()?;
 
-        let mut state = AppState::default();
+        let state = AppState::default();
 
         // TODO: Implement load queries in PROMPT 5
         // For now, return empty state
