@@ -4,6 +4,7 @@ use crate::components::{GardenData, HarvestItem, MaintenanceTask};
 pub fn get_demo_gardens_v2() -> Vec<GardenData> {
     vec![
         GardenData {
+            id: "demo-1".to_string(),
             name: "South Terrace".to_string(),
             status: "Active".to_string(),
             species_count: 12,
@@ -12,6 +13,7 @@ pub fn get_demo_gardens_v2() -> Vec<GardenData> {
             image_url: "".to_string(),
         },
         GardenData {
+            id: "demo-2".to_string(),
             name: "Kitchen Herbarium".to_string(),
             status: "Harvest Ready".to_string(),
             species_count: 8,
